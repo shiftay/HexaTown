@@ -42,7 +42,7 @@ public class HandController : MonoBehaviour {
 					GameObject position = hit.transform.gameObject;
 					SpriteRenderer hitTile = position.GetComponent<SpriteRenderer>();
 					
-					if(!cm.containsTile(hitTile.sprite)) {
+					if(!cm.containsTile(hitTile.sprite) && !cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
 						hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 						currentCard.transform.position = new Vector2(-100,-100);
 						hitTile.sprite = currentCard.GetComponent<SpriteRenderer>().sprite;
@@ -59,6 +59,13 @@ public class HandController : MonoBehaviour {
 					// touchOffset = (Vector2)hit.transform.position - inputPosition;
 					// draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
 					// draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(draggedObject.GetComponent<SpriteRenderer>().sprite);
+				} else if(hit.transform.tag == "SpellArea") {
+					// PLAY THE CARD
+					Debug.Log("SPELL");
+					currentCard.transform.position = new Vector2(-100,-100);
+					//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
+
+				
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 					retVal = false;
@@ -69,7 +76,9 @@ public class HandController : MonoBehaviour {
 			retVal = false;
 		}
 
-
+		if(!retVal && cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
+			cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
+		}
 
 		return retVal;
 	}

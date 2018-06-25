@@ -6,9 +6,12 @@ public class CardManager : MonoBehaviour {
 	public Sprite[] cards;
 	public Sprite[] tiles;
 	public HandController hc;
+
+	public GameObject spellSpot;
+	public SpriteRenderer spellArea;
 	// Use this for initialization
 	void Start () {
-		
+		spellArea = spellSpot.GetComponent<SpriteRenderer>();
 	}
 	
 	// Update is called once per frame
@@ -60,6 +63,26 @@ public class CardManager : MonoBehaviour {
 		for(int i = 0; i < tiles.Length; i++) {
 			if(tiles[i] == card) {
 				retVal = i;
+			}
+		}
+
+
+		return retVal;
+	}
+
+
+	public bool isSpell(Sprite card) {
+		bool retVal = true;
+
+		for(int i = 0 ; i < tiles.Length; i++) {
+			if(card == cards[i]) {
+				retVal = false;
+			}
+		}
+
+		for(int i = 0; i < tiles.Length; i++) {
+			if(card == tiles[i]) {
+				retVal = false;
 			}
 		}
 

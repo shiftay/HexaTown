@@ -38,7 +38,7 @@ public class GridController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		Debug.Log("Hello");
+		// Debug.Log("Hello");
 	}
 
 

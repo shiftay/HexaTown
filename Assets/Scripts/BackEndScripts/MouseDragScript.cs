@@ -62,7 +62,13 @@ public class MouseDragScript : MonoBehaviour {
                         draggedObject = hit.transform.gameObject;
                         touchOffset = (Vector2)hit.transform.position - inputPosition;
                         draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
-						draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(draggedObject.GetComponent<SpriteRenderer>().sprite);
+                        Sprite card = draggedObject.GetComponent<SpriteRenderer>().sprite;
+
+                        if(cm.isSpell(card)) {
+                            cm.spellArea.color = new Color(1,1,1,1);
+                        } else {
+                            draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(card);
+                        }
                     }
                 }
             }
@@ -86,7 +92,9 @@ public class MouseDragScript : MonoBehaviour {
 		droppedPos = CurrentTouchPosition;
 
 		if(!cm.hc.reorganizeHand(draggedObject, droppedPos)) {
-			draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoCard(draggedObject.GetComponent<SpriteRenderer>().sprite);
+            if(!cm.isSpell(draggedObject.GetComponent<SpriteRenderer>().sprite)) {
+			    draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoCard(draggedObject.GetComponent<SpriteRenderer>().sprite);
+            }
 		}
 
 
