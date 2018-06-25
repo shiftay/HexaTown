@@ -34,6 +34,30 @@ public class GridController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		Debug.Log("Hello");
+	}
+
+
+
+
+
+	void CheckAround(bool rowOdd) {
+		if(rowOdd) {
+			
+
+
+
+
+		} else {
+
+
+
+		}
+
+
 
 	}
+	// EVEN = [-1,-1] [-1, 0] [0, -1] [0, +1] [+1, 0] [+1, -1] 
+	// ODD 	= [-1, 0] [-1, +1] [0, -1] [0, +1] [+1, 0]  [+1, +1]
+
 }
