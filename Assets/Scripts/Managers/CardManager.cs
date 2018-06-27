@@ -71,6 +71,19 @@ public class CardManager : MonoBehaviour {
 	}
 
 
+	public int ValueOfAll(Sprite card) {
+		int retVal = -1;
+		
+		for(int i = 0; i < cards.Length; i++) {
+			if(cards[i] == card) {
+				retVal = i;
+			}
+		}
+
+		return retVal;
+	}
+
+
 	public bool isSpell(Sprite card) {
 		bool retVal = true;
 

@@ -53,7 +53,7 @@ public class MouseDragScript : MonoBehaviour {
         else
         {
             RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
-            if (touches.Length > 0)
+            if (touches.Length > 0 && !GameManager.instance.turnOver)
             {
                 var hit = touches[0];
                 if (hit.transform != null) {
@@ -97,6 +97,6 @@ public class MouseDragScript : MonoBehaviour {
             }
 		}
 
-
+        
     }
 }

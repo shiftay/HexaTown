@@ -46,7 +46,7 @@ public class HandController : MonoBehaviour {
 						hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 						currentCard.transform.position = new Vector2(-100,-100);
 						hitTile.sprite = currentCard.GetComponent<SpriteRenderer>().sprite;
-
+						GameManager.instance.playedCard(cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 					} else {
 						
 						currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -64,7 +64,7 @@ public class HandController : MonoBehaviour {
 					Debug.Log("SPELL");
 					currentCard.transform.position = new Vector2(-100,-100);
 					//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
-
+					GameManager.instance.playedCard(cm.ValueOfAll(currentCard.GetComponent<SpriteRenderer>().sprite));
 				
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];

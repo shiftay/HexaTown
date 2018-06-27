@@ -9,6 +9,7 @@ public class Flashing : MonoBehaviour {
 	bool flash = true;	
 	public float dTime;
 	public float TIME = 0;
+	public float modifier;
 	bool dir = false;
 
 	// Use this for initialization
@@ -25,9 +26,9 @@ public class Flashing : MonoBehaviour {
 		}
 
 		if(dir) {
-			TIME += Time.deltaTime;
+			TIME += Time.deltaTime * modifier;
 		} else {
-			TIME -= Time.deltaTime;
+			TIME -= Time.deltaTime * modifier;
 		}
 
 
