@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour {
 		gc = GetComponent<GridController>();
 		um = GetComponent<UIManager>();
 		cardsPlayed = 0;
+		Shuffle();
+		Deal();
 	}
 	
 	// Update is called once per frame
@@ -69,6 +71,15 @@ public class GameManager : MonoBehaviour {
 		{
 			item.SetActive(false);
 		}
+	}
+
+	void Deal() {
+		for(int i = 0; i < 5; i++) {
+			activeHAND.Add(currentDeck[i]);
+			
+		}
+		currentDeck.RemoveRange(0, 5);
+		hc.setHand(activeHAND);
 	}
 
 }

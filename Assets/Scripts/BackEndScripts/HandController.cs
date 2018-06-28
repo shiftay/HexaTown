@@ -95,4 +95,10 @@ public class HandController : MonoBehaviour {
 
 		return retVal;
 	}
+
+	public void setHand(List<int> hand) {
+		for(int i = 0; i < hand.Count; i++) {
+			cards[i].GetComponent<SpriteRenderer>().sprite = cm.cards[hand[i]];
+		}
+	}
 }
