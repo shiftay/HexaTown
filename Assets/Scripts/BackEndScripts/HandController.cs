@@ -43,10 +43,12 @@ public class HandController : MonoBehaviour {
 					SpriteRenderer hitTile = position.GetComponent<SpriteRenderer>();
 					
 					if(!cm.containsTile(hitTile.sprite) && !cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
-						hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
+						hit.transform.gameObject.AddComponent<TileInfo>().SetInfo(hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite)), cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
+						GameManager.instance.currentTiles.Add(hit.transform.gameObject.GetComponent<TileInfo>());
 						currentCard.transform.position = new Vector2(-100,-100);
 						hitTile.sprite = currentCard.GetComponent<SpriteRenderer>().sprite;
 						GameManager.instance.playedCard(cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
+						
 					} else {
 						
 						currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -65,6 +67,7 @@ public class HandController : MonoBehaviour {
 					currentCard.transform.position = new Vector2(-100,-100);
 					//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
 					GameManager.instance.playedCard(cm.ValueOfAll(currentCard.GetComponent<SpriteRenderer>().sprite));
+					cm.spellArea.color = new Color(0,0,0,0); // TODO: FADE?
 				
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -99,6 +102,13 @@ public class HandController : MonoBehaviour {
 	public void setHand(List<int> hand) {
 		for(int i = 0; i < hand.Count; i++) {
 			cards[i].GetComponent<SpriteRenderer>().sprite = cm.cards[hand[i]];
+		}
+	}
+
+	public void resetHand() {
+		for (int i = 0; i < cards.Length; i++) {
+			cards[i].SetActive(true);
+			cards[i].transform.position = cardPositions[i];
 		}
 	}
 }

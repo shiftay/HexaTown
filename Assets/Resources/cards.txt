@@ -1,0 +1,13 @@
+1/3/6/apartment
+1/1/1/house
+1/2/3/mansion
+1/1/2/villa
+2/1/1/crane
+2/2/3/factory
+2/2/2/warehouse
+0/2/3/church
+0/1/1/cornershop
+0/2/3/diner
+0/1/1/gasstation
+0/2/4/museum
+0/1/2/store

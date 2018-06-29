@@ -65,16 +65,19 @@ public class GridController : MonoBehaviour {
 	// ODD 	= [-1, 0] [-1, +1] [0, -1] [0, +1] [+1, 0]  [+1, +1]
 
 
-	public void updateGRID(GameObject pos2UPD, int newVal) {
-
+	public List<int> updateGRID(GameObject pos2UPD, int newVal) {
+		List<int> coords = new List<int>();
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
 				if(grid[i,j] == pos2UPD) {
 					gameplayObj[i,j] = newVal;
+					coords.Add(i);
+					coords.Add(j);
 				}
 			}
 		}
 
+		return coords;
 	}
 
 
