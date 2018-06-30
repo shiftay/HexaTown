@@ -205,16 +205,20 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		
+		int tempPop = populationVal;
 
 		for(int i = 0; i < factories.Count; i++) {
-			if(populationVal - factories[i].tileValue >= 0 && !flag) {
-				populationVal -= factories[i].tileValue;
+			if(tempPop - factories[i].tileValue >= 0 && !flag) {
+				tempPop -= factories[i].tileValue;
 				objectiveVal++;
 			} else {
 				remainingPos = i;
 				flag = true;
 			}
+		}
+
+		foreach (TileInfo item in factories) {
+			item.workersNeeded(false);
 		}
 
 		if(flag) {
@@ -228,6 +232,8 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 		calculated = true;
+
+		factories.Clear();
 	}
 
 }
