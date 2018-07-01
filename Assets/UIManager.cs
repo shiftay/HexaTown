@@ -31,7 +31,6 @@ public class UIManager : MonoBehaviour {
 		over.summaryInfo[0].text = "Workers: " + GameManager.instance.populationVal.ToString();
 		over.summaryInfo[1].text = "Happiness: " + GameManager.instance.happinessVal.ToString();
 		over.summaryInfo[2].text = "Objective: " + GameManager.instance.objectiveVal.ToString();
-
 	}
 
 

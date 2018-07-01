@@ -11,6 +11,7 @@ public class TileInfo : MonoBehaviour {
 	public int tileValue;
 	public int buildTime;
 	List<GameObject> children = new List<GameObject>();
+	bool scheduledDemo = false;
 
 	void Start() {
 		if(gameObject.GetComponent<Flashing>()) {
@@ -34,10 +35,13 @@ public class TileInfo : MonoBehaviour {
 			gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
 			Destroy(this);
 		}
+
+		if(buildTime <= 0 && scheduledDemo) {
+			clearTile();
+		}
 	}
 
 	public void SetInfo(List<int> coords, int tileNum) {
-	
 		CardData temp = GameManager.instance.Info(tileNum);	
 		
 		xCoord = coords[0];
@@ -63,9 +67,39 @@ public class TileInfo : MonoBehaviour {
 		children[2].SetActive(toggle);
 	}
 
+	public void demolish(bool toggle) {
+		foreach(GameObject go in children) {
+			go.SetActive(false);
+		}
+
+		children[3].SetActive(toggle);
+		scheduledDemo = toggle;
+		buildTime = 2;
+	}
+
+	public void crime(bool toggle) {
+		foreach(GameObject go in children) {
+			go.SetActive(false);
+		}
+
+		children[4].SetActive(toggle);
+		scheduledDemo = toggle;
+		buildTime = 1;
+	}
+
+
 	public void clearTile() {
 		GameManager.instance.currentTiles.Remove(this);
 		gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
+		unhappy(false);
+		building(false);
+		workersNeeded(false);
+		demolish(false);
 		Destroy(this);
+	}
+
+	public void buildTile() {
+		buildTime = 0;
+		building(false);
 	}
 }

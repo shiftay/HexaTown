@@ -8,6 +8,7 @@ public enum EVENT_RNG {	PERMITS, RAIN, ARSON, CRIMEWAVE }
 
 public class CardData {
 	TILETYPE type;
+	SPELLTYPE spell;
 	int buildTime, tileValue;
 
 	public int BUILD() {
@@ -21,9 +22,19 @@ public class CardData {
 	public TILETYPE TYPE() {
 		return type;
 	}
+	
+	public SPELLTYPE sTYPE() {
+		return spell;
+	}
 
 	public void SetData(int x, int y, TILETYPE t) {
 		type = t;
+		buildTime = x;
+		tileValue = y;
+	}
+
+	public void SetData(int x, int y, SPELLTYPE t) {
+		spell = t;
 		buildTime = x;
 		tileValue = y;
 	}
@@ -56,11 +67,10 @@ public class GameManager : MonoBehaviour {
 	bool unhappy = false;
 	int turnsSinceEvt = 0, amtofEvts;
 
-	List<TileInfo> buildingTiles = new List<TileInfo>();	
 	// Use this for initialization
 	void Start () {
 		instance = this;
-		ReadData();
+		ReadCardData();
 		gc = GetComponent<GridController>();
 		um = GetComponent<UIManager>();
 		cardsPlayed = 0;
@@ -77,6 +87,8 @@ public class GameManager : MonoBehaviour {
 			//TODO: Discard cards.
 			disableHand();
 			um.TurnOVER();
+			AdvanceBuilds();
+
 			//TODO: Calculate stats + show stats
 			//TODO: Decide if random event happens + show event if so.
 			//TODO: Deal cards, flip bool.
@@ -118,8 +130,7 @@ public class GameManager : MonoBehaviour {
 		cardsPlayed = 0;
 		turnCardPlayed.Clear();
 
-		AdvanceBuilds();
-
+		
 		turnOver = false;
 		calculated = false;
 	}
@@ -193,7 +204,7 @@ public class GameManager : MonoBehaviour {
 		hc.setHand(activeHAND);
 	}
 
-	void ReadData() {
+	void ReadCardData() {
 		StreamReader sr = new StreamReader(path);
 		string line;
 
@@ -201,8 +212,23 @@ public class GameManager : MonoBehaviour {
 			string[] split = line.Split('/');
 
 			CardData x = new CardData();	
-			TILETYPE temp = (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]);	
 			x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]));
+
+			cardData.Add(x);
+		}
+
+		sr.Close();
+	}
+
+	void ReadSpellData() {
+		StreamReader sr = new StreamReader(path);
+		string line;
+
+		while((line = sr.ReadLine()) != null) {
+			string[] split = line.Split('/');
+
+			CardData x = new CardData();	
+			x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(TILETYPE), split[0]));
 
 			cardData.Add(x);
 		}
@@ -342,8 +368,9 @@ public class GameManager : MonoBehaviour {
 			int x = UnityEngine.Random.Range(0,currentTiles.Count);
 
 			if(currentTiles[x].type == TILETYPE.COMMERCIAL) {
-				gc.removeFromGrid(currentTiles[x].gameObject);
-				currentTiles[x].clearTile();
+				// gc.removeFromGrid(currentTiles[x].gameObject);
+				currentTiles[x].crime(true);
+				// SWITCH TO CRIMEWAVE
 				flag = true;
 			}
 

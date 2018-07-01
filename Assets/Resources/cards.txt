@@ -11,3 +11,5 @@
 0/1/1/gasstation
 0/2/4/museum
 0/1/2/store
+1/-99/2/hastybuild
+1/0/-99/demolish

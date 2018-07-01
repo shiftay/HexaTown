@@ -12,6 +12,7 @@ public class MouseDragScript : MonoBehaviour {
     private Vector2 touchOffset;
 	public bool reorderPuz = false;
 	public Vector2 droppedPos;
+    int valueOfCard = -1;
 
 	void Start()
 	{
@@ -63,9 +64,23 @@ public class MouseDragScript : MonoBehaviour {
                         touchOffset = (Vector2)hit.transform.position - inputPosition;
                         draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
                         Sprite card = draggedObject.GetComponent<SpriteRenderer>().sprite;
-
+                        valueOfCard = cm.ValueOfAll(card);
                         if(cm.isSpell(card)) {
-                            cm.spellArea.color = new Color(1,1,1,1);
+                            // FIND OUT WHAT TYPE OF SPELL.
+                            switch(cm.spellType(cm.ValueOfAll(card))) {
+                                case SPELLTYPE.ZONE:
+                                    cm.spellArea.color = new Color(1,1,1,1);
+                                    break;
+
+                                case SPELLTYPE.TARGETED:
+                                    draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changeToSpell();
+                                    break;
+                            }
+                            
+
+
+
+                            // cm.spellArea.color = new Color(1,1,1,1);
                         } else {
                             draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(card);
                         }
@@ -91,12 +106,14 @@ public class MouseDragScript : MonoBehaviour {
 		// reorderPuz = true;
 		droppedPos = CurrentTouchPosition;
 
-		if(!cm.hc.reorganizeHand(draggedObject, droppedPos)) {
+		if(!cm.hc.reorganizeHand(draggedObject, droppedPos, valueOfCard)) {
             if(!cm.isSpell(draggedObject.GetComponent<SpriteRenderer>().sprite)) {
 			    draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoCard(draggedObject.GetComponent<SpriteRenderer>().sprite);
+            } else {
+                draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoCard(null, valueOfCard);
             }
 		}
 
-        
+        valueOfCard = -1;
     }
 }

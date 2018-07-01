@@ -29,7 +29,7 @@ public class HandController : MonoBehaviour {
 	}
 
 
-	public bool reorganizeHand(GameObject currentCard, Vector2 droppedPos) {
+	public bool reorganizeHand(GameObject currentCard, Vector2 droppedPos, int value) {
 		bool retVal = true;
 
 		RaycastHit2D[] touches = Physics2D.RaycastAll(droppedPos, droppedPos, 0.5f);
@@ -51,9 +51,42 @@ public class HandController : MonoBehaviour {
 						
 					} else {
 						
-						currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+						if(cm.spellType(value) == SPELLTYPE.TARGETED) {
+							if(cm.containsTile(hitTile.sprite)) {
+								
+								TileInfo tile = position.GetComponent<TileInfo>();
+								
+								if(tile) {
 
-						retVal = false;
+									switch(GameManager.instance.cardData[value].BUILD()) {
+										case 0: 
+											// demolition
+											tile.demolish(true);
+											break;
+										case -99:
+											// clear build time
+											tile.buildTile();
+
+											break;
+									}
+
+									GameManager.instance.playedCard(value);
+									currentCard.transform.position = new Vector2(-100,-100);
+								} else {
+									// NO TILE INFO, SO WATER.
+									currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+									retVal = false;
+
+								}
+							}
+						} else {
+							currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+							retVal = false;
+						}
+
+
+
+
 					}
 
 
@@ -66,7 +99,7 @@ public class HandController : MonoBehaviour {
 					Debug.Log("SPELL");
 					currentCard.transform.position = new Vector2(-100,-100);
 					//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
-					GameManager.instance.playedCard(cm.ValueOfAll(currentCard.GetComponent<SpriteRenderer>().sprite));
+					GameManager.instance.playedCard(value);
 					cm.spellArea.color = new Color(0,0,0,0); // TODO: FADE?
 				
 				} else {

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SPELLTYPE { TARGETED, ZONE }
+
 public class CardManager : MonoBehaviour {
 	public Sprite[] cards;
 	public Sprite[] tiles;
+	public Sprite[] spells;
 	public HandController hc;
 
 	public GameObject spellSpot;
@@ -32,14 +35,19 @@ public class CardManager : MonoBehaviour {
 		return tiles[index];
 	}
 
-	public Sprite changetoCard(Sprite currTile) {
+	public Sprite changetoCard(Sprite currTile, int x = -1) {
 		int index = -1;
 
-		for(int i = 0; i < tiles.Length; i++) {
-			if(currTile == tiles[i]) {
-				index = i;
+		if(x != -1) {
+			index = x;
+		} else {
+			for(int i = 0; i < tiles.Length; i++) {
+				if(currTile == tiles[i]) {
+					index = i;
+				}
 			}
 		}
+
 
 		return cards[index];
 	}
@@ -70,6 +78,9 @@ public class CardManager : MonoBehaviour {
 		return retVal;
 	}
 
+	public Sprite changeToSpell() {
+		return spells[0];
+	}
 
 	public int ValueOfAll(Sprite card) {
 		int retVal = -1;
@@ -102,4 +113,9 @@ public class CardManager : MonoBehaviour {
 
 		return retVal;
 	}
+
+	public SPELLTYPE spellType(int cardNum) {
+		return GameManager.instance.cardData[cardNum].sTYPE();
+	}
+
 }
