@@ -4,6 +4,8 @@ using System.IO;
 using System;
 using UnityEngine;
 
+public enum EVENT_RNG {	PERMITS, RAIN, ARSON, CRIMEWAVE }
+
 public class CardData {
 	TILETYPE type;
 	int buildTime, tileValue;
@@ -30,6 +32,8 @@ public class CardData {
 
 public class GameManager : MonoBehaviour {
 
+	public Sprite baseTile;
+	public Sprite water;
 	public static GameManager instance;
 	public HandController hc;
 	UIManager um;
@@ -48,6 +52,11 @@ public class GameManager : MonoBehaviour {
 	public List<TileInfo> currentTiles = new List<TileInfo>();
 	string path = "Assets/Resources/cards.txt";
 	bool calculated = false;
+	List<TileInfo> residential = new List<TileInfo>();
+	bool unhappy = false;
+	int turnsSinceEvt = 0, amtofEvts;
+
+	List<TileInfo> buildingTiles = new List<TileInfo>();	
 	// Use this for initialization
 	void Start () {
 		instance = this;
@@ -76,6 +85,33 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void resolveTurn() {
+		if(currentTurn > 3) {
+			turnsSinceEvt++;
+			if(randomBool((float)(turnsSinceEvt * 0.1))) {
+				amtofEvts++;
+				um.EventActivate();
+				um.evnt.EVTChoice(EVENT_RNG.CRIMEWAVE);
+				turnsSinceEvt = 0;
+			} else {
+				finishTurn();
+			}
+		} else {
+			finishTurn();
+		}
+	}
+
+	bool randomBool(float modifier) {
+		bool retVal = false;
+
+		if(UnityEngine.Random.value < modifier) {
+			retVal = true;
+		}
+
+		return retVal;
+	}
+
+
+	public void finishTurn() {
 		um.TurnStart();
 		resetHand();
 
@@ -97,7 +133,6 @@ public class GameManager : MonoBehaviour {
         	currentDeck[randomIndex] = temp;
     	}
 	}
-
 
 	void AdvanceBuilds() {
 		for(int i = 0; i < currentTiles.Count; i++) {
@@ -176,7 +211,14 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public CardData Info(int num) {
-		return cardData[num];
+		if(num >= 0) {
+			return cardData[num];
+		} else {
+			// FOR EVENT: WATER
+			CardData d = new CardData();
+			d.SetData(3, -1,TILETYPE.EVENT);
+			return d;
+		}
 	}
 
 	public void CalculateTurn() {
@@ -200,10 +242,25 @@ public class GameManager : MonoBehaviour {
 					
 					case TILETYPE.RESIDENTIAL:
 						populationVal += currentTiles[i].tileValue;
+						residential.Add(currentTiles[i]);
 						break;
 				}
 			}
 		}
+
+		if((populationVal * 0.75) > happinessVal && currentTurn > 3) {
+			//UNHAPPY PEOPLES.
+			foreach(TileInfo info in residential) {
+				info.unhappy(true);
+			}
+
+			populationVal /= 2;
+		} else {
+			foreach(TileInfo info in residential) {
+				info.unhappy(false);
+			}
+		}
+
 
 		int tempPop = populationVal;
 
@@ -234,6 +291,71 @@ public class GameManager : MonoBehaviour {
 		calculated = true;
 
 		factories.Clear();
+		residential.Clear();
+		currentTurn++;
 	}
 
+//=====================================EVENTS=============================================
+
+	public void permits() {
+		foreach (TileInfo info in currentTiles) {
+			if(info.buildTime > 0 && info.type != TILETYPE.EVENT) {
+				info.buildTime += 2;
+			}
+		}
+	}
+
+
+	public void flooding() {
+		bool flag = false;
+		int amtChanged = 0;
+		List<int> coords = new List<int>();
+		int prevX = -1, prevY = -1;
+		do{
+			int x = UnityEngine.Random.Range(0,6);
+			int y = UnityEngine.Random.Range(0,9);
+
+			if(gc.gameplayObj[x,y] == -1 && prevX != x && prevY != y) {
+				coords.Add(x);
+				coords.Add(y);
+				gc.grid[x,y].AddComponent<TileInfo>().SetInfo(coords, -1);
+				gc.grid[x,y].GetComponent<SpriteRenderer>().sprite = water;
+				GameManager.instance.currentTiles.Add(gc.grid[x,y].GetComponent<TileInfo>());
+				amtChanged++;
+				prevX = x;
+				prevY = y;
+			}
+
+			if(amtChanged >= 2) {
+				flag = true;
+			}
+			coords.Clear();
+		} while(!flag);
+
+	}
+
+
+	public void crimeWave() {
+		bool flag = false;
+
+		do{
+			int x = UnityEngine.Random.Range(0,currentTiles.Count);
+
+			if(currentTiles[x].type == TILETYPE.COMMERCIAL) {
+				gc.removeFromGrid(currentTiles[x].gameObject);
+				currentTiles[x].clearTile();
+				flag = true;
+			}
+
+		} while(!flag);
+
+	}
+
+
+
+
+
+
+
+//=====================================EVENTS=============================================
 }

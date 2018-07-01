@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour {
 
 	public GameObject mainUI;
 	public GameObject TurnOVERUI;
+	public GameObject EventUI;
+	public RNGEvents evnt;
 	public CardManager cm;
 	public TurnOVER over;
 	
@@ -19,7 +21,7 @@ public class UIManager : MonoBehaviour {
 	public void TurnOVER() {
 		mainUI.SetActive(false);
 		TurnOVERUI.SetActive(true);
-
+		EventUI.SetActive(false);
 		for(int i = 0; i < over.cardsPlayed.Length; i++) {
 			over.cardsPlayed[i].sprite = cm.cards[GameManager.instance.turnCardPlayed[i]];
 		}
@@ -32,8 +34,16 @@ public class UIManager : MonoBehaviour {
 
 	}
 
+
+	public void EventActivate() {
+		mainUI.SetActive(false);
+		EventUI.SetActive(true);
+		TurnOVERUI.SetActive(false);
+	}
+
 	public void TurnStart() {
 		mainUI.SetActive(true);
+		EventUI.SetActive(false);
 		TurnOVERUI.SetActive(false);
 	}
 

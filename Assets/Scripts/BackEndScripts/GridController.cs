@@ -81,5 +81,16 @@ public class GridController : MonoBehaviour {
 	}
 
 
+	public void removeFromGrid(GameObject tile) {
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				if(grid[i,j] == tile) {
+					gameplayObj[i,j] = -1;
+				}
+			}
+		}
+	}
+
+
 
 }
