@@ -41,6 +41,12 @@ public class RNGEvents : MonoBehaviour {
 
 				// PLAY SOUND
 				break;
+
+			case EVENT_RNG.BEDBUGS:
+				rngText[0].text = "BEDBUGS";
+				rngText[1].text = "Infestation causing citizens to move away";
+				GameManager.instance.bedbugs();
+				break;
 		}
 
 	}

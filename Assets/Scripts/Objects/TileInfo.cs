@@ -7,6 +7,7 @@ public enum TILETYPE { COMMERCIAL, RESIDENTIAL, INDUSTRIAL, EVENT }
 public class TileInfo : MonoBehaviour {
 
 	public int xCoord, yCoord;
+	public int cardNumber;
 	public TILETYPE type;
 	public int tileValue;
 	public int buildTime;
@@ -43,7 +44,7 @@ public class TileInfo : MonoBehaviour {
 
 	public void SetInfo(List<int> coords, int tileNum) {
 		CardData temp = GameManager.instance.Info(tileNum);	
-		
+		cardNumber = tileNum;
 		xCoord = coords[0];
 		yCoord = coords[1];
 		type = temp.TYPE();
@@ -83,6 +84,16 @@ public class TileInfo : MonoBehaviour {
 		}
 
 		children[4].SetActive(toggle);
+		scheduledDemo = toggle;
+		buildTime = 1;
+	}
+
+	public void bugs(bool toggle) {
+		foreach(GameObject go in children) {
+			go.SetActive(false);
+		}
+
+		children[5].SetActive(toggle);
 		scheduledDemo = toggle;
 		buildTime = 1;
 	}

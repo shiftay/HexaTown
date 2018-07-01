@@ -9,7 +9,7 @@ public class CardManager : MonoBehaviour {
 	public Sprite[] tiles;
 	public Sprite[] spells;
 	public HandController hc;
-
+	public SpriteRenderer description;
 	public GameObject spellSpot;
 	public SpriteRenderer spellArea;
 	// Use this for initialization
@@ -116,6 +116,16 @@ public class CardManager : MonoBehaviour {
 
 	public SPELLTYPE spellType(int cardNum) {
 		return GameManager.instance.cardData[cardNum].sTYPE();
+	}
+
+	public void CardDescription(bool toggle, int val = -1) {
+		if(toggle) {
+			description.color = new Color(1,1,1,1);
+			description.sprite = cards[val];
+		} else {
+			description.color = new Color(1,1,1,0);
+		}
+
 	}
 
 }

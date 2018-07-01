@@ -8,6 +8,7 @@ public class MouseDragScript : MonoBehaviour {
 	// Sprite currSprite;
 	public CardManager cm;
     public bool draggingItem = false;
+    bool description = false;
     private GameObject draggedObject;
     private Vector2 touchOffset;
 	public bool reorderPuz = false;
@@ -30,6 +31,11 @@ public class MouseDragScript : MonoBehaviour {
         {
             if (draggingItem)
                 DropItem();
+
+            if(description) {
+                cm.CardDescription(false);
+                description = false;
+            }
         }
     }
      
@@ -76,13 +82,19 @@ public class MouseDragScript : MonoBehaviour {
                                     draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changeToSpell();
                                     break;
                             }
-                            
-
-
-
+                        
                             // cm.spellArea.color = new Color(1,1,1,1);
                         } else {
                             draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(card);
+                        }
+                    }
+
+
+                    if(hit.transform.tag == "Hex") {
+                        TileInfo to = hit.transform.gameObject.GetComponent<TileInfo>();
+                        if(to != null) {
+                            cm.CardDescription(true, to.cardNumber);
+                            description = true;
                         }
                     }
                 }

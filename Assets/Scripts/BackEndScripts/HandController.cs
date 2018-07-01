@@ -66,7 +66,6 @@ public class HandController : MonoBehaviour {
 										case -99:
 											// clear build time
 											tile.buildTile();
-
 											break;
 									}
 
@@ -97,10 +96,17 @@ public class HandController : MonoBehaviour {
 				} else if(hit.transform.tag == "SpellArea") {
 					// PLAY THE CARD
 					Debug.Log("SPELL");
-					currentCard.transform.position = new Vector2(-100,-100);
-					//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
-					GameManager.instance.playedCard(value);
-					cm.spellArea.color = new Color(0,0,0,0); // TODO: FADE?
+					
+					if(GameManager.instance.playSpell(value)) {
+						currentCard.transform.position = new Vector2(-100,-100);
+						//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
+						GameManager.instance.playedCard(value);
+					} else {
+						currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+						retVal = false;
+					}
+					
+					cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
 				
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];

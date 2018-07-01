@@ -4,7 +4,7 @@ using System.IO;
 using System;
 using UnityEngine;
 
-public enum EVENT_RNG {	PERMITS, RAIN, ARSON, CRIMEWAVE }
+public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, COUNT }
 
 public class CardData {
 	TILETYPE type;
@@ -66,6 +66,11 @@ public class GameManager : MonoBehaviour {
 	List<TileInfo> residential = new List<TileInfo>();
 	bool unhappy = false;
 	int turnsSinceEvt = 0, amtofEvts;
+	public int prevHapp, prevObjec, prevPop;
+
+	bool commuters = false;
+	int commuterTracker = 0;
+
 
 	// Use this for initialization
 	void Start () {
@@ -102,7 +107,7 @@ public class GameManager : MonoBehaviour {
 			if(randomBool((float)(turnsSinceEvt * 0.1))) {
 				amtofEvts++;
 				um.EventActivate();
-				um.evnt.EVTChoice(EVENT_RNG.CRIMEWAVE);
+				um.evnt.EVTChoice((EVENT_RNG)UnityEngine.Random.Range(0, (int)EVENT_RNG.COUNT));
 				turnsSinceEvt = 0;
 			} else {
 				finishTurn();
@@ -207,30 +212,22 @@ public class GameManager : MonoBehaviour {
 	void ReadCardData() {
 		StreamReader sr = new StreamReader(path);
 		string line;
+		bool flip = false;
 
 		while((line = sr.ReadLine()) != null) {
 			string[] split = line.Split('/');
 
-			CardData x = new CardData();	
-			x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]));
-
-			cardData.Add(x);
-		}
-
-		sr.Close();
-	}
-
-	void ReadSpellData() {
-		StreamReader sr = new StreamReader(path);
-		string line;
-
-		while((line = sr.ReadLine()) != null) {
-			string[] split = line.Split('/');
-
-			CardData x = new CardData();	
-			x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(TILETYPE), split[0]));
-
-			cardData.Add(x);
+			if(split[0] == "=") {
+				flip = true;
+			} else if (flip) {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]));
+				cardData.Add(x);
+			} else {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]));
+				cardData.Add(x);
+			}
 		}
 
 		sr.Close();
@@ -248,6 +245,9 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void CalculateTurn() {
+		prevPop = populationVal;
+		prevHapp = happinessVal;
+		prevObjec = objectiveVal;
 		happinessVal = 0;
 		populationVal = 0;
 
@@ -287,6 +287,13 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
+		if(commuters) {
+			commuterTracker--;
+			populationVal *= 2;
+			if(commuterTracker == 0) {
+				commuters = false;
+			}
+		}
 
 		int tempPop = populationVal;
 
@@ -314,12 +321,43 @@ public class GameManager : MonoBehaviour {
 				}
 			}
 		}
+
 		calculated = true;
 
 		factories.Clear();
 		residential.Clear();
 		currentTurn++;
 	}
+
+
+	public bool playSpell(int value) {
+		bool retVal = true;
+
+		switch(cardData[value].TVALUE()) {
+			case 20:
+				if(commuters) {
+					retVal = false;
+				} else {
+					commuters = true;
+					commuterTracker = 2;
+				}
+				break;
+
+
+
+		}
+
+
+
+
+
+
+
+
+		return retVal;
+	}
+
+
 
 //=====================================EVENTS=============================================
 
@@ -379,6 +417,22 @@ public class GameManager : MonoBehaviour {
 	}
 
 
+	public void bedbugs() {
+		bool flag = false;
+
+		do{
+			int x = UnityEngine.Random.Range(0,currentTiles.Count);
+
+			if(currentTiles[x].type == TILETYPE.RESIDENTIAL) {
+				// gc.removeFromGrid(currentTiles[x].gameObject);
+				currentTiles[x].bugs(true);
+				// SWITCH TO BEDBUGS
+				flag = true;
+			}
+
+		} while(!flag);
+
+	}
 
 
 

@@ -8,6 +8,8 @@ public class TurnOVER : MonoBehaviour {
 	public Image[] cardsPlayed;
  
 	public Text[] summaryInfo;
+	public Image[] modifiers;
+	public Text[] tMods;
 
 	public void completeTurn() {
 	 	GameManager.instance.resolveTurn();
