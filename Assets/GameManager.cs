@@ -98,10 +98,14 @@ public class GameManager : MonoBehaviour {
 			//TODO: Decide if random event happens + show event if so.
 			//TODO: Deal cards, flip bool.
 			Debug.Log("Turn Over");
+
+			// CHECK GAMEOVER
 		}
 	}
 
 	public void resolveTurn() {
+		// CHECK GAME OVER
+
 		if(currentTurn > 3) {
 			turnsSinceEvt++;
 			if(randomBool((float)(turnsSinceEvt * 0.1))) {
@@ -344,15 +348,7 @@ public class GameManager : MonoBehaviour {
 				break;
 
 
-
 		}
-
-
-
-
-
-
-
 
 		return retVal;
 	}

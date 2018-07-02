@@ -21,29 +21,29 @@ public class RNGEvents : MonoBehaviour {
 
 		switch(type) {
 			case EVENT_RNG.PERMITS:
-				rngText[0].text = "PERMITS";
-				rngText[1].text = "EXPLANATION TEXT +2 buildTime";
+				rngText[0].text = "Forgotten Permits";
+				rngText[1].text = "Government preventing extending all building in the area.";
 				GameManager.instance.permits();
 
 				break;
 
 			case EVENT_RNG.RAIN:
-				rngText[0].text = "RAIN";
-				rngText[1].text = "FLOODING";
+				rngText[0].text = "Heavy Rains";
+				rngText[1].text = "Citizens be wary, flooding spotted in the area.";
 				GameManager.instance.flooding();
 				// TURN ON RAIN;
 				break;
 
 			case EVENT_RNG.CRIMEWAVE:
-				rngText[0].text = "CRIMEWAVE";
-				rngText[1].text = "A few shops are closing up and leaving";
+				rngText[0].text = "Crime Wave";
+				rngText[1].text = "Shops closing up amid all the crime and chaos.";
 				GameManager.instance.crimeWave();
 
 				// PLAY SOUND
 				break;
 
 			case EVENT_RNG.BEDBUGS:
-				rngText[0].text = "BEDBUGS";
+				rngText[0].text = "Bed Bugs";
 				rngText[1].text = "Infestation causing citizens to move away";
 				GameManager.instance.bedbugs();
 				break;

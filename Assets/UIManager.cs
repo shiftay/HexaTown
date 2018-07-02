@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour {
 	public CardManager cm;
 	public TurnOVER over;
 	public List<string> titles;
+	public Sprite[] newsPaperImgs;
 	
 	// Update is called once per frame
 	void Update () {
@@ -26,7 +27,8 @@ public class UIManager : MonoBehaviour {
 		TurnOVERUI.SetActive(true);
 		EventUI.SetActive(false);
 		for(int i = 0; i < over.cardsPlayed.Length; i++) {
-			over.cardsPlayed[i].sprite = cm.cards[GameManager.instance.turnCardPlayed[i]];
+			over.cardsPlayed[i].sprite = newsPaperImgs[GameManager.instance.turnCardPlayed[i]];
+			over.imageTitles[i].text = ImgTitle(GameManager.instance.turnCardPlayed[i]);
 		}
 
 		GameManager.instance.CalculateTurn();
@@ -117,6 +119,29 @@ public class UIManager : MonoBehaviour {
 					break;
 			}
 		}
+
+		return retVal;
+	}
+
+
+	string ImgTitle(int num) {
+		string retVal = "";
+
+		switch(GameManager.instance.cardData[num].TYPE()) {
+			case TILETYPE.COMMERCIAL:
+				retVal = "Attractions opening up.";
+				break;
+
+			case TILETYPE.RESIDENTIAL:
+				retVal = "Neighbours moving in.";
+				break;
+
+			case TILETYPE.INDUSTRIAL:
+				retVal = "More Jobs coming.";
+				break;
+		}
+
+
 
 		return retVal;
 	}
