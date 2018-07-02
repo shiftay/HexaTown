@@ -10,6 +10,8 @@ public class TurnOVER : MonoBehaviour {
 	public Text[] summaryInfo;
 	public Image[] modifiers;
 	public Text[] tMods;
+	public Text title;
+	public Text[] imageTitles;
 
 	public void completeTurn() {
 	 	GameManager.instance.resolveTurn();

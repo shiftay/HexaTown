@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour {
 	public RNGEvents evnt;
 	public CardManager cm;
 	public TurnOVER over;
+	public List<string> titles;
 	
 	// Update is called once per frame
 	void Update () {
@@ -45,6 +46,9 @@ public class UIManager : MonoBehaviour {
 		over.tMods[2].text = (GameManager.instance.objectiveVal - GameManager.instance.prevObjec).ToString();
 		over.modifiers[2].sprite = arrows[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObjec)];
 		over.modifiers[2].color = colors[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObjec)];
+
+		over.title.text = titles[titleChoice()];
+
 	}
 
 
@@ -73,6 +77,46 @@ public class UIManager : MonoBehaviour {
 		}
 
 
+
+		return retVal;
+	}
+
+
+
+	int titleChoice() {
+		int retVal = -1;
+
+		if(GameManager.instance.currentTurn < 3) {
+			retVal = 0;
+		}
+
+
+		while(retVal == -1){
+			switch(Random.Range(0,3)) {
+				case 0:
+					if(GameManager.instance.populationVal > GameManager.instance.prevPop) {
+						retVal = 1;
+					}
+					break;
+				
+				case 1:
+					if (GameManager.instance.objectiveVal > GameManager.instance.prevObjec ) {
+						retVal = 2;
+					} else if ( GameManager.instance.objectiveVal == GameManager.instance.prevObjec) {
+						retVal = 3;
+					}
+
+					break;
+
+				case 2:
+					if (GameManager.instance.happinessVal < GameManager.instance.populationVal) {
+						retVal = 4;
+					} else if (GameManager.instance.happinessVal > GameManager.instance.populationVal) {
+						retVal = 5;
+					}
+					break;
+			}
+		}
 
 		return retVal;
 	}
