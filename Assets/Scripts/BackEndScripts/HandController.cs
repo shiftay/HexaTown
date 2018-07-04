@@ -5,13 +5,13 @@ using UnityEngine;
 public class HandController : MonoBehaviour {
 
 	public GameObject[] cards;
-	public Vector2[] cardPositions;
+	public Vector3[] cardPositions;
 	public GridController hexGrid;
 	public CardManager cm;
 
 	// Use this for initialization
 	void Start () {
-		cardPositions = new Vector2[cards.Length];
+		cardPositions = new Vector3[cards.Length];
 
 		for(int i = 0; i < cards.Length; i++) {
 			cardPositions[i] = cards[i].transform.position;

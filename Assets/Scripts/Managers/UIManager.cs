@@ -97,13 +97,13 @@ public class UIManager : MonoBehaviour {
 			switch(Random.Range(0,3)) {
 				case 0:
 					if(GameManager.instance.populationVal > GameManager.instance.prevPop) {
-						retVal = 1;
+						retVal = 5;
 					}
 					break;
 				
 				case 1:
 					if (GameManager.instance.objectiveVal > GameManager.instance.prevObjec ) {
-						retVal = 2;
+						retVal = 1;
 					} else if ( GameManager.instance.objectiveVal == GameManager.instance.prevObjec) {
 						retVal = 3;
 					}
@@ -114,7 +114,7 @@ public class UIManager : MonoBehaviour {
 					if (GameManager.instance.happinessVal < GameManager.instance.populationVal) {
 						retVal = 4;
 					} else if (GameManager.instance.happinessVal > GameManager.instance.populationVal) {
-						retVal = 5;
+						retVal = 3;
 					}
 					break;
 			}
