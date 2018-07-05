@@ -10,6 +10,7 @@ public class TileInfo : MonoBehaviour {
 	public int cardNumber;
 	public TILETYPE type;
 	public int tileValue;
+	public int corruptVal;
 	public int buildTime;
 	List<GameObject> children = new List<GameObject>();
 	bool scheduledDemo = false;
@@ -26,6 +27,10 @@ public class TileInfo : MonoBehaviour {
 		if(type != TILETYPE.EVENT) {
 			children[0].SetActive(true);
 		}
+
+		if(corruptVal != 0) {
+			children[6].SetActive(true);
+		}	
 	}
 
 	// Update is called once per frame
@@ -50,6 +55,9 @@ public class TileInfo : MonoBehaviour {
 		type = temp.TYPE();
 		buildTime = temp.BUILD();
 		tileValue = temp.TVALUE();
+		corruptVal = temp.CORRUPT();
+
+
 
 		if(type == TILETYPE.EVENT) {
 			gameObject.GetComponent<BoxCollider2D>().enabled = false;

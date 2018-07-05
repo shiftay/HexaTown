@@ -9,14 +9,22 @@ public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, COUNT }
 public class CardData {
 	TILETYPE type;
 	SPELLTYPE spell;
-	int buildTime, tileValue;
-
+	bool recycle;
+	int buildTime, tileValue, corruptValue;
+	
+	public bool RECYCLE() {
+		return recycle;
+	}
 	public int BUILD() {
 		return buildTime;
 	}
 
 	public int TVALUE() {
 		return tileValue;
+	}
+
+	public int CORRUPT() {
+		return corruptValue;
 	}
 
 	public TILETYPE TYPE() {
@@ -27,16 +35,19 @@ public class CardData {
 		return spell;
 	}
 
-	public void SetData(int x, int y, TILETYPE t) {
+	public void SetData(int x, int y, TILETYPE t, bool r, int c) {
 		type = t;
 		buildTime = x;
 		tileValue = y;
+		recycle = r;
+		corruptValue = c;
 	}
 
-	public void SetData(int x, int y, SPELLTYPE t) {
+	public void SetData(int x, int y, SPELLTYPE t, bool r) {
 		spell = t;
 		buildTime = x;
 		tileValue = y;
+		recycle = r;
 	}
 }
 
@@ -169,6 +180,13 @@ public class GameManager : MonoBehaviour {
 	public void playedCard(int cardPlayed) {
 		cardsPlayed++;
 		turnCardPlayed.Add(cardPlayed);
+		if(cardData[cardPlayed].RECYCLE()) {
+			TransferDiscard();
+			Shuffle();
+			//TODO PLAY SHUFFLE ANIMATION.
+		}
+
+
 		if(cardsPlayed >= 2) {
 			turnOver = true;
 		}
@@ -225,11 +243,11 @@ public class GameManager : MonoBehaviour {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]));
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]));
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]));
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), int.Parse(split[4]));
 				cardData.Add(x);
 			}
 		}
@@ -243,7 +261,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			// FOR EVENT: WATER
 			CardData d = new CardData();
-			d.SetData(3, -1,TILETYPE.EVENT);
+			d.SetData(3, -1, TILETYPE.EVENT, false, 0);
 			return d;
 		}
 	}
@@ -264,16 +282,22 @@ public class GameManager : MonoBehaviour {
 				{
 					case TILETYPE.COMMERCIAL:
 						happinessVal += currentTiles[i].tileValue;
+
 						break;
 
 					case TILETYPE.INDUSTRIAL:
 						factories.Add(currentTiles[i]);
+
 						break;
 					
 					case TILETYPE.RESIDENTIAL:
 						populationVal += currentTiles[i].tileValue;
 						residential.Add(currentTiles[i]);
 						break;
+				}
+
+				if( currentTiles[i].corruptVal > 0) {
+					happinessVal -= currentTiles[i].corruptVal;
 				}
 			}
 		}

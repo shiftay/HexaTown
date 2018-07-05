@@ -6,11 +6,13 @@ public class Flashing : MonoBehaviour {
 
 	SpriteRenderer srFlash;
 
-	bool flash = true;	
+	public bool flash = true;	
 	public float dTime;
 	public float TIME = 0;
 	public float modifier;
 	bool dir = false;
+	public Color darkest;
+	public Color lightest;
 
 	// Use this for initialization
 	void Start () {
@@ -34,7 +36,7 @@ public class Flashing : MonoBehaviour {
 
 
 		if(flash) {
-			srFlash.color = Color.Lerp(Color.white, Color.black, TIME);
+			srFlash.color = Color.Lerp(lightest, darkest, TIME);
 		}
 
 		if(TIME >= 1) {

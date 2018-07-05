@@ -11,6 +11,8 @@ public class MainUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		objective.text = GameManager.instance.objectiveVal.ToString();		
+		objective.text = GameManager.instance.objectiveVal.ToString();	
+		discard.text = GameManager.instance.currentDiscard.Count.ToString();
+		remaining.text = GameManager.instance.currentDeck.Count.ToString();	
 	}
 }
