@@ -89,8 +89,8 @@ public class GameManager : MonoBehaviour {
 	int turnsSinceEvt = 0, amtofEvts;
 	public int prevHapp, prevObjec, prevPop;
 
-	bool commuters = false;
-	bool party = false;
+	public bool commuters = false;
+	public bool party = false;
 	
 	int commuterTracker = 0;
 	int partyTracker = 0;
@@ -198,12 +198,12 @@ public class GameManager : MonoBehaviour {
 			//TODO PLAY SHUFFLE ANIMATION.
 		}
 
-		if(cardData[cardPlayed].COMMUTE()) {
+		if(cardData[cardPlayed].COMMUTE() && !commuters) {
 			commuters = true;
 			commuterTracker++;
 		}
 
-		if(cardData[cardPlayed].PARTY()) {
+		if(cardData[cardPlayed].PARTY() && !party) {
 			party = true;
 			partyTracker++;
 		}
