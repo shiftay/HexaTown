@@ -13,7 +13,7 @@ public class TileInfo : MonoBehaviour {
 	public int corruptVal;
 	public int buildTime;
 	List<GameObject> children = new List<GameObject>();
-	bool scheduledDemo = false;
+	public bool scheduledDemo = false;
 
 	void Start() {
 		if(gameObject.GetComponent<Flashing>()) {
@@ -104,6 +104,11 @@ public class TileInfo : MonoBehaviour {
 		children[5].SetActive(toggle);
 		scheduledDemo = toggle;
 		buildTime = 1;
+	}
+
+	public void purify() {
+		children[6].SetActive(false);
+		corruptVal = 0;
 	}
 
 

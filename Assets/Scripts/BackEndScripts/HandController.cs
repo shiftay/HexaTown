@@ -57,20 +57,17 @@ public class HandController : MonoBehaviour {
 								TileInfo tile = position.GetComponent<TileInfo>();
 								
 								if(tile) {
+									
+									if(GameManager.instance.playSpell(value, tile)) {
+										currentCard.transform.position = new Vector2(-100,-100);
+										//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
+										GameManager.instance.playedCard(value);
 
-									switch(GameManager.instance.cardData[value].BUILD()) {
-										case 0: 
-											// demolition
-											tile.demolish(true);
-											break;
-										case -99:
-											// clear build time
-											tile.buildTile();
-											break;
+									} else {
+										currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+										retVal = false;
 									}
 
-									GameManager.instance.playedCard(value);
-									currentCard.transform.position = new Vector2(-100,-100);
 								} else {
 									// NO TILE INFO, SO WATER.
 									currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -82,14 +79,7 @@ public class HandController : MonoBehaviour {
 							currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 							retVal = false;
 						}
-
-
-
-
 					}
-
-
-
 					// touchOffset = (Vector2)hit.transform.position - inputPosition;
 					// draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
 					// draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(draggedObject.GetComponent<SpriteRenderer>().sprite);
@@ -97,7 +87,7 @@ public class HandController : MonoBehaviour {
 					// PLAY THE CARD
 					Debug.Log("SPELL");
 					
-					if(GameManager.instance.playSpell(value)) {
+					if(GameManager.instance.playSpell(value, null)) {
 						currentCard.transform.position = new Vector2(-100,-100);
 						//TODO : DO TURN ON SPELL MODIFIERS AND SUCH.
 						GameManager.instance.playedCard(value);

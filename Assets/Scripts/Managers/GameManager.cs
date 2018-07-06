@@ -9,9 +9,17 @@ public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, COUNT }
 public class CardData {
 	TILETYPE type;
 	SPELLTYPE spell;
-	bool recycle;
+	bool recycle, party, commute;
 	int buildTime, tileValue, corruptValue;
 	
+	public bool PARTY() {
+		return party;
+	}
+
+	public bool COMMUTE() {
+		return commute;
+	}
+
 	public bool RECYCLE() {
 		return recycle;
 	}
@@ -35,12 +43,14 @@ public class CardData {
 		return spell;
 	}
 
-	public void SetData(int x, int y, TILETYPE t, bool r, int c) {
+	public void SetData(int x, int y, TILETYPE t, bool r, bool p, bool com,  int c) {
 		type = t;
 		buildTime = x;
 		tileValue = y;
 		recycle = r;
 		corruptValue = c;
+		party = p;
+		commute = com;
 	}
 
 	public void SetData(int x, int y, SPELLTYPE t, bool r) {
@@ -80,8 +90,10 @@ public class GameManager : MonoBehaviour {
 	public int prevHapp, prevObjec, prevPop;
 
 	bool commuters = false;
+	bool party = false;
+	
 	int commuterTracker = 0;
-
+	int partyTracker = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -186,6 +198,16 @@ public class GameManager : MonoBehaviour {
 			//TODO PLAY SHUFFLE ANIMATION.
 		}
 
+		if(cardData[cardPlayed].COMMUTE()) {
+			commuters = true;
+			commuterTracker++;
+		}
+
+		if(cardData[cardPlayed].PARTY()) {
+			party = true;
+			partyTracker++;
+		}
+
 
 		if(cardsPlayed >= 2) {
 			turnOver = true;
@@ -247,7 +269,7 @@ public class GameManager : MonoBehaviour {
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), int.Parse(split[4]));
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), int.Parse(split[6]));
 				cardData.Add(x);
 			}
 		}
@@ -261,7 +283,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			// FOR EVENT: WATER
 			CardData d = new CardData();
-			d.SetData(3, -1, TILETYPE.EVENT, false, 0);
+			d.SetData(3, -1, TILETYPE.EVENT, false, false, false, 0);
 			return d;
 		}
 	}
@@ -296,11 +318,20 @@ public class GameManager : MonoBehaviour {
 						break;
 				}
 
-				if( currentTiles[i].corruptVal > 0) {
+				if(currentTiles[i].corruptVal > 0) {
 					happinessVal -= currentTiles[i].corruptVal;
 				}
 			}
 		}
+
+		if(party) {
+			partyTracker--;
+			happinessVal *= 2;
+
+			if(partyTracker == 0) {
+				party = false;
+			}
+		} 
 
 		if((populationVal * 0.75) > happinessVal && currentTurn > 3) {
 			//UNHAPPY PEOPLES.
@@ -358,7 +389,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 
-	public bool playSpell(int value) {
+	public bool playSpell(int value, TileInfo tile) {
 		bool retVal = true;
 
 		switch(cardData[value].TVALUE()) {
@@ -371,7 +402,62 @@ public class GameManager : MonoBehaviour {
 				}
 				break;
 
+			case 25:
+				if(currentDiscard.Count != 0) {
+					TransferDiscard();
+					Shuffle();
+				} else {
+					retVal = false;
+				}
+				break;
 
+			case 28: // party
+				if(party) {
+					retVal = false;
+				} else {
+					party = true;
+					partyTracker = 2;
+				}
+				break;
+
+			case 32: // rush
+				int count = 0;
+				for(int i = 0; i < currentTiles.Count; i++) {
+					if(currentTiles[i].type == TILETYPE.INDUSTRIAL && currentTiles[i].buildTime <= 0) {
+						count++;
+					}
+				}
+
+				if(count == 0) {
+					retVal = false;
+				} else {
+					objectiveVal += count;
+				}
+				break;
+
+			case 2: // build
+				if(tile.buildTime > 0 && tile.type != TILETYPE.EVENT) {
+					tile.buildTile();
+				} else {
+					retVal = false;
+				}
+				break;
+
+			case -99: // demolish
+				if(tile.scheduledDemo) {
+					retVal = false;
+				} else {
+					tile.demolish(true);
+				}
+				break;
+
+			case 35: // justice
+				if(tile.corruptVal > 0) {
+					tile.purify();
+				} else {
+					retVal = false;
+				}
+				break;
 		}
 
 		return retVal;
