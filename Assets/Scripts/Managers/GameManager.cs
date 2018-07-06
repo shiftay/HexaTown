@@ -7,6 +7,7 @@ using UnityEngine;
 public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, COUNT }
 
 public class CardData {
+	public string name;
 	TILETYPE type;
 	SPELLTYPE spell;
 	bool recycle, party, commute;
@@ -43,7 +44,7 @@ public class CardData {
 		return spell;
 	}
 
-	public void SetData(int x, int y, TILETYPE t, bool r, bool p, bool com,  int c) {
+	public void SetData(int x, int y, TILETYPE t, bool r, bool p, bool com,  int c, string n) {
 		type = t;
 		buildTime = x;
 		tileValue = y;
@@ -51,13 +52,15 @@ public class CardData {
 		corruptValue = c;
 		party = p;
 		commute = com;
+		name = n;
 	}
 
-	public void SetData(int x, int y, SPELLTYPE t, bool r) {
+	public void SetData(int x, int y, SPELLTYPE t, bool r, string n) {
 		spell = t;
 		buildTime = x;
 		tileValue = y;
 		recycle = r;
+		name = n;
 	}
 }
 
@@ -265,11 +268,11 @@ public class GameManager : MonoBehaviour {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]));
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]), split[4]);
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), int.Parse(split[6]));
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), int.Parse(split[6]), split[7]);
 				cardData.Add(x);
 			}
 		}
@@ -283,7 +286,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			// FOR EVENT: WATER
 			CardData d = new CardData();
-			d.SetData(3, -1, TILETYPE.EVENT, false, false, false, 0);
+			d.SetData(3, -1, TILETYPE.EVENT, false, false, false, 0, "Water");
 			return d;
 		}
 	}
