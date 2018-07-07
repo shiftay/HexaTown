@@ -55,12 +55,15 @@ public class CardData {
 		name = n;
 	}
 
-	public void SetData(int x, int y, SPELLTYPE t, bool r, string n) {
+	public void SetData(int x, int y, SPELLTYPE t, bool r, bool p, bool com, string n) {
 		spell = t;
 		buildTime = x;
 		tileValue = y;
 		recycle = r;
 		name = n;
+		type = TILETYPE.SPELL;
+		party = p;
+		commute = com;
 	}
 }
 
@@ -268,7 +271,7 @@ public class GameManager : MonoBehaviour {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]), split[4]);
+				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), split[6]);
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	

@@ -6,10 +6,12 @@ using UnityEngine.UI;
 public class RNGEvents : MonoBehaviour {
 
 	public Text[] rngText;
+	public Text dayNum;
 	
-	// Update is called once per frame
-	void Update () {
-		
+
+	void OnEnable()
+	{
+		dayNum.text = (GameManager.instance.currentTurn + 1).ToString();
 	}
 
 	public void buttonClicked() {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TILETYPE { COMMERCIAL, RESIDENTIAL, INDUSTRIAL, EVENT }
+public enum TILETYPE { COMMERCIAL, RESIDENTIAL, INDUSTRIAL, EVENT, SPELL }
 
 public class TileInfo : MonoBehaviour {
 

@@ -74,6 +74,9 @@ public class HandController : MonoBehaviour {
 									retVal = false;
 
 								}
+							} else {
+								currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
+								retVal = false;
 							}
 						} else {
 							currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
