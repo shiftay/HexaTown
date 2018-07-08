@@ -10,13 +10,16 @@ public class CollectionManager : MonoBehaviour {
 	public GameObject leftBtn;
 	public GameObject rightBtn;
 	public List<CardData> cardData = new List<CardData>();
+	
 	public List<CardData> modifiedList = new List<CardData>();
 	string path = "Assets/Resources/cards.txt";
 	public SpriteRenderer[] cardPositions;
 	public Sprite[] cards;
 	public List<CardData> currentSearch = new List<CardData>();
 	public List<CardData> cardsShowing = new List<CardData>();
-
+	public List<CardInfo> cardsInDeck = new List<CardInfo>();
+	public GameObject scrollContent;
+	public GameObject cardPrefab;
 	public int currentPage = 0;
 
 	public int maxPages = 0;
@@ -30,6 +33,8 @@ public class CollectionManager : MonoBehaviour {
 	public bool spell = false;
 
 	bool firstRun = true;
+
+	public List<int> currentDeck = new List<int>();
 
 	// Use this for initialization
 	void Start () {
@@ -182,14 +187,21 @@ public class CollectionManager : MonoBehaviour {
 				}
 
 				if(spell) {
-					if(x.TYPE() == TILETYPE.RESIDENTIAL && ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-					(x.RECYCLE() && recycle))) {
-						if(!temp.Contains(x)) {
-							temp.Add(x);
+					if(x.TYPE() == TILETYPE.SPELL) {
+						if(commuter || recycle || party) {
+							if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+							(x.RECYCLE() && recycle)) {
+								if(!temp.Contains(x)) {
+									temp.Add(x);
+								}
+							}
+						}else {
+							if(!temp.Contains(x)) {
+								temp.Add(x);
+							}
 						}
 					}
 				}
-
 
 
 				if((commuter || recycle || party) && (searchParams().Count == 0)) {
@@ -272,15 +284,6 @@ public class CollectionManager : MonoBehaviour {
 		currentSearch.RemoveRange(0,currentSearch.Count);
 		currentSearch.AddRange(modifiedList);
 	}
-
-	/// <summary>
-	/// Update is called every frame, if the MonoBehaviour is enabled.
-	/// </summary>
-	void Update()
-	{
-		// Debug.Log("HI");
-	}
-
 	
 	int position() {
 		return currentPage * 6;
@@ -361,6 +364,86 @@ public class CollectionManager : MonoBehaviour {
 	}
 
 
-	
+	void FixedUpdate ()  {
+        if (HasInput) {
+            Click();
+        }
+	}
+
+	private bool HasInput {
+        get {
+            // returns true if either the mouse button is down or at least one touch is felt on the screen
+            return Input.GetMouseButtonDown(0);
+        }
+    }
+
+	Vector2 CurrentTouchPosition   {
+        get {
+            Vector3 inputPos;
+            inputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            inputPos.z = -4;
+            return inputPos;
+        }
+    }
+
+
+	void Click() {
+
+			Vector2 inputPosition = CurrentTouchPosition;
+
+ 			RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
+            if (touches.Length > 0)
+            {
+                var hit = touches[0];
+                if (hit.transform != null) {
+					CardInfo temp = hit.transform.gameObject.GetComponent<CardInfo>();
+
+					if(temp) {
+						temp.pressed();
+					} else if(currentDeck.Count < 20) {
+						int val = cardNum(hit.transform.gameObject.GetComponent<SpriteRenderer>());
+						if(!currentDeck.Contains(val)) {
+							GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
+							cardsInDeck.Add(test.GetComponent<CardInfo>());
+							test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE());
+							test.transform.SetParent(scrollContent.transform);
+							currentDeck.Add(val);
+						} else {
+							// int pos = -1;
+							for(int i = 0; i < cardsInDeck.Count; i++) {
+								if(cardsInDeck[i].cardNum == val) {
+									cardsInDeck[i].UpdateAmt(1);
+									currentDeck.Add(val);
+								}
+							}
+						}
+
+
+
+
+
+
+
+
+
+
+
+					}
+				}
+			}
+	}
+
+
+	int cardNum(SpriteRenderer go) {
+		int retVal = -1;
+
+		for(int i = 0; i < cards.Length; i++) {
+			if(go.sprite == cards[i]) {
+				retVal = i;
+			}
+		}
+
+		return retVal;
+	}
 
 }
