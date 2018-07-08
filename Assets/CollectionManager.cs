@@ -13,7 +13,7 @@ public class CollectionManager : MonoBehaviour {
 	
 	public List<CardData> modifiedList = new List<CardData>();
 	string path = "Assets/Resources/cards.txt";
-	public SpriteRenderer[] cardPositions;
+	public Image[] cardPositions;
 	public Sprite[] cards;
 	public List<CardData> currentSearch = new List<CardData>();
 	public List<CardData> cardsShowing = new List<CardData>();
@@ -62,7 +62,7 @@ public class CollectionManager : MonoBehaviour {
 	}
 
 	void setupCards() {
-		foreach(SpriteRenderer s in cardPositions) {
+		foreach(Image s in cardPositions) {
 			s.gameObject.SetActive(true);
 		}
 
@@ -126,7 +126,8 @@ public class CollectionManager : MonoBehaviour {
 				break;
 		}
 
-		t.GetComponent<Outline>().enabled = !t.GetComponent<Outline>().enabled;
+		//TODO: Check back on this for fix???
+		t.GetComponentInChildren<Outline>().enabled = !t.GetComponentInChildren<Outline>().enabled;
 
 		updateSearch();
 	}
@@ -139,7 +140,7 @@ public class CollectionManager : MonoBehaviour {
 		currentPage = 0;
 
 		if(!spell && !comm && !res && !commuter && !party && !recycle) {
-
+	
 		} else {
 			List<CardData> temp = new List<CardData>();
 
@@ -366,7 +367,7 @@ public class CollectionManager : MonoBehaviour {
 
 	void FixedUpdate ()  {
         if (HasInput) {
-            Click();
+            // Click();
         }
 	}
 
@@ -387,44 +388,55 @@ public class CollectionManager : MonoBehaviour {
     }
 
 
-	void Click() {
-			Vector2 inputPosition = CurrentTouchPosition;
 
- 			RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
-            if (touches.Length > 0)
-            {
-                var hit = touches[0];
-                if (hit.transform != null) {
-					if(currentDeck.Count < 20) {
-						int val = cardNum(hit.transform.gameObject.GetComponent<SpriteRenderer>());
-						if(!currentDeck.Contains(val)) {
-							GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
-							cardsInDeck.Add(test.GetComponent<CardInfo>());
-							test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
-							test.transform.SetParent(scrollContent.transform);
+	public void cardPressed(Image hldr) {
+		int val = cardNum(hldr);
+
+		if(currentDeck.Count < 20) {
+
+			if(!currentDeck.Contains(val)) {
+				GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
+				cardsInDeck.Add(test.GetComponent<CardInfo>());
+				test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
+				test.transform.SetParent(scrollContent.transform);
+				currentDeck.Add(val);
+			} else {
+				// int pos = -1;
+				int amt = 0;
+				for (int i = 0; i < currentDeck.Count; i++) {
+					if(currentDeck[i] == val) {
+						amt++;
+					}
+				}
+
+				if(amt < 3) {
+					for(int i = 0; i < cardsInDeck.Count; i++) {
+						if(cardsInDeck[i].cardNum == val) {
+							cardsInDeck[i].UpdateAmt(1);
 							currentDeck.Add(val);
-						} else {
-							// int pos = -1;
-							int amt = 0;
-							for (int i = 0; i < currentDeck.Count; i++) {
-								if(currentDeck[i] == val) {
-									amt++;
-								}
-							}
-
-							if(amt < 3) {
-								for(int i = 0; i < cardsInDeck.Count; i++) {
-									if(cardsInDeck[i].cardNum == val) {
-										cardsInDeck[i].UpdateAmt(1);
-										currentDeck.Add(val);
-									}
-								}
-							}
 						}
 					}
 				}
 			}
+		}
+
+
 	}
+
+
+
+	// void Click() {
+	// 		Vector2 inputPosition = CurrentTouchPosition;
+
+ 	// 		RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
+    //         if (touches.Length > 0)
+    //         {
+    //             var hit = touches[0];
+    //             if (hit.transform != null) {
+
+	// 			}
+	// 		}
+	// }
 
 
 	public void RemoveInfo(CardInfo ci) {
@@ -439,7 +451,7 @@ public class CollectionManager : MonoBehaviour {
 	}
 
 
-	int cardNum(SpriteRenderer go) {
+	int cardNum(Image go) {
 		int retVal = -1;
 
 		for(int i = 0; i < cards.Length; i++) {

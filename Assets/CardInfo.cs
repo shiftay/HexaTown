@@ -11,6 +11,7 @@ public class CardInfo : MonoBehaviour {
 	public int cardNum;
 	public int currentAmt = 0;
 	CollectionManager cm;
+	public List<Color> cardColors;
 
 	public void pressed() {
 		//TODO: Remove from currentDeck.
@@ -26,9 +27,13 @@ public class CardInfo : MonoBehaviour {
 	public void UpdateAmt(int change) {
 		currentAmt += change;
 
-		if(currentAmt >= 1) {
+		if(currentAmt > 1) {
 			numberInfo.text = currentAmt.ToString();
 		} 
+
+		if(currentAmt == 1) {
+			numberInfo.text = "";
+		}
 		
 		if(currentAmt <= 0) {
 			cm.RemoveInfo(this);
@@ -42,19 +47,19 @@ public class CardInfo : MonoBehaviour {
 	public void SetInfo(int cardNum, string name, TILETYPE type, CollectionManager c) {
 		this.cardNum = cardNum;
 		currentAmt = 1;
-		numberInfo.text = currentAmt.ToString();
+		numberInfo.text = "";
 		ButtonInfo.text = name;
 		cm = c;
 
 		switch(type) {
 			case TILETYPE.COMMERCIAL:
-				buttonImg.color = Color.grey;
+				buttonImg.color = cardColors[0];
 				break;
 			case TILETYPE.SPELL:
-				buttonImg.color = Color.blue;
+				buttonImg.color = cardColors[2];
 				break;
 			case TILETYPE.RESIDENTIAL:
-				buttonImg.color = Color.green;
+				buttonImg.color = cardColors[1];
 				break;
 		}
 	}
