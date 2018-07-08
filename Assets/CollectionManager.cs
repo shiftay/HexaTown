@@ -388,7 +388,6 @@ public class CollectionManager : MonoBehaviour {
 
 
 	void Click() {
-
 			Vector2 inputPosition = CurrentTouchPosition;
 
  			RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
@@ -396,41 +395,47 @@ public class CollectionManager : MonoBehaviour {
             {
                 var hit = touches[0];
                 if (hit.transform != null) {
-					CardInfo temp = hit.transform.gameObject.GetComponent<CardInfo>();
-
-					if(temp) {
-						temp.pressed();
-					} else if(currentDeck.Count < 20) {
+					if(currentDeck.Count < 20) {
 						int val = cardNum(hit.transform.gameObject.GetComponent<SpriteRenderer>());
 						if(!currentDeck.Contains(val)) {
 							GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
 							cardsInDeck.Add(test.GetComponent<CardInfo>());
-							test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE());
+							test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
 							test.transform.SetParent(scrollContent.transform);
 							currentDeck.Add(val);
 						} else {
 							// int pos = -1;
-							for(int i = 0; i < cardsInDeck.Count; i++) {
-								if(cardsInDeck[i].cardNum == val) {
-									cardsInDeck[i].UpdateAmt(1);
-									currentDeck.Add(val);
+							int amt = 0;
+							for (int i = 0; i < currentDeck.Count; i++) {
+								if(currentDeck[i] == val) {
+									amt++;
+								}
+							}
+
+							if(amt < 3) {
+								for(int i = 0; i < cardsInDeck.Count; i++) {
+									if(cardsInDeck[i].cardNum == val) {
+										cardsInDeck[i].UpdateAmt(1);
+										currentDeck.Add(val);
+									}
 								}
 							}
 						}
-
-
-
-
-
-
-
-
-
-
-
 					}
 				}
 			}
+	}
+
+
+	public void RemoveInfo(CardInfo ci) {
+		currentDeck.Remove(ci.cardNum);
+		cardsInDeck.Remove(ci);
+	}
+
+	public void AmtChange(int val) {
+		currentDeck.Remove(val);
+
+		Debug.Log("hello");
 	}
 
 
