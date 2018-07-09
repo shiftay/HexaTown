@@ -7,10 +7,11 @@ using System;
 
 public class CollectionManager : MonoBehaviour {
 
+	public Vector2 xTest;
 	public GameObject leftBtn;
 	public GameObject rightBtn;
 	public List<CardData> cardData = new List<CardData>();
-	
+	public Image bookTest;
 	public List<CardData> modifiedList = new List<CardData>();
 	string path = "Assets/Resources/cards.txt";
 	public Image[] cardPositions;
@@ -21,7 +22,7 @@ public class CollectionManager : MonoBehaviour {
 	public GameObject scrollContent;
 	public GameObject cardPrefab;
 	public int currentPage = 0;
-
+	public ScrollRect scrollRect;
 	public int maxPages = 0;
 
 	public bool commuter = false;
@@ -130,6 +131,11 @@ public class CollectionManager : MonoBehaviour {
 		t.GetComponentInChildren<Outline>().enabled = !t.GetComponentInChildren<Outline>().enabled;
 
 		updateSearch();
+	}
+
+	public void testOnChange(ScrollRect to) {
+		Debug.Log(to.normalizedPosition);
+		
 	}
 
 	void updateSearch() {
@@ -400,6 +406,11 @@ public class CollectionManager : MonoBehaviour {
 				test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
 				test.transform.SetParent(scrollContent.transform);
 				currentDeck.Add(val);
+
+				bookTest.transform.SetAsLastSibling();
+				
+				
+
 			} else {
 				// int pos = -1;
 				int amt = 0;
