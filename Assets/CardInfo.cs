@@ -11,7 +11,7 @@ public class CardInfo : MonoBehaviour {
 	public int cardNum;
 	public int currentAmt = 0;
 	CollectionManager cm;
-	public List<Color> cardColors;
+	public List<Sprite> cardColors;
 
 	public void pressed() {
 		//TODO: Remove from currentDeck.
@@ -53,13 +53,13 @@ public class CardInfo : MonoBehaviour {
 
 		switch(type) {
 			case TILETYPE.COMMERCIAL:
-				buttonImg.color = cardColors[0];
+				buttonImg.sprite = cardColors[0];
 				break;
 			case TILETYPE.SPELL:
-				buttonImg.color = cardColors[2];
+				buttonImg.sprite = cardColors[2];
 				break;
 			case TILETYPE.RESIDENTIAL:
-				buttonImg.color = cardColors[1];
+				buttonImg.sprite = cardColors[1];
 				break;
 		}
 	}

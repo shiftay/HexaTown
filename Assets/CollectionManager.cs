@@ -32,6 +32,7 @@ public class CollectionManager : MonoBehaviour {
 	public bool res = false;
 	public bool comm = false;
 	public bool spell = false;
+	public List<Transform> folders;
 
 	bool firstRun = true;
 
@@ -53,12 +54,15 @@ public class CollectionManager : MonoBehaviour {
 
 		currentSearch.AddRange(modifiedList);
 
-		maxPages = currentSearch.Count / 6;
+		maxPages = currentSearch.Count / 8;
 
 		if(currentSearch.Count % maxPages != 0) {
 			maxPages++;
 		}
 		
+		res = true;
+		folders[0].SetAsLastSibling();
+		updateSearch();
 		updatePage();
 	}
 
@@ -108,13 +112,22 @@ public class CollectionManager : MonoBehaviour {
 	public void Residential(GameObject t) {
 		switch(t.name) {
 			case "RES":
-				res = !res;
+				res = true;
+				comm = false;
+				spell = false;
+				folders[0].SetAsLastSibling();
 				break;
 			case "COMM":
-				comm = !comm;
+				comm = true;
+				res = false;
+				spell = false;
+				folders[1].SetAsLastSibling();
 				break;
 			case "SPELLS":
-				spell = !spell;
+				spell = true;
+				comm = false;
+				res = false;
+				folders[2].SetAsLastSibling();
 				break;
 			case "Commute":
 				commuter = !commuter;
@@ -128,7 +141,7 @@ public class CollectionManager : MonoBehaviour {
 		}
 
 		//TODO: Check back on this for fix???
-		t.GetComponentInChildren<Outline>().enabled = !t.GetComponentInChildren<Outline>().enabled;
+		// t.GetComponentInChildren<Outline>().enabled = !t.GetComponentInChildren<Outline>().enabled;
 
 		updateSearch();
 	}
@@ -230,11 +243,11 @@ public class CollectionManager : MonoBehaviour {
 			currentSearch.AddRange(temp);
 		}
 
-		maxPages = currentSearch.Count / 6;
+		maxPages = currentSearch.Count / 8;
 
 		if(maxPages == 0 && currentSearch.Count > 0) {
 			maxPages++;
-		} else if(currentSearch.Count % 6 != 0) {
+		} else if(currentSearch.Count % 8 != 0) {
 			maxPages++;
 		}
 
@@ -293,7 +306,7 @@ public class CollectionManager : MonoBehaviour {
 	}
 	
 	int position() {
-		return currentPage * 6;
+		return currentPage * 8;
 	}
 
 	public void nextPage() {
@@ -312,7 +325,7 @@ public class CollectionManager : MonoBehaviour {
 
 	void updatePage() {
 		cardsShowing.Clear();
-		int x = position() + 6;
+		int x = position() + 8;
 		if(currentPage == maxPages - 1 || currentSearch.Count == 0) {
 			x = currentSearch.Count;
 		}
