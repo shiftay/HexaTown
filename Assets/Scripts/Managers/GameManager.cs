@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour {
 	int partyTracker = 0;
 
 	// Use this for initialization
-	void Start () {
+	void OnEnable () {
 		instance = this;
 		ReadCardData();
 		gc = GetComponent<GridController>();

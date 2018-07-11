@@ -38,6 +38,7 @@ public class CollectionManager : MonoBehaviour {
 
 	public List<int> currentDeck = new List<int>();
 	public GameObject popup;
+	PopUp popInfo;
 
 	// Use this for initialization
 	void Start () {
@@ -45,6 +46,7 @@ public class CollectionManager : MonoBehaviour {
 			ReadCardData();
 			modify();
 			firstRun = false;
+			popInfo = popup.GetComponent<PopUp>();
 		}
 
 	}
@@ -510,14 +512,14 @@ public class CollectionManager : MonoBehaviour {
 	}
 
 	public void SaveAndExit() {
-		if(currentDeck.Count == 20 ) { // || and the warning is on.
+		if(currentDeck.Count == 20 && popInfo.dName != "" ) { // || and the warning is on.
 			
 
 			Deck temp = new Deck();
 			List<int> templist = new List<int>();
 			templist.AddRange(currentDeck);
 
-			temp.SetDeck(templist, "TEMPNAME", 0);
+			temp.SetDeck(templist, popInfo.dName, popInfo.currentImage);
 
 			if(BackEndManager.instance.editDeck) {
 				BackEndManager.instance.decks[BackEndManager.instance.deckToEdit] = temp;

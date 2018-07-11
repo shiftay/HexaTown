@@ -7,21 +7,89 @@ public class PreGame : MonoBehaviour {
 
 	public Sprite[] buttonImgs;
 	public Button[] btns;
+	public Outline[] btnOutLines;
 	public Image[] btnImgs;
 	public Text[] btnTxt;
-
+	public Button[] delBtns;
+	public Button[] editBtns;
+	public PopUp po;
+	public int currentSelected = -1;
 
 	void OnEnable() {
 		BackEndManager.instance.editDeck = false;
 		BackEndManager.instance.deckToEdit = -1;
 
+		if(currentSelected != -1) {
+			editBtns[currentSelected].gameObject.SetActive(false);
+			delBtns[currentSelected].gameObject.SetActive(false);
+			btnOutLines[currentSelected].enabled = false;
+		}
+
+		currentSelected = -1;
+
+		SetupBtns();
+	}
+	
+
+	public void pressed(int currentDeck) {
+		Debug.Log(currentDeck);
+		Debug.Log(BackEndManager.instance.decks[currentDeck].cards.Count);
+
+		if(currentSelected != currentDeck) {
+			if(currentSelected != -1) {
+				editBtns[currentSelected].gameObject.SetActive(false);
+				delBtns[currentSelected].gameObject.SetActive(false);
+				btnOutLines[currentSelected].enabled = false;
+			}
+
+			editBtns[currentDeck].gameObject.SetActive(true);
+			editBtns[currentDeck].onClick.AddListener(delegate {Edit(currentDeck);});
+
+			delBtns[currentDeck].gameObject.SetActive(true);
+			delBtns[currentDeck].onClick.AddListener(delegate {Delete(currentDeck);});
+			
+			btnOutLines[currentDeck].enabled = true;
+
+			currentSelected = currentDeck;
+		} else {
+			// DOUBLE CLICKED
+
+		}
+
+
+
+	}
+
+	public void createDeck() {
+		BackEndManager.instance.editDeck = false;
+		BackEndManager.instance.deckToEdit = -1;
+		BackEndManager.instance.ChangeState(STATES.COLLECTION);
+	}
+
+	public void Edit(int currentDeck) {
+		BackEndManager.instance.editDeck = true;
+		BackEndManager.instance.deckToEdit = currentDeck;
+		BackEndManager.instance.ChangeState(STATES.COLLECTION);
+	}
+
+	public void Delete(int currentDeck) {
+		BackEndManager.instance.decks.Remove(BackEndManager.instance.decks[currentDeck]);
+		editBtns[currentSelected].gameObject.SetActive(false);
+		delBtns[currentSelected].gameObject.SetActive(false);
+		btnOutLines[currentSelected].enabled = false;
+		currentSelected = -1;
+		SetupBtns();
+	}
+
+	void SetupBtns(){ 
 		foreach(Button btn in btns) {
 			btn.gameObject.SetActive(false);
+			btn.onClick.RemoveAllListeners();
 		}
 
 		for(int i = 0; i < BackEndManager.instance.decks.Count; i++) {
 			btns[i].gameObject.SetActive(true);
-			btnImgs[i].sprite = buttonImgs[BackEndManager.instance.decks[i].imageNumber];
+			btnImgs[i].sprite = po.stockImages[BackEndManager.instance.decks[i].imageNumber];
 			btnTxt[i].text = BackEndManager.instance.decks[i].name;
 			int x = i;
 			btns[i].onClick.AddListener(delegate { pressed(x); });
@@ -33,21 +101,5 @@ public class PreGame : MonoBehaviour {
 			btnTxt[BackEndManager.instance.decks.Count].text = "Create a Deck";
 			btns[BackEndManager.instance.decks.Count].onClick.AddListener(createDeck);
 		}
-
-	}
-	
-
-	public void pressed(int currentDeck) {
-		Debug.Log(currentDeck);
-		Debug.Log(BackEndManager.instance.decks[currentDeck].cards.Count);
-		BackEndManager.instance.editDeck = true;
-		BackEndManager.instance.deckToEdit = currentDeck;
-		BackEndManager.instance.ChangeState(STATES.COLLECTION);
-	}
-
-	public void createDeck() {
-		BackEndManager.instance.editDeck = false;
-		BackEndManager.instance.deckToEdit = -1;
-		BackEndManager.instance.ChangeState(STATES.COLLECTION);
 	}
 }
