@@ -37,6 +37,7 @@ public class CollectionManager : MonoBehaviour {
 	bool firstRun = true;
 
 	public List<int> currentDeck = new List<int>();
+	public GameObject popup;
 
 	// Use this for initialization
 	void Start () {
@@ -61,10 +62,71 @@ public class CollectionManager : MonoBehaviour {
 		}
 		
 		res = true;
+		comm = false;
+		spell = false;
+
 		folders[0].SetAsLastSibling();
+		currentDeck.Clear();
+		cardsInDeck.Clear();
+
+
+		for(int i = scrollContent.transform.childCount - 1; i >= 0; i--) {
+			if(scrollContent.transform.GetChild(i).gameObject != bookTest.gameObject) {
+				Destroy(scrollContent.transform.GetChild(i).gameObject);
+			}
+		}
+
+		
+
+		if(BackEndManager.instance) {
+			if(BackEndManager.instance.editDeck) {
+				Debug.Log("On Edit: " + BackEndManager.instance.decks[BackEndManager.instance.deckToEdit].cards.Count);
+				Debug.Log("On Edit: " + BackEndManager.instance.decks[0].cards.Count);
+				EditDeck();
+			}
+		}
+
+
+
+		
 		updateSearch();
 		updatePage();
 	}
+
+	void EditDeck() {
+		foreach(int val in BackEndManager.instance.decks[BackEndManager.instance.deckToEdit].cards) {
+
+			if(!currentDeck.Contains(val)) {
+				GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
+				cardsInDeck.Add(test.GetComponent<CardInfo>());
+				test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
+				test.transform.SetParent(scrollContent.transform);
+				currentDeck.Add(val);
+
+				bookTest.transform.SetAsLastSibling();
+				
+			} else {
+				// int pos = -1;
+				int amt = 0;
+				for (int i = 0; i < currentDeck.Count; i++) {
+					if(currentDeck[i] == val) {
+						amt++;
+					}
+				}
+
+				if(amt < 3) {
+					for(int i = 0; i < cardsInDeck.Count; i++) {
+						if(cardsInDeck[i].cardNum == val) {
+							cardsInDeck[i].UpdateAmt(1);
+							currentDeck.Add(val);
+						}
+					}
+				}
+			}
+					
+		}
+	}
+
 
 	void setupCards() {
 		foreach(Image s in cardPositions) {
@@ -446,6 +508,40 @@ public class CollectionManager : MonoBehaviour {
 
 
 	}
+
+	public void SaveAndExit() {
+		if(currentDeck.Count == 20 ) { // || and the warning is on.
+			
+
+			Deck temp = new Deck();
+			List<int> templist = new List<int>();
+			templist.AddRange(currentDeck);
+
+			temp.SetDeck(templist, "TEMPNAME", 0);
+
+			if(BackEndManager.instance.editDeck) {
+				BackEndManager.instance.decks[BackEndManager.instance.deckToEdit] = temp;
+			} else {
+				BackEndManager.instance.decks.Add(temp);
+			}
+
+
+			BackEndManager.instance.ChangeState(STATES.PREGAME);
+			popup.SetActive(false);
+		} else {
+			//TODO: turn on warning saying its not a legal deck
+		}
+	}
+
+	public void homeButton() {
+		popup.SetActive(true);
+	}
+
+	public void back() {
+		popup.SetActive(false);
+	}
+
+
 
 
 

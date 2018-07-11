@@ -12,6 +12,12 @@ public class MenuManager : MonoBehaviour {
 	void OnEnable()
 	{
 		//TODO: Check if there is a saved game ot continue
+		if( BackEndManager.instance) {
+			if(BackEndManager.instance.sGame != null) {
+				resumeBtn.SetActive(true);
+			}
+		}
+
 	}
 
 
@@ -21,7 +27,7 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Play() {
-
+		BackEndManager.instance.ChangeState(STATES.PREGAME);
 	}
 
 	public void Options() {
