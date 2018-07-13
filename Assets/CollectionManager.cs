@@ -535,6 +535,11 @@ public class CollectionManager : MonoBehaviour {
 		}
 	}
 
+	public void Exit() {
+		BackEndManager.instance.ChangeState(STATES.PREGAME);
+		popup.SetActive(false);
+	}
+
 	public void homeButton() {
 		popup.SetActive(true);
 	}
