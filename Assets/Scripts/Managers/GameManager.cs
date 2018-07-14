@@ -97,7 +97,8 @@ public class GameManager : MonoBehaviour {
 
 	public bool commuters = false;
 	public bool party = false;
-	
+	public List<int> corruptVals;
+	public List<int> industryVals;
 	int commuterTracker = 0;
 	int partyTracker = 0;
 
@@ -108,8 +109,20 @@ public class GameManager : MonoBehaviour {
 		gc = GetComponent<GridController>();
 		um = GetComponent<UIManager>();
 		cardsPlayed = 0;
+		currentDeck.Clear();
+		currentDeck.AddRange(BackEndManager.instance.decks[BackEndManager.instance.deckChoice].cards);
+		currentDeck.AddRange(industryVals);
+		AddCorruption();
+
+
 		Shuffle();
 		Deal();
+	}
+
+	void AddCorruption() {
+		for(int i = 0; i < 4; i ++) {
+			currentDeck.Add(corruptVals[UnityEngine.Random.Range(0, corruptVals.Count)]);
+		}
 	}
 
 	//tilenum TYPE / BUILD / VALUE
@@ -190,7 +203,7 @@ public class GameManager : MonoBehaviour {
 			}
 
 			if(currentTiles[i].buildTime <= 0) {
-				currentTiles[i].building(false);
+				currentTiles[i].turnOffBuild = true;
 			}
 		}
 	}
@@ -458,7 +471,7 @@ public class GameManager : MonoBehaviour {
 				break;
 
 			case 35: // justice
-				if(tile.corruptVal > 0) {
+				if(tile.corruptVal != 0) {
 					tile.purify();
 				} else {
 					retVal = false;

@@ -52,8 +52,9 @@ public class PreGame : MonoBehaviour {
 
 			currentSelected = currentDeck;
 		} else {
-			// DOUBLE CLICKED
-
+			Debug.Log("double clicked");
+			BackEndManager.instance.deckChoice = currentSelected;
+			BackEndManager.instance.ChangeState(STATES.GAME);
 		}
 
 

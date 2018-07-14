@@ -31,6 +31,6 @@ public class MenuManager : MonoBehaviour {
 	}
 
 	public void Options() {
-		
+		BackEndManager.instance.ChangeState(STATES.OPTIONS);
 	}
 }

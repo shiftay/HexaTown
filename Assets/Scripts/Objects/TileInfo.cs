@@ -15,6 +15,8 @@ public class TileInfo : MonoBehaviour {
 	List<GameObject> children = new List<GameObject>();
 	public bool scheduledDemo = false;
 
+	public bool turnOffBuild = false;
+
 	void Start() {
 		if(gameObject.GetComponent<Flashing>()) {
 			gameObject.GetComponent<Flashing>().enabled = false;
@@ -45,6 +47,11 @@ public class TileInfo : MonoBehaviour {
 		if(buildTime <= 0 && scheduledDemo) {
 			clearTile();
 		}
+
+		if(turnOffBuild) {
+			building(false);
+			turnOffBuild = false;
+		}
 	}
 
 	public void SetInfo(List<int> coords, int tileNum) {
@@ -56,8 +63,6 @@ public class TileInfo : MonoBehaviour {
 		buildTime = temp.BUILD();
 		tileValue = temp.TVALUE();
 		corruptVal = temp.CORRUPT();
-
-
 
 		if(type == TILETYPE.EVENT) {
 			gameObject.GetComponent<BoxCollider2D>().enabled = false;
