@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour {
 
 		over.summaryInfo[0].text = "Workers: \t\t\t" + GameManager.instance.populationVal.ToString();
 		over.summaryInfo[1].text = "Happiness: \t\t" + GameManager.instance.happinessVal.ToString();
-		over.summaryInfo[2].text = "Objective: \t\t\t" + GameManager.instance.objectiveVal.ToString();
+		over.summaryInfo[2].text = "Objective: \t\t" + GameManager.instance.objectiveVal.ToString();
 
 		over.tMods[0].text = (GameManager.instance.populationVal - GameManager.instance.prevPop).ToString();
 		over.modifiers[0].sprite = arrows[ArrowMod(GameManager.instance.populationVal, GameManager.instance.prevPop)];
