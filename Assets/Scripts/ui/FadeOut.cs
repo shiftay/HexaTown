@@ -26,20 +26,26 @@ public class FadeOut : MonoBehaviour {
 	public void fade(STATES state, BackEndManager bm) {
 		// box.clip = anims[1];
 		box.Play("FadeOut");
-		
 
-		Invoke("fadeIn", 1.5F);
+		Invoke("sfx", 0.5f);
+		Invoke("fadeIn", 2.0F);
 		
 		// StartCoroutine(wait(bm));
 
 	}
 
+	void sfx() {
+		if((STATES)BackEndManager.instance.currentState == STATES.GAME) {
+			AudioManager.instance.playSound(SFX.SHUFFLE);
+		} else {
+			AudioManager.instance.playSound(SFX.OFFICESOUNDS);
+		}
+	}
 
 	void fadeIn() {
 		BackEndManager.instance.states[BackEndManager.instance.prvState].SetActive(false);
 		BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(true);
 		box.Play("FadeIn");
-		
 	}
 
 	IEnumerator wait(BackEndManager bm) {

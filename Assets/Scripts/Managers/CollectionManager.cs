@@ -93,6 +93,7 @@ public class CollectionManager : MonoBehaviour {
 		warning.text = "";
 		warning.gameObject.SetActive(false);
 		approved.SetActive(false);
+		popup.SetActive(false);
 		
 		updateSearch();
 		updatePage();
@@ -541,7 +542,7 @@ public class CollectionManager : MonoBehaviour {
 				approved.SetActive(true);
 
 				BackEndManager.instance.ChangeState(STATES.PREGAME);
-				popup.SetActive(false);
+				
 				
 			} else {
 				count++;
@@ -618,7 +619,7 @@ public class CollectionManager : MonoBehaviour {
 
 	public void Exit() {
 		BackEndManager.instance.ChangeState(STATES.PREGAME);
-		popup.SetActive(false);
+		
 	}
 
 	public void homeButton() {
