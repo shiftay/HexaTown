@@ -43,12 +43,11 @@ public class BackEndManager : MonoBehaviour {
 	public bool muted;
 	public bool editDeck = false;
 	public int deckToEdit = 0;
-
 	public int deckChoice = -1;
+	public FadeOut fo;
 	
 	// Use this for initialization
 	void Start () {
-		Debug.Log(Application.persistentDataPath);
 		instance = this;
 		muted = false;
 		for(int i = 0; i < transform.childCount; i++) {
@@ -63,6 +62,9 @@ public class BackEndManager : MonoBehaviour {
 	}
 	
 	public void ChangeState(STATES state) {
+
+
+
 		if(state == STATES.OPTIONS) {
 			prvState = currentState;
 			currentState = (int)state;
@@ -71,8 +73,7 @@ public class BackEndManager : MonoBehaviour {
 		} else {
 			prvState = currentState;
 			currentState = (int)state;
-			states[prvState].SetActive(false);
-			states[currentState].SetActive(true);
+			fo.fade(state, this);
 		}
 
 		// prvState = currentState;

@@ -39,6 +39,9 @@ public class CollectionManager : MonoBehaviour {
 	public List<int> currentDeck = new List<int>();
 	public GameObject popup;
 	PopUp popInfo;
+	public Text warning;
+	int count;
+	public GameObject approved;
 
 	// Use this for initialization
 	void Start () {
@@ -48,7 +51,6 @@ public class CollectionManager : MonoBehaviour {
 			firstRun = false;
 			popInfo = popup.GetComponent<PopUp>();
 		}
-
 	}
 
 	void OnEnable()	{
@@ -88,8 +90,9 @@ public class CollectionManager : MonoBehaviour {
 			}
 		}
 
-
-
+		warning.text = "";
+		warning.gameObject.SetActive(false);
+		approved.SetActive(false);
 		
 		updateSearch();
 		updatePage();
@@ -512,27 +515,105 @@ public class CollectionManager : MonoBehaviour {
 	}
 
 	public void SaveAndExit() {
+		warning.text = "";
+		warning.gameObject.SetActive(false);
+		warning.color = Color.red;
+		warning.fontStyle = FontStyle.Bold;
+		warning.fontSize = 12;
+		string test = "";
+
 		if(currentDeck.Count == 20 && popInfo.dName != "" ) { // || and the warning is on.
-			
+			test = validateDeck();
 
-			Deck temp = new Deck();
-			List<int> templist = new List<int>();
-			templist.AddRange(currentDeck);
+			if(test == "" || count > 0) {
+				Deck temp = new Deck();
+				List<int> templist = new List<int>();
+				templist.AddRange(currentDeck);
 
-			temp.SetDeck(templist, popInfo.dName, popInfo.currentImage);
+				temp.SetDeck(templist, popInfo.dName, popInfo.currentImage);
 
-			if(BackEndManager.instance.editDeck) {
-				BackEndManager.instance.decks[BackEndManager.instance.deckToEdit] = temp;
+				if(BackEndManager.instance.editDeck) {
+					BackEndManager.instance.decks[BackEndManager.instance.deckToEdit] = temp;
+				} else {
+					BackEndManager.instance.decks.Add(temp);
+				}
+
+				approved.SetActive(true);
+
+				BackEndManager.instance.ChangeState(STATES.PREGAME);
+				popup.SetActive(false);
+				
 			} else {
-				BackEndManager.instance.decks.Add(temp);
+				count++;
+
+				warning.gameObject.SetActive(true);
+				warning.text = test;
+				warning.color = Color.gray;
+				warning.fontStyle = FontStyle.BoldAndItalic;
+				warning.fontSize = 9;
+
+
+
 			}
 
 
-			BackEndManager.instance.ChangeState(STATES.PREGAME);
-			popup.SetActive(false);
+
 		} else {
-			//TODO: turn on warning saying its not a legal deck
+			
+
+			if(currentDeck.Count < 20) {
+				test += "Deck needs 20 cards.";
+			}
+
+			if(popInfo.dName == "") {
+				test += " Deck needs a name.";
+			}
+
+			warning.gameObject.SetActive(true);
+			warning.text = test;
 		}
+	}
+
+
+	string validateDeck() {
+		string retVal = "";
+		int recycle = 0, res = 0, comm = 0, spells = 0;
+
+		for(int i = 0; i < currentDeck.Count; i++) {
+
+			switch(cardData[currentDeck[i]].TYPE() ) {
+				case TILETYPE.COMMERCIAL:
+					comm++;
+					break;
+				case TILETYPE.RESIDENTIAL:
+					res++;
+					break;
+				case TILETYPE.SPELL:
+					spells++;
+					break;
+			}
+
+			if(cardData[currentDeck[i]].RECYCLE()) {
+				recycle++;
+			}
+		}
+
+
+		if(recycle < 2) {
+			retVal += "Your Recycle count is a little low.";
+		}
+
+		if(comm > res || res > comm) {
+			retVal += " Commercial and Residential are a little out of sync.";
+		}
+
+		if(spells > (currentDeck.Count * 0.66 )) {
+			retVal += " Potentially too many spells.";
+		}
+
+
+
+		return retVal;
 	}
 
 	public void Exit() {
@@ -546,6 +627,7 @@ public class CollectionManager : MonoBehaviour {
 
 	public void back() {
 		popup.SetActive(false);
+		count = 0;
 	}
 
 
