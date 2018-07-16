@@ -24,7 +24,7 @@ public class RNGEvents : MonoBehaviour {
 		switch(type) {
 			case EVENT_RNG.PERMITS:
 				rngText[0].text = "Forgotten Permits";
-				rngText[1].text = "Government preventing extending all building in the area.";
+				rngText[1].text = "Government extending all building times in the area.";
 				GameManager.instance.permits();
 
 				break;

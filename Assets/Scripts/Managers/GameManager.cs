@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour {
 	public List<int> turnCardPlayed;
 	public List<CardData> cardData = new List<CardData>();
 	public List<TileInfo> currentTiles = new List<TileInfo>();
-	string path = "Assets/Resources/cards.txt";
+	string path = "cards.txt";
 	bool calculated = false;
 	List<TileInfo> residential = new List<TileInfo>();
 	bool unhappy = false;
@@ -273,27 +273,37 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void ReadCardData() {
-		StreamReader sr = new StreamReader(path);
-		string line;
+		string filePath = Path.Combine(Application.streamingAssetsPath, path);
+		string result = "";
+
 		bool flip = false;
+	
+		if (Application.platform == RuntimePlatform.Android) {
+			WWW reader = new WWW(filePath);
 
-		while((line = sr.ReadLine()) != null) {
-			string[] split = line.Split('/');
+          	while(!reader.isDone) { }
 
-			if(split[0] == "=") {
+			result = reader.text;
+        } else {
+            result = System.IO.File.ReadAllText(filePath);
+    	}
+		string[] split = result.Split('\n');
+
+		for(int i = 0; i < split.Length; i++) {
+			string[] temp = split[i].Split('/');
+
+			if(temp[0] == "=") {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), split[6]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), int.Parse(split[6]), split[7]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
 				cardData.Add(x);
 			}
 		}
-
-		sr.Close();
 	}
 
 	public CardData Info(int num) {

@@ -16,12 +16,7 @@ public class CardInfo : MonoBehaviour {
 	public void pressed() {
 		//TODO: Remove from currentDeck.
 		//TODO: delete if there is only one.
-		Debug.Log("HI");
-
 		UpdateAmt(-1);
-
-
-
 	}
 
 	/// <summary>

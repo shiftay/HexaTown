@@ -468,57 +468,6 @@ public class CollectionManager : MonoBehaviour {
 
 	}
 
-
-
-	void ReadCardData() {
-		StreamReader sr = new StreamReader(Application.streamingAssetsPath + "/" + path);
-		string line;
-		bool flip = false;
-
-		while((line = sr.ReadLine()) != null) {
-			string[] split = line.Split('/');
-
-			if(split[0] == "=") {
-				flip = true;
-			} else if (flip) {
-				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), split[6]);
-				cardData.Add(x);
-			} else {
-				CardData x = new CardData();	
-				x.SetData(int.Parse(split[1]), int.Parse(split[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), split[0]), bool.Parse(split[3]), bool.Parse(split[4]), bool.Parse(split[5]), int.Parse(split[6]), split[7]);
-				cardData.Add(x);
-			}
-		}
-
-		sr.Close();
-	}
-
-
-	void FixedUpdate ()  {
-        if (HasInput) {
-            // Click();
-        }
-	}
-
-	private bool HasInput {
-        get {
-            // returns true if either the mouse button is down or at least one touch is felt on the screen
-            return Input.GetMouseButtonDown(0);
-        }
-    }
-
-	Vector2 CurrentTouchPosition   {
-        get {
-            Vector3 inputPos;
-            inputPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            inputPos.z = -4;
-            return inputPos;
-        }
-    }
-
-
-
 	public void cardPressed(Image hldr) {
 		int val = cardNum(hldr);
 
@@ -596,16 +545,8 @@ public class CollectionManager : MonoBehaviour {
 				warning.color = Color.gray;
 				warning.fontStyle = FontStyle.BoldAndItalic;
 				warning.fontSize = 9;
-
-
-
 			}
-
-
-
 		} else {
-			
-
 			if(currentDeck.Count < 20) {
 				test += "Deck needs 20 cards.";
 			}
@@ -656,14 +597,11 @@ public class CollectionManager : MonoBehaviour {
 			retVal += " Potentially too many spells.";
 		}
 
-
-
 		return retVal;
 	}
 
 	public void Exit() {
 		BackEndManager.instance.ChangeState(STATES.PREGAME);
-		
 	}
 
 	public void homeButton() {
@@ -674,25 +612,6 @@ public class CollectionManager : MonoBehaviour {
 		popup.SetActive(false);
 		count = 0;
 	}
-
-
-
-
-
-	// void Click() {
-	// 		Vector2 inputPosition = CurrentTouchPosition;
-
- 	// 		RaycastHit2D[] touches = Physics2D.RaycastAll(inputPosition, inputPosition, 0.5f);
-    //         if (touches.Length > 0)
-    //         {
-    //             var hit = touches[0];
-    //             if (hit.transform != null) {
-
-	// 			}
-	// 		}
-	// }
-
-
 	public void RemoveInfo(CardInfo ci) {
 		currentDeck.Remove(ci.cardNum);
 		cardsInDeck.Remove(ci);
@@ -716,36 +635,4 @@ public class CollectionManager : MonoBehaviour {
 
 		return retVal;
 	}
-
-	IEnumerator Example() {
-		bool flip = false;
-
-        if (filePath.Contains("://")) {
-           	UnityWebRequest www = UnityWebRequest.Get(filePath);
-            yield return www.Send();
-            result = www.downloadHandler.text;
-        } else {
-			result = System.IO.File.ReadAllText(filePath);
-		}
-
-		string[] split = result.Split('\n');
-
-		for(int i = 0; i < split.Length; i++) {
-			string[] temp = split[i].Split('/');
-
-			if(temp[0] == "=") {
-				flip = true;
-			} else if (flip) {
-				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
-				cardData.Add(x);
-			} else {
-				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
-				cardData.Add(x);
-			}
-		}
-            
-    }
-
 }

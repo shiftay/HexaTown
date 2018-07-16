@@ -56,7 +56,11 @@ public class MouseDragScript : MonoBehaviour {
      
         if (draggingItem)
         {
-            draggedObject.transform.position = inputPosition + touchOffset;
+            draggedObject.transform.position = inputPosition;
+            Debug.Log("Object: " + draggedObject.transform.position);
+            Debug.Log("Input: " + inputPosition);
+            Debug.Log("Offset: " + touchOffset);
+
             draggedObject.transform.position = changeZ(draggedObject.transform.position);
             // Vector3 fix = draggedObject.transform.position;
             // fix.z = -5;
