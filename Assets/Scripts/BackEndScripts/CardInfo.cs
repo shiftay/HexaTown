@@ -28,20 +28,8 @@ public class CardInfo : MonoBehaviour {
 	/// Start is called on the frame when a script is enabled just before
 	/// any of the Update methods is called the first time.
 	/// </summary>
-	void Start()
-	{
-		// Vector3 test = Vector3.one;
-
+	void Start() {
 		GetComponent<RectTransform>().localScale = Vector3.one;
-		Debug.Log("width ?? " + transform.parent.gameObject.GetComponent<RectTransform>().sizeDelta.x);
-		// Vector2 newSize = new Vector2(200,50);
-		// // Vector2 ourSize = buttonImg.gameObject.GetComponent<RectTransform>().sizeDelta;
-
-		// // newSize.y = ourSize.y * (ourSize.x / transform.parent.gameObject.GetComponent<RectTransform>().sizeDelta.x);
-
-		// // newSize.x = transform.parent.gameObject.GetComponent<RectTransform>().sizeDelta.x;
-		// Debug.Log("newSize " + newSize);
-		// buttonImg.gameObject.GetComponent<RectTransform>().sizeDelta = newSize;
 	}
 
 	public void UpdateAmt(int change) {

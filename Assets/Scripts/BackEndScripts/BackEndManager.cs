@@ -61,8 +61,6 @@ public class BackEndManager : MonoBehaviour {
 		ReadSettings();
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 
-		Debug.Log(Application.streamingAssetsPath);
-
 		if(deleteFiles) {
 			ClearFiles();
 		} else {
