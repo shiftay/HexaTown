@@ -4,16 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
 using System;
+using UnityEngine.Networking;
 
 public class CollectionManager : MonoBehaviour {
 
+    public string filePath = "";
+    public string result = "";
 	public Vector2 xTest;
 	public GameObject leftBtn;
 	public GameObject rightBtn;
 	public List<CardData> cardData = new List<CardData>();
 	public Image bookTest;
 	public List<CardData> modifiedList = new List<CardData>();
-	string path = "Assets/Resources/cards.txt";
+	string path = "cards.txt";
 	public Image[] cardPositions;
 	public Sprite[] cards;
 	public List<CardData> currentSearch = new List<CardData>();
@@ -46,7 +49,10 @@ public class CollectionManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if(firstRun) {
-			ReadCardData();
+			// filePath = Path.Combine(Application.streamingAssetsPath, "cards.txt");
+			// StartCoroutine(Example());
+			ReadCards();
+			// ReadCardData();
 			modify();
 			firstRun = false;
 			popInfo = popup.GetComponent<PopUp>();
@@ -426,9 +432,46 @@ public class CollectionManager : MonoBehaviour {
 
 
 
+	void ReadCards() {
+
+		string filePath = Path.Combine(Application.streamingAssetsPath, path);
+		string result = "";
+
+		bool flip = false;
+	
+		if (Application.platform == RuntimePlatform.Android) {
+			WWW reader = new WWW(filePath);
+
+          	while(!reader.isDone) { }
+
+			result = reader.text;
+        } else {
+            result = System.IO.File.ReadAllText(filePath);
+    	}
+		string[] split = result.Split('\n');
+
+		for(int i = 0; i < split.Length; i++) {
+			string[] temp = split[i].Split('/');
+
+			if(temp[0] == "=") {
+				flip = true;
+			} else if (flip) {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
+				cardData.Add(x);
+			} else {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
+				cardData.Add(x);
+			}
+		}
+
+	}
+
+
 
 	void ReadCardData() {
-		StreamReader sr = new StreamReader(path);
+		StreamReader sr = new StreamReader(Application.streamingAssetsPath + "/" + path);
 		string line;
 		bool flip = false;
 
@@ -540,6 +583,7 @@ public class CollectionManager : MonoBehaviour {
 				}
 
 				approved.SetActive(true);
+				AudioManager.instance.playSound(SFX.STAMP);
 
 				BackEndManager.instance.ChangeState(STATES.PREGAME);
 				
@@ -672,5 +716,36 @@ public class CollectionManager : MonoBehaviour {
 
 		return retVal;
 	}
+
+	IEnumerator Example() {
+		bool flip = false;
+
+        if (filePath.Contains("://")) {
+           	UnityWebRequest www = UnityWebRequest.Get(filePath);
+            yield return www.Send();
+            result = www.downloadHandler.text;
+        } else {
+			result = System.IO.File.ReadAllText(filePath);
+		}
+
+		string[] split = result.Split('\n');
+
+		for(int i = 0; i < split.Length; i++) {
+			string[] temp = split[i].Split('/');
+
+			if(temp[0] == "=") {
+				flip = true;
+			} else if (flip) {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
+				cardData.Add(x);
+			} else {
+				CardData x = new CardData();	
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
+				cardData.Add(x);
+			}
+		}
+            
+    }
 
 }

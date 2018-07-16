@@ -26,7 +26,13 @@ public class FadeOut : MonoBehaviour {
 	public void fade(STATES state, BackEndManager bm) {
 		// box.clip = anims[1];
 		box.Play("FadeOut");
-
+		
+		if(state == STATES.GAME) {
+			AudioManager.instance.startFadeO(true);
+		} 
+		// else if(BackEndManager.instance.prvState == (int)STATES.GAME) {
+		// 	AudioManager.instance.startFadeO(false);
+		// }
 		Invoke("sfx", 0.5f);
 		Invoke("fadeIn", 2.0F);
 		

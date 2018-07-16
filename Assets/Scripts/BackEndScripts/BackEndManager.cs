@@ -31,6 +31,7 @@ public class BackEndManager : MonoBehaviour {
 	public static BackEndManager instance;
 	string SAVEPATH = "decks.txt";
 	string GAMEPATH = "lastGame";
+	string SETTINGSPATH = "settings.txt";
 	char DELIMITER = '/';
 	public List<Deck> decks = new List<Deck>();
 	public int currentState;
@@ -40,7 +41,11 @@ public class BackEndManager : MonoBehaviour {
 	public SavedGame sGame;
 	public float currentVolume = 0.5f;
 	public float mutedVolume = 0f;
-	public bool muted;
+	public bool mutedMusic = false;
+	public bool mutedSFX = false;
+	public float currentSFX = 0.5f;
+	public float mutedSFXVol = 0f;
+
 	public bool editDeck = false;
 	public int deckToEdit = 0;
 	public int deckChoice = -1;
@@ -49,10 +54,14 @@ public class BackEndManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		instance = this;
-		muted = false;
 		for(int i = 0; i < transform.childCount; i++) {
 			states.Add(transform.GetChild(i).gameObject);
 		}
+
+		ReadSettings();
+		AudioManager.instance.setVolumes(currentSFX, currentVolume);
+
+		Debug.Log(Application.streamingAssetsPath);
 
 		if(deleteFiles) {
 			ClearFiles();
@@ -62,8 +71,6 @@ public class BackEndManager : MonoBehaviour {
 	}
 	
 	public void ChangeState(STATES state) {
-
-
 
 		if(state == STATES.OPTIONS) {
 			prvState = currentState;
@@ -119,6 +126,33 @@ public class BackEndManager : MonoBehaviour {
 		}
 	}
 
+	void ReadSettings() {
+		if(File.Exists(Application.persistentDataPath + DELIMITER + SETTINGSPATH)) {
+			StreamReader sr = new StreamReader(Application.persistentDataPath + DELIMITER + SETTINGSPATH);
+
+			string line;
+
+			while((line = sr.ReadLine()) != null) {
+				string decrypt = Encryption(line);
+				string[] split = decrypt.Split(DELIMITER);
+
+				mutedMusic = bool.Parse(split[0]);
+				currentVolume = float.Parse(split[1]);
+				mutedVolume = float.Parse(split[2]);
+				mutedSFX = bool.Parse(split[3]);
+				currentSFX = float.Parse(split[4]);
+				mutedSFXVol = float.Parse(split[5]);
+			}
+
+			sr.Close();
+		} else {
+			FileStream sr = File.Open(Application.persistentDataPath + DELIMITER + SETTINGSPATH, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+			sr.Close();
+		}
+	}
+
+
+
 	void SaveDecks() {
 		StreamWriter test = new StreamWriter(Application.persistentDataPath + DELIMITER + SAVEPATH, false);
 
@@ -128,6 +162,14 @@ public class BackEndManager : MonoBehaviour {
 
 		test.Close();
 	}
+
+	void SaveSettings() {
+		StreamWriter test = new StreamWriter(Application.persistentDataPath + DELIMITER + SETTINGSPATH, false);
+
+		test.WriteLine(Encryption(createSettingsString()));
+
+		test.Close();
+	}	
 
 	string createDeckString(Deck temp) {
 		string retVal = "";
@@ -142,17 +184,31 @@ public class BackEndManager : MonoBehaviour {
 		return retVal;
 	}
 
+	string createSettingsString() {
+		return mutedMusic.ToString() + DELIMITER + currentVolume.ToString() + DELIMITER + mutedVolume.ToString() 
+		+ DELIMITER + mutedSFX.ToString() + DELIMITER + currentSFX.ToString() + DELIMITER + mutedSFXVol.ToString();
+	}
 
-	// void OnApplicationPause(bool pauseStatus)	{
-	// 	SaveDecks();
-	// }
 
-	/// <summary>
-	/// Callback sent to all game objects before the application is quit.
-	/// </summary>
+
+
+
+	void OnApplicationPause(bool pauseStatus)	{
+		
+		if(pauseStatus) {
+			SaveDecks();
+			SaveSettings();
+		}
+
+	}
+
+	// / <summary>
+	// / Callback sent to all game objects before the application is quit.
+	// / </summary>
 	void OnApplicationQuit()
 	{
 		SaveDecks();
+		SaveSettings();
 	}
 
 // ============= BACK END UTILITIES ====================

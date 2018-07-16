@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SFX { SHUFFLE, OFFICESOUNDS }
+public enum SFX { SHUFFLE, OFFICESOUNDS, STAMP }
 
 public class AudioManager : MonoBehaviour {
 
@@ -10,21 +10,80 @@ public class AudioManager : MonoBehaviour {
 	static public AudioManager instance;
 	AudioSource sfxSource;
 	public AudioSource musicSource;
+	public List<AudioClip> BGM = new List<AudioClip>();
+
 
 	// Use this for initialization
 	void Start () {
 		instance = this;
 		sfxSource = GetComponent<AudioSource>();
+		musicSource.clip = BGM[0];
+		musicSource.Play();
+		
+	}
 
 
+	public void setVolumes(float sfx, float music) {
+		musicSource.volume = music;
+		sfxSource.volume = sfx;
+	}
+
+
+	void Update() {
 		
 	}
 	
-
 	public void playSound(SFX sound) {
 		sfxSource.clip = clips[(int)sound];
 		sfxSource.Play();
 	}
 
+	public void startFadeO(bool game) {
+		Debug.Log(musicSource.volume);
+
+		StartCoroutine(fadeOut(1.0f));
+		if(game) {
+			Invoke("GameMusic", 1.0f);
+		}
+	}
+
+	IEnumerator fadeOut(float fadeTime) {
+		float startVolume = BackEndManager.instance.currentVolume;
+
+		while(musicSource.volume > 0) {
+			float vol = startVolume * Time.deltaTime / fadeTime;
+			musicSource.volume -= vol;
+
+			yield return null;
+		}
+	}
+
+	public void GameMusic() {
+		musicSource.clip = BGM[1];
+		
+		StartCoroutine(fadeIn(1f));
+		Invoke("clearCoroutines", 1f);
+	}
+
+
+	void clearCoroutines() {
+		StopAllCoroutines();
+		musicSource.volume = BackEndManager.instance.currentVolume;
+	}
+
+
+	IEnumerator fadeIn(float fadeTime) {
+        musicSource.volume = 0f;
+        musicSource.Play();
+ 
+        while (musicSource.volume < BackEndManager.instance.currentVolume)
+        {
+            musicSource.volume += Time.deltaTime * fadeTime;
+ 
+            yield return null;
+        }
+ 
+        musicSource.volume = BackEndManager.instance.currentVolume;
+	}
 
 }
