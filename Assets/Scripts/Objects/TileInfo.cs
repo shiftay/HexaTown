@@ -14,7 +14,6 @@ public class TileInfo : MonoBehaviour {
 	public int buildTime;
 	List<GameObject> children = new List<GameObject>();
 	public bool scheduledDemo = false;
-
 	public bool turnOffBuild = false;
 
 	void Start() {
@@ -119,6 +118,7 @@ public class TileInfo : MonoBehaviour {
 
 	public void clearTile() {
 		GameManager.instance.currentTiles.Remove(this);
+		GameManager.instance.gc.removeFromGrid(this.gameObject);
 		gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
 		unhappy(false);
 		building(false);

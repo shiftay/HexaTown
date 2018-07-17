@@ -19,8 +19,14 @@ public class MenuManager : MonoBehaviour {
 		}
 	}
 
-	public void Resume() {
 
+	void Start() {
+		OnEnable();
+	}
+
+	public void Resume() {
+		BackEndManager.instance.resume = true;
+		BackEndManager.instance.ChangeState(STATES.GAME);
 	}
 
 	public void Play() {

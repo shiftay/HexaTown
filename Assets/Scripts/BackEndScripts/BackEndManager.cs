@@ -18,8 +18,10 @@ public class Deck {
 }
 
 public class SavedGame {
+	public List<int> currentHand = new List<int>();
+	public List<int> currentDiscard = new List<int>();
+	public List<int> currentDeck = new List<int>();
 	public List<int> tileSpace = new List<int>();
-
 	public int objectiveVal, populationVal, happinessVal;
 	public List<int> prevObjective = new List<int>();
 	public List<int> prevPopulation = new List<int>();
@@ -39,6 +41,13 @@ public class BackEndManager : MonoBehaviour {
 	public List<GameObject> states = new List<GameObject>();
 	public bool deleteFiles = false;
 	public SavedGame sGame;
+	public bool resume = false;
+	public SavedGame save {
+		set {
+			sGame = value;
+			writeSave();
+		}
+	}
 	public float currentVolume = 0.5f;
 	public float mutedVolume = 0f;
 	public bool mutedMusic = false;
@@ -59,6 +68,7 @@ public class BackEndManager : MonoBehaviour {
 		}
 
 		ReadSettings();
+		ReadSave();
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 
 		if(deleteFiles) {
@@ -68,6 +78,9 @@ public class BackEndManager : MonoBehaviour {
 		}
 	}
 	
+	
+
+
 	public void ChangeState(STATES state) {
 
 		if(state == STATES.OPTIONS) {
@@ -151,6 +164,86 @@ public class BackEndManager : MonoBehaviour {
 
 
 
+	void ReadSave() {
+		if(File.Exists(Application.persistentDataPath + DELIMITER + "saveGame.txt")) {
+			StreamReader sr = new StreamReader(Application.persistentDataPath + DELIMITER + "saveGame.txt");
+
+			string line;
+			int counter = 0;
+			SavedGame temp = new SavedGame();
+
+			while((line = sr.ReadLine()) != null) {
+				string[] split = line.Split('/');
+
+				switch(counter) {
+					case 0:	//deck
+						foreach(string x in split) {
+							if(x != "") {
+								temp.currentDeck.Add(int.Parse(x));
+							}
+							
+						}
+
+						break;
+					case 1:	//discard
+						foreach(string x in split) {
+							if(x != "") {
+							temp.currentDiscard.Add(int.Parse(x));
+							}
+						}
+
+						break;
+					case 2:	// hand
+						foreach(string x in split) {
+							if(x != "") {
+								temp.currentHand.Add(int.Parse(x));
+							}
+						}
+					 	break;
+					case 3:	// happ
+						foreach(string x in split) {
+							if(x != "") {
+								temp.prevHappiness.Add(int.Parse(x));
+							}
+						}
+						break;
+					case 4:// obj
+						foreach(string x in split) {
+							if(x != "") {
+								temp.prevObjective.Add(int.Parse(x));
+							}
+						}
+						break;
+					case 5: // pop
+						foreach(string x in split) {
+							if(x != "") {
+								temp.prevPopulation.Add(int.Parse(x));
+							}
+						}
+						break;
+					case 6: // tile
+						foreach(string x in split) {
+							if(x != "") {
+								temp.tileSpace.Add(int.Parse(x));
+							}
+						}
+						break;
+					case 7: // happ, pop , obj
+						temp.happinessVal = int.Parse(split[0]);
+						temp.populationVal = int.Parse(split[1]);
+						temp.objectiveVal = int.Parse(split[2]);
+						break;
+				}
+
+				counter++;
+
+
+			}
+			sGame = temp;
+			sr.Close();
+		} 
+	}
+
 	void SaveDecks() {
 		StreamWriter test = new StreamWriter(Application.persistentDataPath + DELIMITER + SAVEPATH, false);
 
@@ -188,7 +281,77 @@ public class BackEndManager : MonoBehaviour {
 	}
 
 
+	public void writeSave() {
+			FileStream sr = File.Open(Application.persistentDataPath + DELIMITER + "saveGame.txt", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+			sr.Close();
 
+			StreamWriter test = new StreamWriter(Application.persistentDataPath + DELIMITER + "saveGame.txt", false);
+
+			string temp = "";
+			foreach(int x in sGame.currentDeck) {
+				temp += x.ToString() + "/";
+			}
+
+			Debug.Log("LAST INDEX: " + temp.LastIndexOf('/'));
+			Debug.Log("Size  " + temp.Length);
+
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.currentDiscard) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.currentHand) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.prevHappiness) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.prevObjective) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.prevPopulation) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = "";
+			foreach(int x in sGame.tileSpace) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+
+			temp = sGame.happinessVal.ToString() + "/" + sGame.populationVal.ToString() + "/" + sGame.objectiveVal.ToString();
+			test.WriteLine(temp);
+
+			test.Close();
+	}
 
 
 	void OnApplicationPause(bool pauseStatus)	{

@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance;
 	public HandController hc;
 	UIManager um;
-	GridController gc;
+	public GridController gc;
 	public int currentHand, currentTurn, objectiveVal, populationVal, happinessVal;
 	List<TileInfo> factories = new List<TileInfo>();
 	public int cardsPlayed;
@@ -114,13 +114,18 @@ public class GameManager : MonoBehaviour {
 		um = GetComponent<UIManager>();
 		cardsPlayed = 0;
 		currentDeck.Clear();
-		currentDeck.AddRange(BackEndManager.instance.decks[BackEndManager.instance.deckChoice].cards);
-		currentDeck.AddRange(industryVals);
-		AddCorruption();
+
+		if(BackEndManager.instance.resume) {
+			ResumeGame();
+		} else {
+			currentDeck.AddRange(BackEndManager.instance.decks[BackEndManager.instance.deckChoice].cards);
+			currentDeck.AddRange(industryVals);
+			AddCorruption();
+			Shuffle();
+			Deal();
+		}
 
 
-		Shuffle();
-		Deal();
 	}
 
 	void AddCorruption() {
@@ -139,6 +144,7 @@ public class GameManager : MonoBehaviour {
 			disableHand();
 			um.TurnOVER();
 			AdvanceBuilds();
+			
 
 			//TODO: Calculate stats + show stats
 			//TODO: Decide if random event happens + show event if so.
@@ -184,7 +190,7 @@ public class GameManager : MonoBehaviour {
 
 		cardsPlayed = 0;
 		turnCardPlayed.Clear();
-
+		saveGame();
 		
 		turnOver = false;
 		calculated = false;
@@ -263,10 +269,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Deal() {
-		if(currentDeck.Count == 0) {
-			TransferDiscard();
-			Shuffle();
-		}
+		// if(currentDeck.Count == 0) {
+		// 	TransferDiscard();
+		// 	Shuffle();
+		// }
 	
 
 		for(int i = 0; i < 5; i++) {
@@ -580,8 +586,55 @@ public class GameManager : MonoBehaviour {
 	}
 
 
+	void saveGame() {
+		SavedGame temp = new SavedGame();
+
+		temp.happinessVal = happinessVal;
+		temp.objectiveVal = objectiveVal;
+		temp.populationVal = populationVal;
+		temp.prevHappiness.AddRange(prevHapp);
+		temp.prevObjective.AddRange(prevObjec);
+		temp.prevPopulation.AddRange(prevPop);
+		
+
+		for(int i = 0; i < gc.rows; i++) {
+			for(int j = 0; j < gc.cols; j++) {
+				temp.tileSpace.Add(gc.gameplayObj[i,j]);
+			}
+		}
+
+		
+		temp.currentDiscard.AddRange(currentDiscard);
+		temp.currentDeck.AddRange(currentDeck);
+		temp.currentHand.AddRange(activeHAND);
 
 
+		//TODO Save Board State. Tile info.
+
+		BackEndManager.instance.save = temp;
+	}
+
+
+	void ResumeGame() {
+		currentDeck.AddRange(BackEndManager.instance.sGame.currentDeck);
+		currentDiscard.AddRange(BackEndManager.instance.sGame.currentDiscard);
+		activeHAND.AddRange(BackEndManager.instance.sGame.currentHand);
+
+		prevHapp.AddRange(BackEndManager.instance.sGame.prevHappiness);
+		prevPop.AddRange(BackEndManager.instance.sGame.prevPopulation);
+		prevObjec.AddRange(BackEndManager.instance.sGame.prevObjective);
+
+		happinessVal = BackEndManager.instance.sGame.happinessVal;
+		populationVal = BackEndManager.instance.sGame.populationVal;
+		objectiveVal = BackEndManager.instance.sGame.objectiveVal;
+
+
+		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace);
+
+
+		hc.setHand(activeHAND);
+
+	}
 
 //=====================================EVENTS=============================================
 }
