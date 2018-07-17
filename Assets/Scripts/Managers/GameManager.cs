@@ -592,6 +592,8 @@ public class GameManager : MonoBehaviour {
 		temp.happinessVal = happinessVal;
 		temp.objectiveVal = objectiveVal;
 		temp.populationVal = populationVal;
+		temp.commuter = commuterTracker;
+		temp.party = partyTracker;
 		temp.prevHappiness.AddRange(prevHapp);
 		temp.prevObjective.AddRange(prevObjec);
 		temp.prevPopulation.AddRange(prevPop);
@@ -635,7 +637,16 @@ public class GameManager : MonoBehaviour {
 		happinessVal = BackEndManager.instance.sGame.happinessVal;
 		populationVal = BackEndManager.instance.sGame.populationVal;
 		objectiveVal = BackEndManager.instance.sGame.objectiveVal;
+		partyTracker = BackEndManager.instance.sGame.party;
+		commuterTracker = BackEndManager.instance.sGame.commuter;
 
+		if(partyTracker > 0) {
+			party = true;
+		}
+		
+		if(commuterTracker > 0) {
+			commuters = true;
+		}
 
 		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace, BackEndManager.instance.sGame.tileState);
 

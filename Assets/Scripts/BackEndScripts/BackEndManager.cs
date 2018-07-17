@@ -22,7 +22,7 @@ public class SavedGame {
 	public List<int> currentDiscard = new List<int>();
 	public List<int> currentDeck = new List<int>();
 	public List<int> tileSpace = new List<int>();
-	public int objectiveVal, populationVal, happinessVal;
+	public int objectiveVal, populationVal, happinessVal, commuter, party;
 	public List<int> prevObjective = new List<int>();
 	public List<int> prevPopulation = new List<int>();
 	public List<int> prevHappiness = new List<int>();
@@ -240,6 +240,8 @@ public class BackEndManager : MonoBehaviour {
 						temp.happinessVal = int.Parse(split[0]);
 						temp.populationVal = int.Parse(split[1]);
 						temp.objectiveVal = int.Parse(split[2]);
+						temp.party = int.Parse(split[3]);
+						temp.commuter = int.Parse(split[4]);
 						break;
 				}
 
@@ -354,7 +356,7 @@ public class BackEndManager : MonoBehaviour {
 
 			temp.Remove(temp.LastIndexOf('/')-1, 1);
 			test.WriteLine(temp);
-			
+
 			temp = "";
 			foreach(int x in sGame.tileState) {
 				temp += x.ToString() + "/";
@@ -363,7 +365,8 @@ public class BackEndManager : MonoBehaviour {
 			temp.Remove(temp.LastIndexOf('/')-1, 1);
 			test.WriteLine(temp);
 
-			temp = sGame.happinessVal.ToString() + "/" + sGame.populationVal.ToString() + "/" + sGame.objectiveVal.ToString();
+			temp = sGame.happinessVal.ToString() + "/" + sGame.populationVal.ToString() + "/" + sGame.objectiveVal.ToString() + "/" +
+				sGame.party + "/" + sGame.commuter;
 			test.WriteLine(temp);
 
 			test.Close();
