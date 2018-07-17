@@ -21,11 +21,13 @@ public class TileInfo : MonoBehaviour {
 			gameObject.GetComponent<Flashing>().enabled = false;
 		}
 
-		for(int i = 0; i < transform.childCount; i++) {
-			children.Add(transform.GetChild(i).gameObject);
+		if(children.Count == 0) {
+			for(int i = 0; i < transform.childCount; i++) {
+				children.Add(transform.GetChild(i).gameObject);
+			}
 		}
 
-		if(type != TILETYPE.EVENT) {
+		if(type != TILETYPE.EVENT && buildTime != 0 && !scheduledDemo) {
 			children[0].SetActive(true);
 		}
 
@@ -62,6 +64,33 @@ public class TileInfo : MonoBehaviour {
 		buildTime = temp.BUILD();
 		tileValue = temp.TVALUE();
 		corruptVal = temp.CORRUPT();
+
+		if(type == TILETYPE.EVENT) {
+			gameObject.GetComponent<BoxCollider2D>().enabled = false;
+		}
+	}
+
+	public void SetInfo(List<int> coords, int tileNum, int corruptV, int buildVal, int activeChild) {
+		for(int i = 0; i < transform.childCount; i++) {
+			children.Add(transform.GetChild(i).gameObject);
+		}
+
+		CardData temp = GameManager.instance.Info(tileNum);	
+		cardNumber = tileNum;
+		xCoord = coords[0];
+		yCoord = coords[1];
+		type = temp.TYPE();
+		buildTime = buildVal;
+		tileValue = temp.TVALUE();
+		corruptVal = corruptV;
+
+		if(activeChild > 0) {
+			children[activeChild].SetActive(true);
+			if(activeChild > 2) {
+				scheduledDemo = true;
+			}
+		}
+
 
 		if(type == TILETYPE.EVENT) {
 			gameObject.GetComponent<BoxCollider2D>().enabled = false;
@@ -130,5 +159,21 @@ public class TileInfo : MonoBehaviour {
 	public void buildTile() {
 		buildTime = 0;
 		building(false);
+	}
+
+	public int activeChild() {
+		int retVal = -1;
+
+		for(int i = 0 ; i < children.Count; i ++) {
+			if(children[i].activeInHierarchy) {
+				if(i != 0) {
+					retVal = i;
+				}
+			}
+		}
+
+
+
+		return retVal;
 	}
 }

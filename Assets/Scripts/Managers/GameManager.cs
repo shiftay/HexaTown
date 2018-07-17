@@ -600,6 +600,11 @@ public class GameManager : MonoBehaviour {
 		for(int i = 0; i < gc.rows; i++) {
 			for(int j = 0; j < gc.cols; j++) {
 				temp.tileSpace.Add(gc.gameplayObj[i,j]);
+				if(gc.gameplayObj[i,j] != -1) {
+					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().corruptVal);
+					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().buildTime);
+					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().activeChild());
+				}
 			}
 		}
 
@@ -613,6 +618,9 @@ public class GameManager : MonoBehaviour {
 
 		BackEndManager.instance.save = temp;
 	}
+
+
+	
 
 
 	void ResumeGame() {
@@ -629,7 +637,7 @@ public class GameManager : MonoBehaviour {
 		objectiveVal = BackEndManager.instance.sGame.objectiveVal;
 
 
-		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace);
+		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace, BackEndManager.instance.sGame.tileState);
 
 
 		hc.setHand(activeHAND);

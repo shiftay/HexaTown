@@ -74,10 +74,11 @@ public class GridController : MonoBehaviour {
 		}
 	}
 
-	public void ResumeGrid(List<int> saved) {
+	public void ResumeGrid(List<int> saved, List<int> states) {
 		Start();
 		int currentRow = 0;
 		int currentCol = 0;
+		int currentState = 0;
 
 		for(int i = 0; i < saved.Count; i++) {
 				if( i != 0 && i % cols == 0) {
@@ -91,10 +92,11 @@ public class GridController : MonoBehaviour {
 				temp.Add(currentCol);
 
 
-				grid[currentRow,currentCol].AddComponent<TileInfo>().SetInfo( temp ,saved[i]);
+				grid[currentRow,currentCol].AddComponent<TileInfo>().SetInfo( temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
 				GameManager.instance.currentTiles.Add(grid[currentRow,currentCol].GetComponent<TileInfo>());
 				grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.hc.cm.tiles[saved[i]];
 
+				currentState += 3;
 			}
 
 			currentCol++;

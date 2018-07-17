@@ -26,6 +26,7 @@ public class SavedGame {
 	public List<int> prevObjective = new List<int>();
 	public List<int> prevPopulation = new List<int>();
 	public List<int> prevHappiness = new List<int>();
+	public List<int> tileState = new List<int>();
 }
 
 public class BackEndManager : MonoBehaviour {
@@ -228,7 +229,14 @@ public class BackEndManager : MonoBehaviour {
 							}
 						}
 						break;
-					case 7: // happ, pop , obj
+					case 7: // tile
+						foreach(string x in split) {
+							if(x != "") {
+								temp.tileState.Add(int.Parse(x));
+							}
+						}
+						break;
+					case 8: // happ, pop , obj
 						temp.happinessVal = int.Parse(split[0]);
 						temp.populationVal = int.Parse(split[1]);
 						temp.objectiveVal = int.Parse(split[2]);
@@ -341,6 +349,14 @@ public class BackEndManager : MonoBehaviour {
 
 			temp = "";
 			foreach(int x in sGame.tileSpace) {
+				temp += x.ToString() + "/";
+			}
+
+			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			test.WriteLine(temp);
+			
+			temp = "";
+			foreach(int x in sGame.tileState) {
 				temp += x.ToString() + "/";
 			}
 
