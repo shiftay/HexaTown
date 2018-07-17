@@ -15,7 +15,9 @@ public class UIManager : MonoBehaviour {
 	public TurnOVER over;
 	public List<string> titles;
 	public Sprite[] newsPaperImgs;
-	
+	public LineRenderer popGraph;
+	public LineRenderer happGraph;
+	public LineRenderer objectGraph;
 	// Update is called once per frame
 	void Update () {
 		
@@ -32,25 +34,44 @@ public class UIManager : MonoBehaviour {
 		}
 
 		GameManager.instance.CalculateTurn();
+		// popGraph.positionCount = GameManager.instance.prevPop.Count;
+		// popGraph.SetPositions(graphPositions(GameManager.instance.prevPop));
 
-		over.summaryInfo[0].text = "Workers: \t\t\t" + GameManager.instance.populationVal.ToString();
-		over.summaryInfo[1].text = "Happiness: \t\t" + GameManager.instance.happinessVal.ToString();
-		over.summaryInfo[2].text = "Objective: \t\t" + GameManager.instance.objectiveVal.ToString();
 
-		over.tMods[0].text = (GameManager.instance.populationVal - GameManager.instance.prevPop).ToString();
-		over.modifiers[0].sprite = arrows[ArrowMod(GameManager.instance.populationVal, GameManager.instance.prevPop)];
-		over.modifiers[0].color = colors[ArrowMod(GameManager.instance.populationVal, GameManager.instance.prevPop)];
+		over.summaryInfo[0].text = GameManager.instance.populationVal.ToString();
+		over.summaryInfo[1].text = GameManager.instance.happinessVal.ToString();
+		over.summaryInfo[2].text = GameManager.instance.objectiveVal.ToString();
 
-		over.tMods[1].text = (GameManager.instance.happinessVal - GameManager.instance.prevHapp).ToString();
-		over.modifiers[1].sprite = arrows[ArrowMod(GameManager.instance.happinessVal, GameManager.instance.prevHapp)];
-		over.modifiers[1].color = colors[ArrowMod(GameManager.instance.happinessVal, GameManager.instance.prevHapp)];
+		over.tMods[0].text = (GameManager.instance.populationVal - GameManager.instance.prevPopo).ToString();
+		over.modifiers[0].sprite = arrows[ArrowMod(GameManager.instance.populationVal, GameManager.instance.prevPopo)];
+		over.modifiers[0].color = colors[ArrowMod(GameManager.instance.populationVal, GameManager.instance.prevPopo)];
 
-		over.tMods[2].text = (GameManager.instance.objectiveVal - GameManager.instance.prevObjec).ToString();
-		over.modifiers[2].sprite = arrows[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObjec)];
-		over.modifiers[2].color = colors[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObjec)];
+		over.tMods[1].text = (GameManager.instance.happinessVal - GameManager.instance.prevHappy).ToString();
+		over.modifiers[1].sprite = arrows[ArrowMod(GameManager.instance.happinessVal, GameManager.instance.prevHappy)];
+		over.modifiers[1].color = colors[ArrowMod(GameManager.instance.happinessVal, GameManager.instance.prevHappy)];
+
+		over.tMods[2].text = (GameManager.instance.objectiveVal - GameManager.instance.prevObject).ToString();
+		over.modifiers[2].sprite = arrows[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObject)];
+		over.modifiers[2].color = colors[ArrowMod(GameManager.instance.objectiveVal, GameManager.instance.prevObject)];
 
 		over.title.text = titles[titleChoice()];
 
+	}
+
+	Vector3[] graphPositions(List<int> positions) {
+		Vector3[] retVal = new Vector3[positions.Count];
+
+		for(int i = 0; i < positions.Count; i++) {
+			Vector3 temp = new Vector3();
+
+			temp.x = i * 2;
+			temp.y = positions[i];
+			temp.z = 0;
+			
+			retVal[i] = temp;
+		}
+
+		return retVal;
 	}
 
 
@@ -96,15 +117,15 @@ public class UIManager : MonoBehaviour {
 		while(retVal == -1){
 			switch(Random.Range(0,3)) {
 				case 0:
-					if(GameManager.instance.populationVal > GameManager.instance.prevPop) {
+					if(GameManager.instance.populationVal > GameManager.instance.prevPopo) {
 						retVal = 5;
 					}
 					break;
 				
 				case 1:
-					if (GameManager.instance.objectiveVal > GameManager.instance.prevObjec ) {
+					if (GameManager.instance.objectiveVal > GameManager.instance.prevObject ) {
 						retVal = 1;
-					} else if ( GameManager.instance.objectiveVal == GameManager.instance.prevObjec) {
+					} else if ( GameManager.instance.objectiveVal == GameManager.instance.prevObject) {
 						retVal = 3;
 					}
 

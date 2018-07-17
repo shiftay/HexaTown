@@ -93,12 +93,16 @@ public class GameManager : MonoBehaviour {
 	List<TileInfo> residential = new List<TileInfo>();
 	bool unhappy = false;
 	int turnsSinceEvt = 0, amtofEvts;
-	public int prevHapp, prevObjec, prevPop;
+	public int prevHappy, prevObject, prevPopo;
 
 	public bool commuters = false;
 	public bool party = false;
 	public List<int> corruptVals;
 	public List<int> industryVals;
+
+	public List<int> prevHapp = new List<int>();
+	public List<int> prevObjec = new List<int>();
+	public List<int> prevPop = new List<int>();
 	int commuterTracker = 0;
 	int partyTracker = 0;
 
@@ -263,7 +267,7 @@ public class GameManager : MonoBehaviour {
 			TransferDiscard();
 			Shuffle();
 		}
-
+	
 
 		for(int i = 0; i < 5; i++) {
 			activeHAND.Add(currentDeck[i]);
@@ -318,9 +322,15 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void CalculateTurn() {
-		prevPop = populationVal;
-		prevHapp = happinessVal;
-		prevObjec = objectiveVal;
+		
+		prevPop.Add(populationVal);
+		prevHapp.Add(happinessVal);
+		prevObjec.Add(objectiveVal);
+		prevHappy = happinessVal;
+		prevObject = objectiveVal;
+		prevPopo = populationVal;
+
+
 		happinessVal = 0;
 		populationVal = 0;
 
