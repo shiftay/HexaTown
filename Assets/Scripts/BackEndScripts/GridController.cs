@@ -43,7 +43,7 @@ public class GridController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		Debug.Log("Hello");
+		// Debug.Log("Hello");
 	}
 
 	// EVEN = [-1,-1] [-1, 0] [0, -1] [0, +1] [+1, 0] [+1, -1] 
