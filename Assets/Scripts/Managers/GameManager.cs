@@ -69,7 +69,7 @@ public class CardData {
 
 
 public class GameManager : MonoBehaviour {
-
+	int WINCONDITION = 60;
 	public Sprite baseTile;
 	public Sprite water;
 	public static GameManager instance;
@@ -105,10 +105,12 @@ public class GameManager : MonoBehaviour {
 	public List<int> prevPop = new List<int>();
 	int commuterTracker = 0;
 	int partyTracker = 0;
+	public bool gameOver = false;
 
 	// Use this for initialization
 	void OnEnable () {
 		instance = this;
+		gameOver = false;
 		ReadCardData();
 		gc = GetComponent<GridController>();
 		um = GetComponent<UIManager>();
@@ -191,10 +193,158 @@ public class GameManager : MonoBehaviour {
 		cardsPlayed = 0;
 		turnCardPlayed.Clear();
 		saveGame();
-		
-		turnOver = false;
-		calculated = false;
+		gameOverCheck();
+
+		if(gameOver) {
+			BackEndManager.instance.ChangeState(STATES.ENDGAME);
+		} else {
+			turnOver = false;
+			calculated = false;
+		}
 	}
+
+
+	public void gameOverCheck() {
+		//TODO: check if they can play their current hand.
+		//		check if they beat win condition
+		//		check if board is filled
+		if(objectiveVal > WINCONDITION) {
+			gameOver = true;
+			BackEndManager.instance.gameWon = true;
+		}
+
+		int amtOfSpells = 0;
+
+		for(int i = 0; i < activeHAND.Count; i++) {
+			if(cardData[activeHAND[i]].TYPE() == TILETYPE.SPELL) {
+				amtOfSpells++;
+			}
+		}
+
+		if(currentTiles.Count == 56) {
+			if(amtOfSpells < 2) {
+				gameOver = true; 
+			} else {
+				if(possiblePlays() < 2) {
+					gameOver = true;
+				}
+			}
+		}
+
+
+		if(amtOfSpells == activeHAND.Count) {
+			if(possiblePlays() < 2) {
+				gameOver = true;
+			}
+		}
+
+
+
+
+
+
+
+		
+		
+
+
+
+
+	}
+
+	int possiblePlays() {
+		int possiblePlays = 0;
+		int dupCom = 0, dupPart = 0, dupJust = 0, dupBuild = 0, dupRecyc = 0;
+
+		for(int i = 0; i < activeHAND.Count; i++) {
+			bool flip = false;
+			if(cardData[activeHAND[i]].TYPE() == TILETYPE.SPELL) {
+				switch(cardData[activeHAND[i]].TVALUE()) {
+					case 29: //commuter
+						if(!commuters && dupCom == 0) {
+							possiblePlays++;
+						}
+
+						dupCom++;
+						break;
+
+					case 31: // justice
+						int corruptTiles = 0;
+
+						for(int x = 0; x < currentTiles.Count; x++) {
+							if(currentTiles[x].corruptVal != 0) {
+								corruptTiles++;
+							}
+						}
+
+						if(corruptTiles != 0) {
+							if(dupJust > 0) {
+								corruptTiles -= dupJust;
+								if(corruptTiles != 0) {
+									possiblePlays++;
+								}
+							} else {
+								possiblePlays++;
+							}
+						}
+
+						dupJust++;
+						break;
+					
+					case 32: // party
+						if(!party && dupPart == 0) {
+							possiblePlays++;
+						}
+						
+						dupPart++;
+						break;
+					
+					case 33: // quick build
+						int incompleteBuilds = 0;
+						for(int x = 0; x < currentTiles.Count; x++) {
+							if(currentTiles[x].buildTime != 0 && currentTiles[x].type != TILETYPE.EVENT && !currentTiles[x].scheduledDemo) {
+								incompleteBuilds++;
+							}
+						}
+
+						if(incompleteBuilds != 0) {
+							if(dupBuild > 0) {
+								incompleteBuilds -= dupBuild;
+								if(incompleteBuilds != 0) {
+									possiblePlays++;
+								}
+							} else {
+								possiblePlays++;
+							}
+						}
+						dupBuild++;
+						break;
+
+					case 34: // recycle
+						if(currentDiscard.Count != 0 && dupRecyc == 0) {
+							possiblePlays++;
+						}
+						dupRecyc++;
+						break;
+
+					case 35: // rush order
+						for(int x = 0; x < currentTiles.Count; x++) {
+							if(flip) {
+								continue;
+							} else if(currentTiles[x].type == TILETYPE.INDUSTRIAL && currentTiles[x].buildTime <= 0) {
+								possiblePlays++;
+								flip = true;
+							}
+						}
+						break;
+				}
+			}
+		}
+
+		return possiblePlays;
+	}
+
+
 
 	// more complex shuffle @ https://stackoverflow.com/questions/273313/randomize-a-listt
 	void Shuffle() {
@@ -269,17 +419,18 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Deal() {
-		// if(currentDeck.Count == 0) {
-		// 	TransferDiscard();
-		// 	Shuffle();
-		// }
+		if(currentDeck.Count == 0) {
+			gameOver = true;
+		} else {
+			for(int i = 0; i < 5; i++) {
+				activeHAND.Add(currentDeck[i]);
+			}
+			currentDeck.RemoveRange(0, 5);
+			hc.setHand(activeHAND);
+		}
 	
 
-		for(int i = 0; i < 5; i++) {
-			activeHAND.Add(currentDeck[i]);
-		}
-		currentDeck.RemoveRange(0, 5);
-		hc.setHand(activeHAND);
+
 	}
 
 	void ReadCardData() {

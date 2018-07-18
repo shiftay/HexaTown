@@ -220,15 +220,7 @@ public class CollectionManager : MonoBehaviour {
 		updateSearch();
 	}
 
-	public void testOnChange(ScrollRect to) {
-		Debug.Log(to.normalizedPosition);
-		
-	}
-
 	void updateSearch() {
-
-
-
 		resetSearch();
 		currentPage = 0;
 

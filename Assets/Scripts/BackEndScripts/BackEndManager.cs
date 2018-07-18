@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, OPTIONS}
+public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS }
 
 public class Deck {
 	public List<int> cards = new List<int>();
@@ -32,6 +32,7 @@ public class SavedGame {
 public class BackEndManager : MonoBehaviour {
 
 	public static BackEndManager instance;
+	public bool gameWon = false;
 	string SAVEPATH = "decks.txt";
 	string GAMEPATH = "lastGame";
 	string SETTINGSPATH = "settings.txt";
