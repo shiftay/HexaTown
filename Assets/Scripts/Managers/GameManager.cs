@@ -196,6 +196,7 @@ public class GameManager : MonoBehaviour {
 		gameOverCheck();
 
 		if(gameOver) {
+			// TODO: TURN ON A GAME OVER UI.
 			BackEndManager.instance.ChangeState(STATES.ENDGAME);
 		} else {
 			turnOver = false;

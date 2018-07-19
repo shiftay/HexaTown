@@ -53,7 +53,6 @@ public class BackEndManager : MonoBehaviour {
 	public float currentVolume = 0.5f;
 	public float mutedVolume = 0f;
 	public bool mutedMusic = false;
-	public bool mutedSFX = false;
 	public float currentSFX = 0.5f;
 	public float mutedSFXVol = 0f;
 
@@ -152,9 +151,8 @@ public class BackEndManager : MonoBehaviour {
 				mutedMusic = bool.Parse(split[0]);
 				currentVolume = float.Parse(split[1]);
 				mutedVolume = float.Parse(split[2]);
-				mutedSFX = bool.Parse(split[3]);
-				currentSFX = float.Parse(split[4]);
-				mutedSFXVol = float.Parse(split[5]);
+				currentSFX = float.Parse(split[3]);
+				mutedSFXVol = float.Parse(split[4]);
 			}
 
 			sr.Close();
@@ -288,7 +286,7 @@ public class BackEndManager : MonoBehaviour {
 
 	string createSettingsString() {
 		return mutedMusic.ToString() + DELIMITER + currentVolume.ToString() + DELIMITER + mutedVolume.ToString() 
-		+ DELIMITER + mutedSFX.ToString() + DELIMITER + currentSFX.ToString() + DELIMITER + mutedSFXVol.ToString();
+		+ DELIMITER + currentSFX.ToString() + DELIMITER + mutedSFXVol.ToString();
 	}
 
 
@@ -408,6 +406,7 @@ public class BackEndManager : MonoBehaviour {
 	void ClearFiles() {
 		File.Delete(Application.persistentDataPath + GAMEPATH);
 		File.Delete(Application.persistentDataPath + SAVEPATH);
+		File.Delete(Application.persistentDataPath + SETTINGSPATH);
 	}
 // ============= BACK END UTILITIES ====================
 }

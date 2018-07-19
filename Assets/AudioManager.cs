@@ -22,6 +22,10 @@ public class AudioManager : MonoBehaviour {
 		
 	}
 
+	public void mute(bool mute) {
+		musicSource.mute = mute;
+		sfxSource.mute = mute;
+	}
 
 	public void setVolumes(float sfx, float music) {
 		musicSource.volume = music;
