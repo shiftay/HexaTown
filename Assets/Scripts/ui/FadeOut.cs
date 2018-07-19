@@ -54,6 +54,21 @@ public class FadeOut : MonoBehaviour {
 		box.Play("FadeIn");
 	}
 
+
+	public void creditsFade() {
+		box.Play("FadeOut");
+		Invoke("sfx", 0.5f);
+		Invoke("creditFadeIn", 2.0F);
+	}
+
+
+	void creditFadeIn() {
+		box.Play("FadeIn");
+	}
+
+
+
+
 	IEnumerator wait(BackEndManager bm) {
 		yield return new WaitForSeconds(2.0f);
 		bm.states[bm.prvState].SetActive(false);

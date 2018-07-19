@@ -239,18 +239,6 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-
-
-
-
-
-
-		
-		
-
-
-
-
 	}
 
 	int possiblePlays() {
@@ -429,9 +417,6 @@ public class GameManager : MonoBehaviour {
 			currentDeck.RemoveRange(0, 5);
 			hc.setHand(activeHAND);
 		}
-	
-
-
 	}
 
 	void ReadCardData() {
