@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS }
+public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS }
 
 public class Deck {
 	public List<int> cards = new List<int>();
@@ -40,6 +40,7 @@ public class BackEndManager : MonoBehaviour {
 	public List<Deck> decks = new List<Deck>();
 	public int currentState;
 	public int prvState;
+	public int creditsState;
 	public List<GameObject> states = new List<GameObject>();
 	public bool deleteFiles = false;
 	public SavedGame sGame;
@@ -89,6 +90,15 @@ public class BackEndManager : MonoBehaviour {
 			currentState = (int)state;
 			states[prvState].SetActive(true);
 			states[currentState].SetActive(true);
+		} else if(state == STATES.CREDITS) {
+			creditsState = prvState;
+			prvState = currentState;
+			currentState = (int)state;
+			fo.fade(state, this);
+			// states[creditsState].SetActive(false);
+			// states[prvState].SetActive(false);
+			// states[currentState].SetActive(true);
+
 		} else {
 			prvState = currentState;
 			currentState = (int)state;
@@ -109,6 +119,20 @@ public class BackEndManager : MonoBehaviour {
 		states[currentState].SetActive(true);
 		states[prvState].SetActive(false);
 	}
+
+	public void LeaveCredits() {
+
+
+		// states[creditsState].SetActive(true);
+		// states[prvState].SetActive(true);
+		// states[currentState].SetActive(false);
+		currentState = prvState;
+		prvState = creditsState;	
+
+		fo.fade((STATES)currentState, this);
+		
+	}
+
 
 	void ReadDecks() {
 		if(File.Exists(Application.persistentDataPath + DELIMITER + SAVEPATH)) {

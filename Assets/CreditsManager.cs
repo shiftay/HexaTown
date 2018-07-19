@@ -33,7 +33,8 @@ public class CreditsManager : MonoBehaviour {
 	bool calledFade = false;
 	public List<Text> secondGW;
 	public List<string> secondGWs;
-
+	public List<Text> thirdGW;
+	public List<string> thirdGWs;
 
 
 
@@ -46,6 +47,8 @@ public class CreditsManager : MonoBehaviour {
 	{
 		gw.Add(new GhostWrites(firstGhostWrite, firstWrite));
 		gw.Add(new GhostWrites(secondGWs, secondGW));
+		gw.Add(new GhostWrites(thirdGWs, thirdGW));
+		OnEnable();
 	}
 
 
@@ -55,9 +58,12 @@ public class CreditsManager : MonoBehaviour {
 	/// </summary>
 	void OnEnable()
 	{
-		ghostWrite = true;
+		writePhase = -1;
 		counter = 0;
-		
+		clearPrev();
+		writePhase = 0;
+		typeCount = 0;
+		resetVars();
 	}
 
 
@@ -130,18 +136,20 @@ public class CreditsManager : MonoBehaviour {
 
 
 	void black() {
-		BackEndManager.instance.fo.creditsFade();
-		counter = 0;
-		timePassed = 0f;
-		calledFade = true;
-		typeCount = 0;
+
 		writePhase++;
-		
+		calledFade = true;
 		if(writePhase >= gw.Count){
 			writePhase = 0;
+		} else {
+			BackEndManager.instance.fo.creditsFade();
+			counter = 0;
+			timePassed = 0f;
+			
+			typeCount = 0;
+			Invoke("clearPrev", 2.0f);
+			Invoke("resetVars", 2.5f);
 		}
-		Invoke("clearPrev", 2.0f);
-		Invoke("resetVars", 2.5f);
 	}
 
 	void resetVars() {
@@ -149,6 +157,10 @@ public class CreditsManager : MonoBehaviour {
 		calledFade = false;
 		ghostWrite = true;
 		
+	}
+
+	public void leaveCredits() {
+		BackEndManager.instance.LeaveCredits();
 	}
 
 }

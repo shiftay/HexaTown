@@ -33,8 +33,15 @@ public class FadeOut : MonoBehaviour {
 		// else if(BackEndManager.instance.prvState == (int)STATES.GAME) {
 		// 	AudioManager.instance.startFadeO(false);
 		// }
-		Invoke("sfx", 0.5f);
-		Invoke("fadeIn", 2.0F);
+		if(state == STATES.CREDITS) {
+			Invoke("sfx", 0.5f);	
+			Invoke("fadeinAlt", 2.0f);
+		} else {
+			Invoke("sfx", 0.5f);
+			Invoke("fadeIn", 2.0F);
+		}
+
+		
 		
 		// StartCoroutine(wait(bm));
 
@@ -49,6 +56,22 @@ public class FadeOut : MonoBehaviour {
 	}
 
 	void fadeIn() {
+		BackEndManager.instance.states[BackEndManager.instance.prvState].SetActive(false);
+		BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(true);
+
+		if(BackEndManager.instance.creditsState != -1) {
+			BackEndManager.instance.states[BackEndManager.instance.prvState].SetActive(true);
+			// BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(false);
+			// BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(true);
+			BackEndManager.instance.states[(int)STATES.CREDITS].SetActive(false);
+			BackEndManager.instance.creditsState = -1;
+		}
+
+		box.Play("FadeIn");
+	}
+
+	void fadeinAlt() {
+		BackEndManager.instance.states[BackEndManager.instance.creditsState].SetActive(false);
 		BackEndManager.instance.states[BackEndManager.instance.prvState].SetActive(false);
 		BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(true);
 		box.Play("FadeIn");
