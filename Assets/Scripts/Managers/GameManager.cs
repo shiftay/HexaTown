@@ -106,6 +106,7 @@ public class GameManager : MonoBehaviour {
 	int commuterTracker = 0;
 	int partyTracker = 0;
 	public bool gameOver = false;
+	public GameObject endgameUI;
 
 	// Use this for initialization
 	void OnEnable () {
@@ -189,16 +190,18 @@ public class GameManager : MonoBehaviour {
 	public void finishTurn() {
 		um.TurnStart();
 		resetHand();
-
-		cardsPlayed = 0;
-		turnCardPlayed.Clear();
-		saveGame();
 		gameOverCheck();
+	
 
 		if(gameOver) {
 			// TODO: TURN ON A GAME OVER UI.
-			BackEndManager.instance.ChangeState(STATES.ENDGAME);
+			disableHand();
+			endgameUI.SetActive(true);
 		} else {
+			cardsPlayed = 0;
+			turnCardPlayed.Clear();
+			saveGame();
+		
 			turnOver = false;
 			calculated = false;
 		}

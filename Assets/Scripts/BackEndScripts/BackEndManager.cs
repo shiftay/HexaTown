@@ -325,11 +325,11 @@ public class BackEndManager : MonoBehaviour {
 				temp += x.ToString() + "/";
 			}
 
-			Debug.Log("LAST INDEX: " + temp.LastIndexOf('/'));
-			Debug.Log("Size  " + temp.Length);
+			if(temp != "") {
+				temp.Remove(temp.LastIndexOf('/')-1, 1);
+			} 
 
 
-			temp.Remove(temp.LastIndexOf('/')-1, 1);
 			test.WriteLine(temp);
 
 			temp = "";
@@ -345,7 +345,9 @@ public class BackEndManager : MonoBehaviour {
 				temp += x.ToString() + "/";
 			}
 
-			temp.Remove(temp.LastIndexOf('/')-1, 1);
+			if(temp != "") {
+				temp.Remove(temp.LastIndexOf('/')-1, 1);
+			} 
 			test.WriteLine(temp);
 
 			temp = "";
