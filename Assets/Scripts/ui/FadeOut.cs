@@ -29,6 +29,10 @@ public class FadeOut : MonoBehaviour {
 		
 		if(state == STATES.GAME) {
 			AudioManager.instance.startFadeO(true);
+			if(GameManager.instance) {
+				GameManager.instance.Clear();
+			}
+			
 		} 
 		// else if(BackEndManager.instance.prvState == (int)STATES.GAME) {
 		// 	AudioManager.instance.startFadeO(false);
@@ -40,11 +44,6 @@ public class FadeOut : MonoBehaviour {
 			Invoke("sfx", 0.5f);
 			Invoke("fadeIn", 2.0F);
 		}
-
-		
-		
-		// StartCoroutine(wait(bm));
-
 	}
 
 	void sfx() {

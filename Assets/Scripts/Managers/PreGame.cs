@@ -25,6 +25,14 @@ public class PreGame : MonoBehaviour {
 			btnOutLines[currentSelected].enabled = false;
 		}
 
+		foreach(Button edit in editBtns) {
+			edit.onClick.RemoveAllListeners();
+		}
+
+		foreach(Button del in delBtns) {
+			del.onClick.RemoveAllListeners();
+		}
+
 		currentSelected = -1;
 
 		SetupBtns();

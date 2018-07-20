@@ -11,6 +11,8 @@ public class OptionsManager : MonoBehaviour {
 	public Sprite muted;
 	public Sprite unmuted;
 	public GameObject phone;
+	public GameObject gameBtns;
+	public GameObject outofGameBtns;
 	bool movePhone;
 	Vector3 startPos;
 	Vector3 endPos;
@@ -28,6 +30,14 @@ public class OptionsManager : MonoBehaviour {
 			float temp = bm.currentVolume;
 			music.value = temp;
 			sfx.value = bm.currentSFX;
+		}
+
+		if((STATES)BackEndManager.instance.prvState == STATES.GAME) {
+			gameBtns.SetActive(true);
+			outofGameBtns.SetActive(false);
+		} else {
+			gameBtns.SetActive(false);
+			outofGameBtns.SetActive(true);
 		}
 
 		// phone.transform.position = startPos;
@@ -63,6 +73,10 @@ public class OptionsManager : MonoBehaviour {
 
 	public void revert() {
 		bm.RevertState();
+		if((STATES)BackEndManager.instance.prvState == STATES.GAME) {
+			GameManager.instance.unPause();
+			
+		}
 	}
 
 	public void mute(Image test) {
@@ -88,5 +102,14 @@ public class OptionsManager : MonoBehaviour {
 
 	public void Credits() {
 		BackEndManager.instance.ChangeState(STATES.CREDITS);
+	}
+	public void ExitGame() {
+		anim.clip = away;
+		anim.Play();
+		Invoke("exit", 1.0f);
+	}
+
+	void exit() {
+		BackEndManager.instance.LeaveGame();
 	}
 }

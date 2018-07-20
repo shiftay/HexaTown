@@ -37,23 +37,25 @@ public class GameOver : MonoBehaviour {
 	public void homeBtn() {
 		anim.clip = putAway;
 		anim.Play();
-		Invoke("pre", 1.5f);
+		Invoke("pre", 1.0f);
 	}
 
 	public void statsBtn() {
 		anim.clip = putAway;
 		anim.Play();
-		Invoke("end", 1.5f);
+		Invoke("end", 1.0f);
 	}
 
 
 	void end() {
 		BackEndManager.instance.ChangeState(STATES.ENDGAME);
+		BackEndManager.instance.clear = null;
 		this.gameObject.SetActive(false);
 	}
 
 	void pre() {
 		BackEndManager.instance.ChangeState(STATES.PREGAME);
+		BackEndManager.instance.clear = null;
 		this.gameObject.SetActive(false);
 	}
 }

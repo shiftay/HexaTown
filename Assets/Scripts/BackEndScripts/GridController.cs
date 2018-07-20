@@ -104,4 +104,28 @@ public class GridController : MonoBehaviour {
 
 
 	}
+
+	public void resetTiles(Sprite tile) {
+		foreach(GameObject x in hexCells) {
+			x.GetComponent<SpriteRenderer>().sprite = tile;
+			for(int i = 0; i < x.transform.childCount; i++) {
+				x.transform.GetChild(i).gameObject.SetActive(false);
+			}
+
+		}
+
+		int currentRow = 0;
+		int currentCol = 0;
+
+		for(int i = 0; i < hexCells.Length; i++) {
+				if( i != 0 && i % cols == 0) {
+					currentRow++;
+					currentCol = 0;
+				}
+				gameplayObj[currentRow, currentCol] = -1;
+
+				currentCol++;
+			}
+	}
+
 }

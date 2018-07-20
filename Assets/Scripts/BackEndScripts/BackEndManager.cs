@@ -45,6 +45,12 @@ public class BackEndManager : MonoBehaviour {
 	public bool deleteFiles = false;
 	public SavedGame sGame;
 	public bool resume = false;
+	public SavedGame clear {
+		set {
+			sGame = value;
+			ClearSave();
+		}
+	}
 	public SavedGame save {
 		set {
 			sGame = value;
@@ -111,6 +117,13 @@ public class BackEndManager : MonoBehaviour {
 		// states[currentState].SetActive(true);
 	}
 
+	public void LeaveGame() {
+		states[currentState].SetActive(false);
+		currentState = (int)STATES.PREGAME;
+		
+		fo.fade((STATES)currentState, this);
+	}
+
 	public void RevertState() {
 		int temp = currentState;
 		currentState = prvState;
@@ -133,7 +146,9 @@ public class BackEndManager : MonoBehaviour {
 		
 	}
 
-
+	void ClearSave() {
+		File.Delete(Application.persistentDataPath + DELIMITER + "saveGame.txt");
+	}
 	void ReadDecks() {
 		if(File.Exists(Application.persistentDataPath + DELIMITER + SAVEPATH)) {
 			StreamReader sr = new StreamReader(Application.persistentDataPath + DELIMITER + SAVEPATH);

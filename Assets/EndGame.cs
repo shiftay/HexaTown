@@ -21,6 +21,24 @@ public class EndGame : MonoBehaviour {
 		} else {
 			title.text = "Unsuccessful";
 		}
+
+		GameManager gm = GameManager.instance;
+
+		happy.positionCount = gm.prevHapp.Count;
+		for(int i = 0; i < happy.positionCount; i++) {
+			happy.SetPosition(i, new Vector3(i,(float)(gm.prevHapp[i]) / 3f, 0));
+		}
+
+		objective.positionCount = gm.prevObjec.Count;
+		for(int i = 0; i < objective.positionCount; i++) {
+			objective.SetPosition(i, new Vector3(i,(float)(gm.prevObjec[i]) / 3f, 0));
+		}
+
+		population.positionCount = gm.prevPop.Count;
+		for(int i = 0; i < population.positionCount; i++) {
+			population.SetPosition(i, new Vector3(i,(float)(gm.prevPop[i]) / 3f, 0));
+		}
+
 	}
 
 }

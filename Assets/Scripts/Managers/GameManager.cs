@@ -107,16 +107,24 @@ public class GameManager : MonoBehaviour {
 	int partyTracker = 0;
 	public bool gameOver = false;
 	public GameObject endgameUI;
+	public GameObject pause;
+	bool firstRun = true;
 
 	// Use this for initialization
 	void OnEnable () {
-		instance = this;
+		
 		gameOver = false;
-		ReadCardData();
-		gc = GetComponent<GridController>();
-		um = GetComponent<UIManager>();
-		cardsPlayed = 0;
-		currentDeck.Clear();
+		pause.SetActive(true);
+		if(firstRun) {
+			instance = this;
+			ReadCardData();
+			gc = GetComponent<GridController>();
+			um = GetComponent<UIManager>();
+		} else {
+			
+		}
+
+		
 
 		if(BackEndManager.instance.resume) {
 			ResumeGame();
@@ -129,6 +137,26 @@ public class GameManager : MonoBehaviour {
 		}
 
 
+	}
+
+	public void Clear() {
+		cardsPlayed = 0;
+		currentDeck.Clear();
+		activeHAND.Clear();
+		currentDiscard.Clear();
+		prevHapp.Clear();
+		prevObjec.Clear();
+		prevPop.Clear();
+		populationVal = 0;
+		happinessVal = 0;
+		objectiveVal = 0;
+		currentTurn = 0;
+		party = false;
+		commuters = false;
+		turnCardPlayed.Clear();
+		hc.resetHand();
+		currentTiles.Clear();
+		gc.resetTiles(baseTile);
 	}
 
 	void AddCorruption() {
@@ -546,8 +574,10 @@ public class GameManager : MonoBehaviour {
 				tempPop -= factories[i].tileValue;
 				objectiveVal++;
 			} else {
-				remainingPos = i;
-				flag = true;
+				if(!flag) {
+					remainingPos = i;
+					flag = true;
+				}
 			}
 		}
 
@@ -796,4 +826,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 //=====================================EVENTS=============================================
+
+	public void Pause() {
+		pause.SetActive(false);
+		BackEndManager.instance.ChangeState(STATES.OPTIONS);
+	}
+
+	public void unPause() {
+		pause.SetActive(true);
+	}
 }
