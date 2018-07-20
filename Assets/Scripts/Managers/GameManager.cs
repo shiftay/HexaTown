@@ -153,6 +153,7 @@ public class GameManager : MonoBehaviour {
 		currentTurn = 0;
 		party = false;
 		commuters = false;
+		turnOver = false;
 		turnCardPlayed.Clear();
 		hc.resetHand();
 		currentTiles.Clear();
