@@ -18,11 +18,12 @@ public class EndGame : MonoBehaviour {
 	public Text[] information;
 	public Outline[] btnOutlines;
 	GameManager gm;
+	public GameObject[] folders;
 
 	void OnEnable()
 	{
 		if(BackEndManager.instance.gameWon) {
-			title.text = "YOU WIN! YAY";
+			title.text = "Successful Planning!";
 			//TODO ANIMATIONS/ FIREWORKS.
 			//		PLAY A SOUND
 		} else {
@@ -46,6 +47,16 @@ public class EndGame : MonoBehaviour {
 		for(int i = 0; i < infoBlocks.Length; i++) {
 			infoBlocks[i].SetActive(false);
 		}
+
+		for(int i = 0; i < folders.Length; i++) {
+			Vector3 temp = folders[i].transform.position;
+			temp.z = 0;
+			folders[i].transform.position = temp;
+		}
+
+		Vector3 newZ = folders[currentChoice].transform.position;
+		newZ.z = -1;
+		folders[currentChoice].transform.position = newZ;
 
 		infoBlocks[currentChoice].SetActive(true);
 
