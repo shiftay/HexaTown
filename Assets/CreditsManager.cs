@@ -35,6 +35,8 @@ public class CreditsManager : MonoBehaviour {
 	public List<string> secondGWs;
 	public List<Text> thirdGW;
 	public List<string> thirdGWs;
+	public List<Text> fourthGW;
+	public List<string> fourthGWs;
 
 
 
@@ -46,6 +48,7 @@ public class CreditsManager : MonoBehaviour {
 	void Start()
 	{
 		gw.Add(new GhostWrites(firstGhostWrite, firstWrite));
+		gw.Add(new GhostWrites(fourthGWs, fourthGW));
 		gw.Add(new GhostWrites(secondGWs, secondGW));
 		gw.Add(new GhostWrites(thirdGWs, thirdGW));
 		OnEnable();

@@ -19,6 +19,7 @@ public class OptionsManager : MonoBehaviour {
 	public Animation anim;
 	public AnimationClip clip;
 	public AnimationClip away;
+	public Image mutedImg;
 
 	/// <summary>
 	/// This function is called when the object becomes enabled and active.
@@ -38,6 +39,12 @@ public class OptionsManager : MonoBehaviour {
 		} else {
 			gameBtns.SetActive(false);
 			outofGameBtns.SetActive(true);
+		}
+
+		if(BackEndManager.instance.mutedMusic) {
+			mutedImg.sprite = muted;
+		} else {
+			mutedImg.sprite = unmuted;
 		}
 
 		// phone.transform.position = startPos;
@@ -72,17 +79,15 @@ public class OptionsManager : MonoBehaviour {
 	}
 
 	public void revert() {
-		bm.RevertState();
 		if((STATES)BackEndManager.instance.prvState == STATES.GAME) {
 			GameManager.instance.unPause();
-			
 		}
+		bm.RevertState();
 	}
 
 	public void mute(Image test) {
 		if(test.sprite == muted) {
 			test.sprite = unmuted;	// unmute
-			
 		} else {
 			test.sprite = muted; 	//mute
 		}

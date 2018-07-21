@@ -112,4 +112,5 @@ public class PreGame : MonoBehaviour {
 			btns[BackEndManager.instance.decks.Count].onClick.AddListener(createDeck);
 		}
 	}
+
 }

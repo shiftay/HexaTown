@@ -27,16 +27,12 @@ public class EndGame : MonoBehaviour {
 			//TODO ANIMATIONS/ FIREWORKS.
 			//		PLAY A SOUND
 		} else {
-			title.text = "Unsuccessful";
+			title.text = "Unsuccessful...";
 		}
 
 		gm = GameManager.instance;
 		currentChoice = 0;
 		SetInfoBlock();
-	
-
-
-
 	}
 
 
@@ -48,15 +44,7 @@ public class EndGame : MonoBehaviour {
 			infoBlocks[i].SetActive(false);
 		}
 
-		for(int i = 0; i < folders.Length; i++) {
-			Vector3 temp = folders[i].transform.position;
-			temp.z = 0;
-			folders[i].transform.position = temp;
-		}
-
-		Vector3 newZ = folders[currentChoice].transform.position;
-		newZ.z = -1;
-		folders[currentChoice].transform.position = newZ;
+		folders[currentChoice].transform.SetAsLastSibling();
 
 		infoBlocks[currentChoice].SetActive(true);
 

@@ -110,6 +110,9 @@ public class GameManager : MonoBehaviour {
 	public GameObject pause;
 	bool firstRun = true;
 
+	public Animation phone;
+	public AnimationClip[] clips;
+
 	// Use this for initialization
 	void OnEnable () {
 		
@@ -829,11 +832,18 @@ public class GameManager : MonoBehaviour {
 //=====================================EVENTS=============================================
 
 	public void Pause() {
-		pause.SetActive(false);
+		phone.clip = clips[0];
+		phone.Play();
+		Invoke("changestate", 0.4f);
+		
+	}
+
+	void changestate() {
 		BackEndManager.instance.ChangeState(STATES.OPTIONS);
 	}
 
 	public void unPause() {
-		pause.SetActive(true);
+		phone.clip = clips[1];
+		phone.Play();
 	}
 }

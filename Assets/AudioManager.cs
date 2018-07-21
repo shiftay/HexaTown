@@ -20,9 +20,11 @@ public class AudioManager : MonoBehaviour {
 		musicSource.clip = BGM[0];
 		musicSource.Play();
 		
+		
 	}
 
 	public void mute(bool mute) {
+		BackEndManager.instance.mutedMusic = mute;
 		musicSource.mute = mute;
 		sfxSource.mute = mute;
 	}

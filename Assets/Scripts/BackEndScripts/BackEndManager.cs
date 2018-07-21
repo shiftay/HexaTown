@@ -78,7 +78,7 @@ public class BackEndManager : MonoBehaviour {
 		ReadSettings();
 		ReadSave();
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
-
+		AudioManager.instance.mute(mutedMusic);
 		if(deleteFiles) {
 			ClearFiles();
 		} else {
