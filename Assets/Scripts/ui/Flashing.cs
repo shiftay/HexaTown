@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Flashing : MonoBehaviour {
 
 	SpriteRenderer srFlash;
-
+	Image test;
 	public bool flash = true;	
 	public float dTime;
 	public float TIME = 0;
@@ -16,16 +17,19 @@ public class Flashing : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		srFlash = GetComponent<SpriteRenderer>();
+		if(GetComponent<SpriteRenderer>()) {
+			srFlash = GetComponent<SpriteRenderer>();
+		} else {
+			test = GetComponent<Image>();
+		}
+		
 		TIME = dTime;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if(srFlash.sprite == null && flash) {
-			flash = false;
-		}
+	
 
 		if(dir) {
 			TIME += Time.deltaTime * modifier;
@@ -36,7 +40,12 @@ public class Flashing : MonoBehaviour {
 
 
 		if(flash) {
-			srFlash.color = Color.Lerp(lightest, darkest, TIME);
+			if(srFlash) {
+				srFlash.color = Color.Lerp(lightest, darkest, TIME);
+			} else {
+				test.color = Color.Lerp(lightest, darkest, TIME);
+			}
+			
 		}
 
 		if(TIME >= 1) {

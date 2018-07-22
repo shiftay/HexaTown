@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS }
+public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, HELP }
 
 public class Deck {
 	public List<int> cards = new List<int>();
@@ -67,12 +67,18 @@ public class BackEndManager : MonoBehaviour {
 	public int deckToEdit = 0;
 	public int deckChoice = -1;
 	public FadeOut fo;
+
+	public bool firstRun;
 	
 	// Use this for initialization
 	void Start () {
 		instance = this;
 		for(int i = 0; i < transform.childCount; i++) {
 			states.Add(transform.GetChild(i).gameObject);
+		}
+
+		foreach(GameObject state in states) {
+			state.SetActive(false);
 		}
 
 		ReadSettings();
@@ -84,10 +90,16 @@ public class BackEndManager : MonoBehaviour {
 		} else {
 			ReadDecks();
 		}
+
+		if(firstRun) {
+			currentState = (int)STATES.HELP;
+		} else {
+			currentState = (int)STATES.MAINMENU;
+		}
+
+		states[currentState].SetActive(true);
 	}
 	
-	
-
 
 	public void ChangeState(STATES state) {
 
@@ -96,7 +108,7 @@ public class BackEndManager : MonoBehaviour {
 			currentState = (int)state;
 			states[prvState].SetActive(true);
 			states[currentState].SetActive(true);
-		} else if(state == STATES.CREDITS) {
+		} else if(state == STATES.CREDITS || state == STATES.HELP) {
 			creditsState = prvState;
 			prvState = currentState;
 			currentState = (int)state;
@@ -106,8 +118,16 @@ public class BackEndManager : MonoBehaviour {
 			// states[currentState].SetActive(true);
 
 		} else {
-			prvState = currentState;
-			currentState = (int)state;
+
+			if(creditsState != -1) {
+				currentState = prvState;
+				prvState = creditsState;
+			} else {
+				prvState = currentState;
+				currentState = (int)state;
+			}
+
+
 			fo.fade(state, this);
 		}
 

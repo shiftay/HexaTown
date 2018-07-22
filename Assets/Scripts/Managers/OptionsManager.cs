@@ -108,6 +108,10 @@ public class OptionsManager : MonoBehaviour {
 	public void Credits() {
 		BackEndManager.instance.ChangeState(STATES.CREDITS);
 	}
+
+	public void help() {
+		BackEndManager.instance.ChangeState(STATES.HELP);
+	}
 	public void ExitGame() {
 		anim.clip = away;
 		anim.Play();

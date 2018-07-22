@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 public class GhostWrites {
 	public List<Text> texts;
-
+	public Text text;
 	public List<string> textToWrite;
 
 	public GhostWrites(List<string> text, List<Text> txt) {
 		texts = txt;
 		textToWrite = text;
+	}
+
+	public GhostWrites(List<string> text2, Text txt) {
+		text = txt;
+		textToWrite = text2;
 	}
 }
 
