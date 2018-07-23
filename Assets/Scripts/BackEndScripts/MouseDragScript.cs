@@ -7,8 +7,10 @@ public class MouseDragScript : MonoBehaviour {
 	// SpriteRenderer currRenderer;
 	// Sprite currSprite;
 	public CardManager cm;
+    public GridController gc;
     public bool draggingItem = false;
     bool description = false;
+    bool indArea = false;
     private GameObject draggedObject;
     private Vector2 touchOffset;
 	public bool reorderPuz = false;
@@ -35,6 +37,11 @@ public class MouseDragScript : MonoBehaviour {
             if(description) {
                 cm.CardDescription(false);
                 description = false;
+            }
+
+            if(indArea) {
+                gc.ShowGrid(false);
+                indArea = false;
             }
         }
     }
@@ -106,6 +113,11 @@ public class MouseDragScript : MonoBehaviour {
                             cm.CardDescription(true, to.cardNumber);
                             description = true;
                         }
+                    }
+
+                    if(hit.transform.tag == "Book") {
+                        indArea = true;
+                        gc.ShowGrid(true);
                     }
                 }
             }

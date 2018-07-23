@@ -112,6 +112,7 @@ public class GameManager : MonoBehaviour {
 
 	public Animation phone;
 	public AnimationClip[] clips;
+	public Sprite industryArea;
 
 	// Use this for initialization
 	void OnEnable () {
@@ -134,6 +135,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			currentDeck.AddRange(BackEndManager.instance.decks[BackEndManager.instance.deckChoice].cards);
 			currentDeck.AddRange(industryVals);
+			gc.setupIndustryTiles();
 			AddCorruption();
 			Shuffle();
 			Deal();
@@ -684,6 +686,24 @@ public class GameManager : MonoBehaviour {
 
 
 
+	public bool firstTile(TILETYPE t) {
+		bool retVal = false;
+		int count = 0;
+
+		for(int i = 0; i < currentTiles.Count; i++) {
+			if(currentTiles[i].type == t) {
+				count++;
+			}
+		}
+
+		if(count == 0) {
+			retVal = true;
+		}
+
+		return retVal;
+	}
+
+
 //=====================================EVENTS=============================================
 
 	public void permits() {
@@ -838,6 +858,9 @@ public class GameManager : MonoBehaviour {
 		
 	}
 
+	
+
+
 	void changestate() {
 		BackEndManager.instance.ChangeState(STATES.OPTIONS);
 	}
@@ -846,4 +869,5 @@ public class GameManager : MonoBehaviour {
 		phone.clip = clips[1];
 		phone.Play();
 	}
+
 }
