@@ -45,6 +45,7 @@ public class CollectionManager : MonoBehaviour {
 	public Text warning;
 	int count;
 	public GameObject approved;
+	public int LIMITEDCARDS;
 
 	// Use this for initialization
 	void Start () {
@@ -126,7 +127,7 @@ public class CollectionManager : MonoBehaviour {
 					}
 				}
 
-				if(amt < 3) {
+				if(amt < LIMITEDCARDS) {
 					for(int i = 0; i < cardsInDeck.Count; i++) {
 						if(cardsInDeck[i].cardNum == val) {
 							cardsInDeck[i].UpdateAmt(1);

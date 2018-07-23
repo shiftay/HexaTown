@@ -86,7 +86,7 @@ public class TileInfo : MonoBehaviour {
 
 		if(activeChild > 0) {
 			children[activeChild].SetActive(true);
-			if(activeChild > 2) {
+			if(activeChild > 2 && activeChild < 6) {
 				scheduledDemo = true;
 			}
 		}
@@ -94,6 +94,7 @@ public class TileInfo : MonoBehaviour {
 
 		if(type == TILETYPE.EVENT) {
 			gameObject.GetComponent<BoxCollider2D>().enabled = false;
+			scheduledDemo = true;
 		}
 	}
 

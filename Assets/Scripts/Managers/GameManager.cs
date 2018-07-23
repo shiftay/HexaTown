@@ -69,7 +69,7 @@ public class CardData {
 
 
 public class GameManager : MonoBehaviour {
-	int WINCONDITION = 60;
+	int WINCONDITION = 100;
 	public Sprite baseTile;
 	public Sprite water;
 	public static GameManager instance;
@@ -200,7 +200,8 @@ public class GameManager : MonoBehaviour {
 			if(randomBool((float)(turnsSinceEvt * 0.1))) {
 				amtofEvts++;
 				um.EventActivate();
-				um.evnt.EVTChoice((EVENT_RNG)UnityEngine.Random.Range(0, (int)EVENT_RNG.COUNT));
+				//(EVENT_RNG)UnityEngine.Random.Range(0, (int)EVENT_RNG.COUNT)
+				um.evnt.EVTChoice(EVENT_RNG.RAIN);
 				turnsSinceEvt = 0;
 			} else {
 				finishTurn();
@@ -733,6 +734,7 @@ public class GameManager : MonoBehaviour {
 				amtChanged++;
 				prevX = x;
 				prevY = y;
+				gc.gameplayObj[x,y] = -3;
 			}
 
 			if(amtChanged >= 2) {
@@ -809,6 +811,8 @@ public class GameManager : MonoBehaviour {
 		temp.currentDeck.AddRange(currentDeck);
 		temp.currentHand.AddRange(activeHAND);
 
+		temp.industryX.AddRange(gc.INDX);
+		temp.industryY.AddRange(gc.INDY);
 
 		//TODO Save Board State. Tile info.
 
@@ -844,6 +848,12 @@ public class GameManager : MonoBehaviour {
 
 		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace, BackEndManager.instance.sGame.tileState);
 
+
+		for(int i = 0; i < BackEndManager.instance.sGame.industryX.Count; i++) {
+			gc.SetupCoord(BackEndManager.instance.sGame.industryX[i], BackEndManager.instance.sGame.industryY[i]);
+		}
+
+		gc.IndustrySprites();
 
 		hc.setHand(activeHAND);
 

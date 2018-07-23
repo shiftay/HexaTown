@@ -17,12 +17,37 @@ public class GridController : MonoBehaviour {
 	public int rows;
 	public int cols;
 	List<Coords> industryArea = new List<Coords>();
+
 	bool firstRun = true;
 	public GameObject industryGrid;
 	public SpriteRenderer[] indGsprite;
 	SpriteRenderer[,] spriteGrid;
 	public int testX = 0;
 	public int testY = 0;
+
+	public List<int> INDX {
+		get{
+			List<int> temp = new List<int>();
+
+			for(int i = 0; i< industryArea.Count; i++) {
+				temp.Add(industryArea[i].x);
+			}
+
+			return temp;
+		}
+	}
+
+	public List<int> INDY {
+		get{
+			List<int> temp = new List<int>();
+
+			for(int i = 0; i< industryArea.Count; i++) {
+				temp.Add(industryArea[i].y);
+			}
+
+			return temp;
+		}
+	}
 
 
 	// Use this for initialization
@@ -49,7 +74,9 @@ public class GridController : MonoBehaviour {
 	}
 	
 
-
+	public void SetupCoord(int x, int y) {
+		industryArea.Add(new Coords(x,y));
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -103,6 +130,11 @@ public class GridController : MonoBehaviour {
 			}
 		}
 
+		IndustrySprites();
+	}
+
+	public void IndustrySprites() {
+		
 		foreach(SpriteRenderer s in indGsprite) {
 			s.sprite = null;
 		}
@@ -281,7 +313,12 @@ public class GridController : MonoBehaviour {
 
 				grid[currentRow,currentCol].AddComponent<TileInfo>().SetInfo( temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
 				GameManager.instance.currentTiles.Add(grid[currentRow,currentCol].GetComponent<TileInfo>());
-				grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.hc.cm.tiles[saved[i]];
+				if(saved[i] == -3) {
+					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.water;
+				} else {
+					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.hc.cm.tiles[saved[i]];
+				}
+				
 
 				currentState += 3;
 			}
@@ -388,13 +425,13 @@ public class GridController : MonoBehaviour {
 
 		if(test) {
 			if((x >= 0 && x < rows) && (y >= 0 && y < cols)) {
-				if(gameplayObj[x,y] != -1) {
+				if(gameplayObj[x,y] > 0) {
 					retVal = true;
 				}
 			}
 		} else {
 			if((x >= 0 && x < rows) && (y >= 0 && y < cols)) {
-				if(gameplayObj[x,y] != -1) {
+				if(gameplayObj[x,y] > 0) {
 					retVal = GameManager.instance.cardData[gameplayObj[x,y]].TYPE() == type;
 				}
 			}
