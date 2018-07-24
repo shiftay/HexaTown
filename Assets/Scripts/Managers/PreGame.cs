@@ -17,6 +17,7 @@ public class PreGame : MonoBehaviour {
 
 	void OnEnable() {
 		BackEndManager.instance.editDeck = false;
+		BackEndManager.instance.resume = false;
 		BackEndManager.instance.deckToEdit = -1;
 
 		if(currentSelected != -1) {
@@ -97,6 +98,7 @@ public class PreGame : MonoBehaviour {
 			btn.onClick.RemoveAllListeners();
 		}
 
+		Debug.Log("COUNT " + BackEndManager.instance.decks.Count);
 		for(int i = 0; i < BackEndManager.instance.decks.Count; i++) {
 			btns[i].gameObject.SetActive(true);
 			btnImgs[i].sprite = po.stockImages[BackEndManager.instance.decks[i].imageNumber];

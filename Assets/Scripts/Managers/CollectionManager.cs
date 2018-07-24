@@ -486,7 +486,7 @@ public class CollectionManager : MonoBehaviour {
 					}
 				}
 
-				if(amt < 3) {
+				if(amt < LIMITEDCARDS) {
 					for(int i = 0; i < cardsInDeck.Count; i++) {
 						if(cardsInDeck[i].cardNum == val) {
 							cardsInDeck[i].UpdateAmt(1);

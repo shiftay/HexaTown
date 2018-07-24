@@ -24,6 +24,7 @@ public class GridController : MonoBehaviour {
 	SpriteRenderer[,] spriteGrid;
 	public int testX = 0;
 	public int testY = 0;
+	public Sprite indTile;
 
 	public List<int> INDX {
 		get{
@@ -71,6 +72,7 @@ public class GridController : MonoBehaviour {
 			}
 			firstRun = false;
 		}
+		ClearTileInfo();
 	}
 	
 
@@ -82,9 +84,18 @@ public class GridController : MonoBehaviour {
 	void Update () {
 		// Debug.Log("Hello");
 	}
+
+	public void ClearTileInfo() {
+		foreach(GameObject go in hexCells) {
+			if(go.GetComponent<TileInfo>()) {
+				Destroy(go.GetComponent<TileInfo>());
+			}
+		}
+	}
 	
 	public void setupIndustryTiles() {
 		Start();
+		industryArea.Clear();
 		// -2 = industry
 		// -1 = nothing;
 		int x = Random.Range(0, rows);
@@ -141,6 +152,9 @@ public class GridController : MonoBehaviour {
 		
 		foreach(Coords c in industryArea) {
 			spriteGrid[c.x,c.y].sprite = GameManager.instance.industryArea;
+			if(!grid[c.x,c.y].GetComponent<TileInfo>()) {
+				grid[c.x,c.y].GetComponent<SpriteRenderer>().sprite = indTile;
+			}
 		}
 
 		industryGrid.SetActive(false);
@@ -425,13 +439,13 @@ public class GridController : MonoBehaviour {
 
 		if(test) {
 			if((x >= 0 && x < rows) && (y >= 0 && y < cols)) {
-				if(gameplayObj[x,y] > 0) {
+				if(gameplayObj[x,y] >= 0) {
 					retVal = true;
 				}
 			}
 		} else {
 			if((x >= 0 && x < rows) && (y >= 0 && y < cols)) {
-				if(gameplayObj[x,y] > 0) {
+				if(gameplayObj[x,y] >= 0) {
 					retVal = GameManager.instance.cardData[gameplayObj[x,y]].TYPE() == type;
 				}
 			}
@@ -439,7 +453,6 @@ public class GridController : MonoBehaviour {
 
 		return retVal;
 	}
-
 
 	public bool surrounded(TILETYPE t) {
 		bool retVal = false;

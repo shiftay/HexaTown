@@ -45,9 +45,7 @@ public class HandController : MonoBehaviour {
 					if(!cm.containsTile(hitTile.sprite) && !cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
 						TILETYPE t = GameManager.instance.cardData[cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite)].TYPE();
 						if ((t == TILETYPE.INDUSTRIAL && hexGrid.industryCheck(hexGrid.COORDS(position)) || (t != TILETYPE.INDUSTRIAL))) {
-							if(hexGrid.placeTile(hexGrid.COORDS(position), t, GameManager.instance.firstTile(t), GameManager.instance.currentTiles.Count == 0)) {
-														
-														
+							if(hexGrid.placeTile(hexGrid.COORDS(position), t, GameManager.instance.firstTile(t), GameManager.instance.currentTiles.Count == 0)) {					
 								hit.transform.gameObject.AddComponent<TileInfo>().SetInfo(hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite)), cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 								GameManager.instance.currentTiles.Add(hit.transform.gameObject.GetComponent<TileInfo>());
 								currentCard.transform.position = new Vector2(-100,-100);
@@ -55,7 +53,7 @@ public class HandController : MonoBehaviour {
 								GameManager.instance.playedCard(cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 							} else {
 								
-								if(hexGrid.surrounded(t)) {
+								if(hexGrid.surrounded(t) && !GameManager.instance.firstTile(t)) {
 									hit.transform.gameObject.AddComponent<TileInfo>().SetInfo(hexGrid.updateGRID(position, cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite)), cm.cardValue(currentCard.GetComponent<SpriteRenderer>().sprite));
 									GameManager.instance.currentTiles.Add(hit.transform.gameObject.GetComponent<TileInfo>());
 									currentCard.transform.position = new Vector2(-100,-100);

@@ -47,6 +47,7 @@ public class BackEndManager : MonoBehaviour {
 	public bool deleteFiles = false;
 	public SavedGame sGame;
 	public bool resume = false;
+	public bool changingState = false;
 	public SavedGame clear {
 		set {
 			sGame = value;
@@ -83,14 +84,15 @@ public class BackEndManager : MonoBehaviour {
 			state.SetActive(false);
 		}
 
-		ReadSettings();
-		ReadSave();
+
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 		AudioManager.instance.mute(mutedMusic);
 		if(deleteFiles) {
 			ClearFiles();
 		} else {
 			ReadDecks();
+			ReadSettings();
+			ReadSave();
 		}
 
 		if(firstRun) {
@@ -104,35 +106,36 @@ public class BackEndManager : MonoBehaviour {
 	
 
 	public void ChangeState(STATES state) {
-
-		if(state == STATES.OPTIONS) {
-			prvState = currentState;
-			currentState = (int)state;
-			states[prvState].SetActive(true);
-			states[currentState].SetActive(true);
-		} else if(state == STATES.CREDITS || state == STATES.HELP) {
-			creditsState = prvState;
-			prvState = currentState;
-			currentState = (int)state;
-			fo.fade(state, this);
-			// states[creditsState].SetActive(false);
-			// states[prvState].SetActive(false);
-			// states[currentState].SetActive(true);
-
-		} else {
-
-			if(creditsState != -1) {
-				currentState = prvState;
-				prvState = creditsState;
-			} else {
+		if(!changingState) {
+			if(state == STATES.OPTIONS) {
 				prvState = currentState;
 				currentState = (int)state;
+				states[prvState].SetActive(true);
+				states[currentState].SetActive(true);
+			} else if(state == STATES.CREDITS || state == STATES.HELP) {
+				creditsState = prvState;
+				prvState = currentState;
+				currentState = (int)state;
+				fo.fade(state, this);
+				// states[creditsState].SetActive(false);
+				// states[prvState].SetActive(false);
+				// states[currentState].SetActive(true);
+
+			} else {
+
+				if(creditsState != -1) {
+					currentState = prvState;
+					prvState = creditsState;
+				} else {
+					prvState = currentState;
+					currentState = (int)state;
+				}
+
+
+				fo.fade(state, this);
 			}
-
-
-			fo.fade(state, this);
 		}
-
+	
 		// prvState = currentState;
 		// currentState = (int)state;
 		// states[prvState].SetActive(false);

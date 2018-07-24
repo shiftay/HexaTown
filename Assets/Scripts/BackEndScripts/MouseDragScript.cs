@@ -64,9 +64,9 @@ public class MouseDragScript : MonoBehaviour {
         if (draggingItem)
         {
             draggedObject.transform.position = inputPosition;
-            Debug.Log("Object: " + draggedObject.transform.position);
-            Debug.Log("Input: " + inputPosition);
-            Debug.Log("Offset: " + touchOffset);
+            // Debug.Log("Object: " + draggedObject.transform.position);
+            // Debug.Log("Input: " + inputPosition);
+            // Debug.Log("Offset: " + touchOffset);
 
             draggedObject.transform.position = changeZ(draggedObject.transform.position);
             // Vector3 fix = draggedObject.transform.position;
@@ -84,7 +84,7 @@ public class MouseDragScript : MonoBehaviour {
                         draggingItem = true;
                         draggedObject = hit.transform.gameObject;
                         touchOffset = (Vector2)hit.transform.position - inputPosition;
-                        Debug.Log(touchOffset);
+                        // Debug.Log(touchOffset);
                         draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
                         Sprite card = draggedObject.GetComponent<SpriteRenderer>().sprite;
                         valueOfCard = cm.ValueOfAll(card);

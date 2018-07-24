@@ -270,6 +270,44 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
+		int amtofInd = gc.INDX.Count;
+		int factory = 0;
+		for(int i = 0; i < currentTiles.Count; i++) {
+			if(currentTiles[i].type == TILETYPE.INDUSTRIAL){
+				factory++;
+			}
+		}
+
+		int industryCards = 0;
+		for(int i = 0; i < activeHAND.Count; i++) {
+			if(cardData[activeHAND[i]].TYPE() == TILETYPE.INDUSTRIAL) {
+				industryCards++;
+			}
+		}
+
+		// Industry based loss
+		if(industryCards == 5 && (amtofInd - factory) < 2) {
+			gameOver = true;
+		}
+		// Industry based loss
+		if((amtofInd - factory) <= 1 && industryCards > 1) {
+			if((amtOfSpells + industryCards) == activeHAND.Count && possiblePlays() < 2){
+				gameOver = true;
+			}
+		}
+
+		int otherCards = activeHAND.Count - (amtOfSpells + industryCards);
+
+		switch(otherCards) {
+			case 2: case 3:
+
+				break;
+			case 5:
+
+				break;
+		}
+		
+	
 
 		if(amtOfSpells == activeHAND.Count) {
 			if(possiblePlays() < 2) {
@@ -282,6 +320,20 @@ public class GameManager : MonoBehaviour {
 	int possiblePlays() {
 		int possiblePlays = 0;
 		int dupCom = 0, dupPart = 0, dupJust = 0, dupBuild = 0, dupRecyc = 0;
+		int res = 0, comm = 0, ind = 0;
+
+
+		int amtofInd = gc.INDX.Count;
+		int factory = 0;
+		for(int i = 0; i < currentTiles.Count; i++) {
+			if(currentTiles[i].type == TILETYPE.INDUSTRIAL){
+				factory++;
+			}
+		}
+		int possInd = amtofInd - factory;
+
+		int spotsLeft = 56 - currentTiles.Count;
+
 
 		for(int i = 0; i < activeHAND.Count; i++) {
 			bool flip = false;
@@ -366,6 +418,23 @@ public class GameManager : MonoBehaviour {
 						break;
 				}
 			}
+
+			if(cardData[activeHAND[i]].TYPE() == TILETYPE.INDUSTRIAL) {
+				if(possInd > 0) {
+					possInd--;
+					possiblePlays++;
+				}
+			}
+
+
+			if(cardData[activeHAND[i]].TYPE() == TILETYPE.RESIDENTIAL || cardData[activeHAND[i]].TYPE() == TILETYPE.COMMERCIAL) {
+
+				
+
+
+
+			}
+
 		}
 
 		return possiblePlays;

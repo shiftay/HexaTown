@@ -26,7 +26,7 @@ public class FadeOut : MonoBehaviour {
 	public void fade(STATES state, BackEndManager bm) {
 		// box.clip = anims[1];
 		box.Play("FadeOut");
-		
+		BackEndManager.instance.changingState = true;
 		if(state == STATES.GAME) {
 			AudioManager.instance.startFadeO(true);
 			if(GameManager.instance) {
@@ -66,7 +66,7 @@ public class FadeOut : MonoBehaviour {
 			BackEndManager.instance.states[(int)STATES.HELP].SetActive(false);
 			BackEndManager.instance.creditsState = -1;
 		}
-
+		BackEndManager.instance.changingState = false;
 		box.Play("FadeIn");
 	}
 
@@ -75,6 +75,7 @@ public class FadeOut : MonoBehaviour {
 		BackEndManager.instance.states[BackEndManager.instance.prvState].SetActive(false);
 		BackEndManager.instance.states[BackEndManager.instance.currentState].SetActive(true);
 		box.Play("FadeIn");
+		BackEndManager.instance.changingState = false;
 	}
 
 
