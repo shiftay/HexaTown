@@ -263,57 +263,42 @@ public class GameManager : MonoBehaviour {
 		if(currentTiles.Count == 56) {
 			if(amtOfSpells < 2) {
 				gameOver = true; 
-			} else {
-				if(possiblePlays() < 2) {
-					gameOver = true;
-				}
 			}
 		}
 
-		int amtofInd = gc.INDX.Count;
-		int factory = 0;
-		for(int i = 0; i < currentTiles.Count; i++) {
-			if(currentTiles[i].type == TILETYPE.INDUSTRIAL){
-				factory++;
-			}
-		}
 
-		int industryCards = 0;
-		for(int i = 0; i < activeHAND.Count; i++) {
-			if(cardData[activeHAND[i]].TYPE() == TILETYPE.INDUSTRIAL) {
-				industryCards++;
-			}
-		}
+
+		// int amtofInd = gc.INDX.Count;
+		// int factory = 0;
+		// for(int i = 0; i < currentTiles.Count; i++) {
+		// 	if(currentTiles[i].type == TILETYPE.INDUSTRIAL){
+		// 		factory++;
+		// 	}
+		// }
+
+		// int industryCards = 0;
+		// for(int i = 0; i < activeHAND.Count; i++) {
+		// 	if(cardData[activeHAND[i]].TYPE() == TILETYPE.INDUSTRIAL) {
+		// 		industryCards++;
+		// 	}
+		// }
 
 		// Industry based loss
-		if(industryCards == 5 && (amtofInd - factory) < 2) {
+		// if(industryCards == 5 && (amtofInd - factory) < 2) {
+		// 	gameOver = true;
+		// }
+		// Industry based loss
+		// if((amtofInd - factory) <= 1 && industryCards > 1) {
+		// 	if((amtOfSpells + industryCards) == activeHAND.Count && possiblePlays() < 2){
+		// 		gameOver = true;
+		// 	}
+		// }
+
+		if(possiblePlays() < 2) {
 			gameOver = true;
 		}
-		// Industry based loss
-		if((amtofInd - factory) <= 1 && industryCards > 1) {
-			if((amtOfSpells + industryCards) == activeHAND.Count && possiblePlays() < 2){
-				gameOver = true;
-			}
-		}
 
-		int otherCards = activeHAND.Count - (amtOfSpells + industryCards);
-
-		switch(otherCards) {
-			case 2: case 3:
-
-				break;
-			case 5:
-
-				break;
-		}
-		
-	
-
-		if(amtOfSpells == activeHAND.Count) {
-			if(possiblePlays() < 2) {
-				gameOver = true;
-			}
-		}
+		// Debug.Log("POSSIBLE PLAYS: " + possiblePlays());
 
 	}
 
@@ -333,21 +318,38 @@ public class GameManager : MonoBehaviour {
 		int possInd = amtofInd - factory;
 
 		int spotsLeft = 56 - currentTiles.Count;
+		int notDemos = 0;
+		for(int i = 0; i < currentTiles.Count; i++) {
+			if(!currentTiles[i].scheduledDemo) {
+				notDemos++;
+			}
+		}
+
 
 
 		for(int i = 0; i < activeHAND.Count; i++) {
 			bool flip = false;
 			if(cardData[activeHAND[i]].TYPE() == TILETYPE.SPELL) {
-				switch(cardData[activeHAND[i]].TVALUE()) {
-					case 29: //commuter
+				switch(activeHAND[i]) {
+					case 28: //commuter
 						if(!commuters && dupCom == 0) {
 							possiblePlays++;
+							Debug.Log("COMMUTER POSSIBLE");
 						}
 
 						dupCom++;
 						break;
 
-					case 31: // justice
+					case 29: // demo?
+						if(notDemos > 0) {
+							notDemos--;
+							possiblePlays++;
+							Debug.Log("DEMO POSSIBLE");
+						}
+						
+						break;
+
+					case 30: // justice
 						int corruptTiles = 0;
 
 						for(int x = 0; x < currentTiles.Count; x++) {
@@ -361,24 +363,27 @@ public class GameManager : MonoBehaviour {
 								corruptTiles -= dupJust;
 								if(corruptTiles != 0) {
 									possiblePlays++;
+									Debug.Log("justice POSSIBLE");
 								}
 							} else {
 								possiblePlays++;
+								Debug.Log("justice POSSIBLE");
 							}
 						}
 
 						dupJust++;
 						break;
 					
-					case 32: // party
+					case 31: // party
 						if(!party && dupPart == 0) {
 							possiblePlays++;
+							Debug.Log("party POSSIBLE");
 						}
 						
 						dupPart++;
 						break;
 					
-					case 33: // quick build
+					case 32: // quick build
 						int incompleteBuilds = 0;
 						for(int x = 0; x < currentTiles.Count; x++) {
 							if(currentTiles[x].buildTime != 0 && currentTiles[x].type != TILETYPE.EVENT && !currentTiles[x].scheduledDemo) {
@@ -391,27 +396,31 @@ public class GameManager : MonoBehaviour {
 								incompleteBuilds -= dupBuild;
 								if(incompleteBuilds != 0) {
 									possiblePlays++;
+									Debug.Log("quick build POSSIBLE");
 								}
 							} else {
 								possiblePlays++;
+								Debug.Log("quick build POSSIBLE");
 							}
 						}
 						dupBuild++;
 						break;
 
-					case 34: // recycle
+					case 33: // recycle
 						if(currentDiscard.Count != 0 && dupRecyc == 0) {
 							possiblePlays++;
+							Debug.Log("recycle POSSIBLE");
 						}
 						dupRecyc++;
 						break;
 
-					case 35: // rush order
+					case 34: // rush order
 						for(int x = 0; x < currentTiles.Count; x++) {
 							if(flip) {
 								continue;
 							} else if(currentTiles[x].type == TILETYPE.INDUSTRIAL && currentTiles[x].buildTime <= 0) {
 								possiblePlays++;
+								Debug.Log("rush order POSSIBLE");
 								flip = true;
 							}
 						}
@@ -423,16 +432,17 @@ public class GameManager : MonoBehaviour {
 				if(possInd > 0) {
 					possInd--;
 					possiblePlays++;
+					Debug.Log("INDUSTRIAL POSSIBLE");
 				}
 			}
 
 
 			if(cardData[activeHAND[i]].TYPE() == TILETYPE.RESIDENTIAL || cardData[activeHAND[i]].TYPE() == TILETYPE.COMMERCIAL) {
-
-				
-
-
-
+				if(spotsLeft > 0) {
+					spotsLeft--;
+					possiblePlays++;
+					Debug.Log("RESIDENTIAL || COMMERCIAL POSSIBLE");
+				}
 			}
 
 		}
@@ -648,7 +658,7 @@ public class GameManager : MonoBehaviour {
 		for(int i = 0; i < factories.Count; i++) {
 			if(tempPop - factories[i].tileValue >= 0 && !flag) {
 				tempPop -= factories[i].tileValue;
-				objectiveVal++;
+				objectiveVal += factories[i].buildValue;
 			} else {
 				if(!flag) {
 					remainingPos = i;
@@ -867,7 +877,7 @@ public class GameManager : MonoBehaviour {
 		for(int i = 0; i < gc.rows; i++) {
 			for(int j = 0; j < gc.cols; j++) {
 				temp.tileSpace.Add(gc.gameplayObj[i,j]);
-				if(gc.gameplayObj[i,j] != -1) {
+				if(gc.gameplayObj[i,j] >= 0) {
 					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().corruptVal);
 					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().buildTime);
 					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().activeChild());

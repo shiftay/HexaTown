@@ -15,6 +15,7 @@ public class TileInfo : MonoBehaviour {
 	List<GameObject> children = new List<GameObject>();
 	public bool scheduledDemo = false;
 	public bool turnOffBuild = false;
+	public int buildValue = 0;
 
 	void Start() {
 		if(gameObject.GetComponent<Flashing>()) {
@@ -64,6 +65,7 @@ public class TileInfo : MonoBehaviour {
 		buildTime = temp.BUILD();
 		tileValue = temp.TVALUE();
 		corruptVal = temp.CORRUPT();
+		buildValue = bVal();
 
 		if(type == TILETYPE.EVENT) {
 			gameObject.GetComponent<BoxCollider2D>().enabled = false;
@@ -83,6 +85,7 @@ public class TileInfo : MonoBehaviour {
 		buildTime = buildVal;
 		tileValue = temp.TVALUE();
 		corruptVal = corruptV;
+		buildValue = bVal();
 
 		if(activeChild > 0) {
 			children[activeChild].SetActive(true);
@@ -155,6 +158,30 @@ public class TileInfo : MonoBehaviour {
 		workersNeeded(false);
 		demolish(false);
 		Destroy(this);
+	}
+
+	public int bVal() {
+		int retVal = 0;
+
+		switch(cardNumber) {
+			case 8:
+				retVal = 1;
+				break;
+			case 9:
+				retVal = 3;
+				break;
+			case 10:
+				retVal = 2;
+				break;
+			case 26:
+				retVal = 2;
+				break;
+			case 27:
+				retVal = 2;
+				break;
+		}
+
+		return retVal;
 	}
 
 	public void buildTile() {

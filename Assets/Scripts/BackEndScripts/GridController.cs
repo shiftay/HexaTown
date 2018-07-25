@@ -72,7 +72,10 @@ public class GridController : MonoBehaviour {
 			}
 			firstRun = false;
 		}
-		ClearTileInfo();
+		if(!BackEndManager.instance.resume) {
+			ClearTileInfo();
+		}
+ 		
 	}
 	
 
@@ -325,7 +328,8 @@ public class GridController : MonoBehaviour {
 				temp.Add(currentCol);
 
 
-				grid[currentRow,currentCol].AddComponent<TileInfo>().SetInfo( temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
+				grid[currentRow,currentCol].AddComponent<TileInfo>();
+				grid[currentRow,currentCol].GetComponent<TileInfo>().SetInfo(temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
 				GameManager.instance.currentTiles.Add(grid[currentRow,currentCol].GetComponent<TileInfo>());
 				if(saved[i] == -3) {
 					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.water;
