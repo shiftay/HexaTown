@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public enum TUTSTAGE { CARDDESC, CORRUPTION, PARTY, RECYCLE, TIPS };
+public enum TUTSTAGE { BOARD, CARDDESC, INDUSTRY, CORRUPTION, PARTY, RECYCLE, TIPS };
 
 public class TutorialManager : MonoBehaviour {
 
@@ -17,6 +17,9 @@ public class TutorialManager : MonoBehaviour {
 	public List<string> corruptionTxt;
 	public List<string> partyCommuteTxt;
 	public List<string> recycleTxt;
+	public List<string> industryTxt;
+	public List<string> boardTxt;
+	public GameObject[] indArrow;
 	public int currentString;
 	public int currentGW;
 	public int counter = 0;
@@ -28,9 +31,14 @@ public class TutorialManager : MonoBehaviour {
 	public GameObject[] modifierArrow;
 	public Sprite[] card_PartyCommute;
 	public Sprite[] spell_PartyCommute;
+	public Sprite[] dirtTiles;
+	public Image[] img_dirt;
+	public Image centerDirt;
+	public GameObject[] incorrectTiles;
+	public Sprite correctTile;
 	public Image[] img_PnC;
 	public GameObject[] recycle_Cards;
-	
+	public Sprite tile;
 	bool ghostWrite = false;
 	bool erase = false;
 	float timePassed;
@@ -39,6 +47,9 @@ public class TutorialManager : MonoBehaviour {
 	bool invoked = false;
 	bool firstRun = true;
 	public GameObject[] btns;
+	public Text test;
+	float clickCounter = 0;
+	public GameObject skipBtn;
 
 	/// <summary>
 	/// Start is called on the frame when a script is enabled just before
@@ -47,10 +58,12 @@ public class TutorialManager : MonoBehaviour {
 	void Start()
 	{
 		instance = this;
-		gw.Add(new GhostWrites(ghostWriteTxt, ghostWriteArea[0]));
-		gw.Add(new GhostWrites(corruptionTxt, ghostWriteArea[1]));
-		gw.Add(new GhostWrites(partyCommuteTxt, ghostWriteArea[2]));
-		gw.Add(new GhostWrites(recycleTxt, ghostWriteArea[3]));
+		gw.Add(new GhostWrites(boardTxt, ghostWriteArea[0]));
+		gw.Add(new GhostWrites(ghostWriteTxt, ghostWriteArea[1]));
+		gw.Add(new GhostWrites(industryTxt, ghostWriteArea[2]));
+		gw.Add(new GhostWrites(corruptionTxt, ghostWriteArea[3]));
+		gw.Add(new GhostWrites(partyCommuteTxt, ghostWriteArea[4]));
+		gw.Add(new GhostWrites(recycleTxt, ghostWriteArea[5]));
 	}
 
 	public void changeState(TUTSTAGE stage) {
@@ -79,10 +92,11 @@ public class TutorialManager : MonoBehaviour {
 			button.SetActive(true);
 		}
 
-		currentStage = 3;
+		
 		tutorialStages[currentStage].SetActive(true);
 
-		currentGW = 3;
+		currentGW = 0;
+		currentStage = 0;
 		currentString = 0;
 		counter = 0;
 		SetupBtns();
@@ -106,7 +120,6 @@ public class TutorialManager : MonoBehaviour {
 				//TODO: SWITCH TO NEXT PORTION.
 				if(firstRun) {
 					Invoke("moveStage", 1.5f);
-					
 				}
 			}
 			invoked = true;
@@ -119,6 +132,13 @@ public class TutorialManager : MonoBehaviour {
 				halfPoint = false;
 			}
 			timePassed = 0f;
+		}
+
+		if(Input.GetMouseButtonDown(0) && firstRun) {
+			clickCounter++;
+			if(clickCounter > 1) {
+				skipBtn.SetActive(true);
+			}
 		}
 
 	}
@@ -152,22 +172,33 @@ public class TutorialManager : MonoBehaviour {
 		}
 	}
 
+	public void skip() {
+		if(currentStage == (int)TUTSTAGE.RECYCLE) {
+			BackEndManager.instance.ChangeState(STATES.MAINMENU);
+		} else {
+			changeState((TUTSTAGE)currentStage + 1);
+			clear();
+			currentGW = currentStage;
+			currentString = 0;
+		}
+
+		skipBtn.SetActive(false);
+	}
 
 	void turnOnOther() {
 		switch(currentGW) {
-			case 0: 
+			case 1: 
 				CardDesc();
 				break;
-			case 1:
+			case 3:
 				Corruption();
 				break;
-			case 2:
+			case 4:
 				PartyCommute();
 				break;
-
-
-
-
+			case 2:
+				Industry();
+				break;
 			default:
 				break;
 		}
@@ -190,6 +221,15 @@ public class TutorialManager : MonoBehaviour {
 			case 4:
 				workerArrow.SetActive(true);
 				break;
+		}
+	}
+
+
+	void Industry() {
+		if(currentString == 1) {
+			foreach(GameObject ind in indArrow) {
+				ind.SetActive(true);
+			}
 		}
 	}
 
@@ -242,6 +282,15 @@ public class TutorialManager : MonoBehaviour {
 			recycle.SetActive(false);
 		}
 
+		foreach(Image i in img_dirt) {
+			i.sprite = dirtTiles[0];
+		}
+
+		
+		foreach(GameObject ind in indArrow) {
+			ind.SetActive(true);
+		}
+
 		if(currentStage == (int)TUTSTAGE.PARTY && currentString == 4) {
 			for(int i = 0; i < img_PnC.Length; i++) {
 				img_PnC[i].sprite = card_PartyCommute[i];
@@ -252,8 +301,30 @@ public class TutorialManager : MonoBehaviour {
 				recycle.SetActive(true);
 			}
 		}
+
+		if(currentStage == (int)TUTSTAGE.BOARD && (currentString == 2 || currentString == 3)) {
+			foreach(Image i in img_dirt) {
+				i.sprite = dirtTiles[1];
+			}
+		}
+
+		if(currentStage == (int)TUTSTAGE.BOARD && currentString > 3 ) {
+			setupBoard();
+		}
+
 	}
 
+	public void setupBoard() {
+		foreach(Image i in img_dirt) {
+			i.sprite = correctTile;
+		}
+
+		centerDirt.sprite = tile;
+
+		foreach(GameObject g in incorrectTiles) {
+			g.SetActive(true);
+		}
+	}
 
 	public void change(int nextStage) {
 		changeState((TUTSTAGE)currentStage + nextStage);
@@ -277,5 +348,11 @@ public class TutorialManager : MonoBehaviour {
 		}
 	}
 
+	public void back() {
+		BackEndManager.instance.LeaveCredits();
+	}
+
+
+	
 
 }
