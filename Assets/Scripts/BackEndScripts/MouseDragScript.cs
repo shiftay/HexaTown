@@ -96,7 +96,7 @@ public class MouseDragScript : MonoBehaviour {
                                     break;
 
                                 case SPELLTYPE.TARGETED:
-                                    draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changeToSpell();
+                                    draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changeToSpell(cm.ValueOfAll(card));
                                     break;
                             }
                         

@@ -78,8 +78,26 @@ public class CardManager : MonoBehaviour {
 		return retVal;
 	}
 
-	public Sprite changeToSpell() {
-		return spells[0];
+	public Sprite changeToSpell(int val) {
+		Sprite temp;
+
+		switch(val) {
+			case 29: //demo
+				temp = spells[2];
+				break;
+			case 30: //justice
+				temp = spells[0];
+				break;
+			case 32: // build
+				temp = spells[1];
+				break;
+			default:
+				temp = new Sprite();
+				break;
+		}
+
+
+		return temp;
 	}
 
 	public int ValueOfAll(Sprite card) {
