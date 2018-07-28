@@ -152,7 +152,7 @@ public class TileInfo : MonoBehaviour {
 	public void clearTile() {
 		GameManager.instance.currentTiles.Remove(this);
 		GameManager.instance.gc.removeFromGrid(this.gameObject);
-		gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
+		
 		unhappy(false);
 		building(false);
 		workersNeeded(false);

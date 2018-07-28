@@ -217,6 +217,7 @@ public class BackEndManager : MonoBehaviour {
 				mutedVolume = float.Parse(split[2]);
 				currentSFX = float.Parse(split[3]);
 				mutedSFXVol = float.Parse(split[4]);
+				firstRun = bool.Parse(split[5]);
 			}
 
 			sr.Close();
@@ -366,7 +367,7 @@ public class BackEndManager : MonoBehaviour {
 
 	string createSettingsString() {
 		return mutedMusic.ToString() + DELIMITER + currentVolume.ToString() + DELIMITER + mutedVolume.ToString() 
-		+ DELIMITER + currentSFX.ToString() + DELIMITER + mutedSFXVol.ToString();
+		+ DELIMITER + currentSFX.ToString() + DELIMITER + mutedSFXVol.ToString() + DELIMITER + firstRun.ToString();;
 	}
 
 

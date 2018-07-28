@@ -300,15 +300,29 @@ public class GridController : MonoBehaviour {
 	}
 
 	public void removeFromGrid(GameObject tile) {
+		bool flag = false;
+
 		// TODO: CHECK POSITION AGAINST THE NEW STORED COORDS
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
 				if(grid[i,j] == tile) {
+					if(industryCheck(i,j)) {
+						flag = true;
+					}
+					
 					gameplayObj[i,j] = -1;
 				}
 			}
 		}
+
+		if(flag) {
+			tile.GetComponent<SpriteRenderer>().sprite = indTile;
+		} else {
+			tile.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
+		}
 	}
+
+
 
 	public void ResumeGrid(List<int> saved, List<int> states) {
 		Start();
@@ -327,16 +341,18 @@ public class GridController : MonoBehaviour {
 				temp.Add(currentRow);
 				temp.Add(currentCol);
 
-
+				Debug.Log("COORDS : " + currentRow + " / " + currentCol);
 				grid[currentRow,currentCol].AddComponent<TileInfo>();
-				grid[currentRow,currentCol].GetComponent<TileInfo>().SetInfo(temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
-				GameManager.instance.currentTiles.Add(grid[currentRow,currentCol].GetComponent<TileInfo>());
 				if(saved[i] == -3) {
 					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.water;
+					grid[currentRow,currentCol].GetComponent<TileInfo>().SetInfo(temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
 				} else {
+					grid[currentRow,currentCol].GetComponent<TileInfo>().SetInfo(temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
 					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.hc.cm.tiles[saved[i]];
 				}
-				
+				grid[currentRow,currentCol].GetComponent<TileInfo>().SetInfo(temp ,saved[i], states[currentState], states[currentState + 1], states[currentState + 2]);
+				GameManager.instance.currentTiles.Add(grid[currentRow,currentCol].GetComponent<TileInfo>());
+
 
 				currentState += 3;
 			}

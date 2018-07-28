@@ -175,6 +175,7 @@ public class TutorialManager : MonoBehaviour {
 	public void skip() {
 		if(currentStage == (int)TUTSTAGE.RECYCLE) {
 			BackEndManager.instance.ChangeState(STATES.MAINMENU);
+			BackEndManager.instance.firstRun = false;
 		} else {
 			changeState((TUTSTAGE)currentStage + 1);
 			clear();
