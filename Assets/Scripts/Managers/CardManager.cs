@@ -138,7 +138,7 @@ public class CardManager : MonoBehaviour {
 
 	public void CardDescription(bool toggle, int val = -1) {
 		if(toggle) {
-			description.color = new Color(1,1,1,1);
+			description.color = new Color(1,1,1,0.75f);
 			description.sprite = cards[val];
 		} else {
 			description.color = new Color(1,1,1,0);

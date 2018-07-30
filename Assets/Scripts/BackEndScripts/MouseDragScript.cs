@@ -16,6 +16,8 @@ public class MouseDragScript : MonoBehaviour {
 	public bool reorderPuz = false;
 	public Vector2 droppedPos;
     int valueOfCard = -1;
+    float counter = 0f;
+
 
 	void Start()
 	{
@@ -28,6 +30,11 @@ public class MouseDragScript : MonoBehaviour {
         if (HasInput)
         {
             DragOrPickUp();
+            counter += Time.deltaTime;
+            if(counter > 1f && !description) {
+                cm.CardDescription(true, valueOfCard);
+                description = true;
+            }
         }
         else
         {
@@ -43,6 +50,7 @@ public class MouseDragScript : MonoBehaviour {
                 gc.ShowGrid(false);
                 indArea = false;
             }
+            counter = 0;
         }
     }
      

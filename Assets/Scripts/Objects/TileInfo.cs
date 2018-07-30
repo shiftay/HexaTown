@@ -152,12 +152,12 @@ public class TileInfo : MonoBehaviour {
 	public void clearTile() {
 		GameManager.instance.currentTiles.Remove(this);
 		GameManager.instance.gc.removeFromGrid(this.gameObject);
-		
+	
 		unhappy(false);
 		building(false);
 		workersNeeded(false);
 		demolish(false);
-		Destroy(this);
+		DestroyImmediate(this);
 	}
 
 	public int bVal() {
