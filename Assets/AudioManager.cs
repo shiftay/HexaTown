@@ -20,7 +20,6 @@ public class AudioManager : MonoBehaviour {
 		musicSource.clip = BGM[0];
 		musicSource.Play();
 		
-		
 	}
 
 	public void mute(bool mute) {

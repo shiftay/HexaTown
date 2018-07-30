@@ -186,7 +186,7 @@ public class GameManager : MonoBehaviour {
 			//TODO: Calculate stats + show stats
 			//TODO: Decide if random event happens + show event if so.
 			//TODO: Deal cards, flip bool.
-			Debug.Log("Turn Over");
+			
 
 			// CHECK GAMEOVER
 		}
@@ -305,8 +305,6 @@ public class GameManager : MonoBehaviour {
 	int possiblePlays() {
 		int possiblePlays = 0;
 		int dupCom = 0, dupPart = 0, dupJust = 0, dupBuild = 0, dupRecyc = 0;
-		int res = 0, comm = 0, ind = 0;
-
 
 		int amtofInd = gc.INDX.Count;
 		int factory = 0;

@@ -85,8 +85,7 @@ public class BackEndManager : MonoBehaviour {
 		}
 
 
-		AudioManager.instance.setVolumes(currentSFX, currentVolume);
-		AudioManager.instance.mute(mutedMusic);
+
 		if(deleteFiles) {
 			ClearFiles();
 		} else {
@@ -101,6 +100,8 @@ public class BackEndManager : MonoBehaviour {
 			currentState = (int)STATES.MAINMENU;
 		}
 
+		AudioManager.instance.setVolumes(currentSFX, currentVolume);
+		AudioManager.instance.mute(mutedMusic);
 		states[currentState].SetActive(true);
 	}
 	
