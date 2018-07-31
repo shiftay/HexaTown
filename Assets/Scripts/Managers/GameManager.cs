@@ -137,11 +137,14 @@ public class GameManager : MonoBehaviour {
 			currentDeck.AddRange(industryVals);
 			gc.setupIndustryTiles();
 			AddCorruption();
-			Shuffle();
-			Deal();
+			do {
+				Shuffle();
+				Deal();
+			} while(possiblePlays() < 2);
 		}
 
-
+		phone.clip = clips[1];
+		phone.Play();
 	}
 
 	public void Clear() {
