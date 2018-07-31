@@ -8,7 +8,9 @@ public class HandController : MonoBehaviour {
 	public Vector3[] cardPositions;
 	public GridController hexGrid;
 	public CardManager cm;
-
+	public int warning;
+	// 1- adjacency | 2- 
+	// 5- spell on water | spell
 	// Use this for initialization
 	void Start () {
 		cardPositions = new Vector3[cards.Length];
@@ -62,11 +64,13 @@ public class HandController : MonoBehaviour {
 								} else {
 									currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 									retVal = false;
+									warning = 1;
 								}
 							}
 						} else {
 							currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 							retVal = false;
+							warning = 0;
 						}
 
 					} else {
@@ -92,7 +96,7 @@ public class HandController : MonoBehaviour {
 									// NO TILE INFO, SO WATER.
 									currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 									retVal = false;
-
+									
 								}
 							} else {
 								currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -124,16 +128,25 @@ public class HandController : MonoBehaviour {
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 					retVal = false;
+					// not placed on anything.
+					warning = 5;
 				}
 			}
 		} else {
 			currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 			retVal = false;
+			warning = 5;
+			// not placed on anything.
 		}
 
 		if(!retVal && cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
 			cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
 		}
+
+		if(!retVal) {
+			setWarningTxt();
+		}
+
 
 		return retVal;
 	}
@@ -149,6 +162,50 @@ public class HandController : MonoBehaviour {
 		}
 
 		return retVal;
+	}
+
+	void setWarningTxt() {
+		string txt = "";
+		switch(warning) {
+			case 0: // industry not in area;
+				txt = "Must place industry within set area";
+				break;
+			case 1: // not adjacent
+				txt = "Must be adjacent to other tiles";
+				break;
+			case 20: // commute
+				txt = "Commuters is already active";
+				break;
+			case 25: // recycle
+				txt = "Nothing to recycle";
+				break;
+			case 28: // party
+				txt = "Party is already active";
+				break;
+			case 32: // rush
+				txt = "No factories to rush";
+				break;
+			case 2: // build
+				txt = "Building is already built";
+				break;
+			case -99: // demo
+				txt = "Nothing to demolish";
+				break;
+			case 35: // justic
+				txt = "Tile is not corrupt";
+				break;
+			case 5: //played in a random spot
+				txt = "Must be played over the policy change area";
+				break;
+		}
+
+		GameManager.instance.um.warningTxt.text = txt;
+		GameManager.instance.um.fadeIn();
+		Invoke("fadeOff", 1.0f);
+	}
+
+	void fadeOff() {
+		GameManager.instance.um.fadeOut();
 	}
 
 	public void setHand(List<int> hand) {

@@ -18,9 +18,28 @@ public class UIManager : MonoBehaviour {
 	public LineRenderer popGraph;
 	public LineRenderer happGraph;
 	public LineRenderer objectGraph;
+
+	public Text warningTxt;
+	public Animation warningAnim;
+	public AnimationClip[] warningClips;
 	// Update is called once per frame
 	void Update () {
 		
+	}
+
+	public void fadeIn() {
+		warningAnim.clip = warningClips[0];
+		warningAnim.Play();
+	}
+
+	public void fadeOut() {
+		warningAnim.clip = warningClips[1];
+		warningAnim.Play();
+		Invoke("resetTxt", 0.75f);
+	}
+
+	public void resetTxt() {
+		warningTxt.text = "";
 	}
 
 

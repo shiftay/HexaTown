@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour {
 	public Sprite water;
 	public static GameManager instance;
 	public HandController hc;
-	UIManager um;
+	public UIManager um;
 	public GridController gc;
 	public int currentHand, currentTurn, objectiveVal, populationVal, happinessVal;
 	List<TileInfo> factories = new List<TileInfo>();
@@ -113,6 +113,7 @@ public class GameManager : MonoBehaviour {
 	public Animation phone;
 	public AnimationClip[] clips;
 	public Sprite industryArea;
+	
 
 	// Use this for initialization
 	void OnEnable () {
@@ -698,6 +699,7 @@ public class GameManager : MonoBehaviour {
 			case 20:
 				if(commuters) {
 					retVal = false;
+					hc.warning = 20;
 				} else {
 					commuters = true;
 					commuterTracker = 2;
@@ -710,12 +712,14 @@ public class GameManager : MonoBehaviour {
 					Shuffle();
 				} else {
 					retVal = false;
+					hc.warning = 25;
 				}
 				break;
 
 			case 28: // party
 				if(party) {
 					retVal = false;
+					hc.warning = 28;
 				} else {
 					party = true;
 					partyTracker = 2;
@@ -732,6 +736,7 @@ public class GameManager : MonoBehaviour {
 
 				if(count == 0) {
 					retVal = false;
+					hc.warning = 32;
 				} else {
 					objectiveVal += count;
 				}
@@ -742,12 +747,14 @@ public class GameManager : MonoBehaviour {
 					tile.buildTile();
 				} else {
 					retVal = false;
+					hc.warning = 2;
 				}
 				break;
 
 			case -99: // demolish
 				if(tile.scheduledDemo) {
 					retVal = false;
+					hc.warning = -99;
 				} else {
 					tile.demolish(true);
 				}
@@ -758,6 +765,7 @@ public class GameManager : MonoBehaviour {
 					tile.purify();
 				} else {
 					retVal = false;
+					hc.warning = 35;
 				}
 				break;
 		}
