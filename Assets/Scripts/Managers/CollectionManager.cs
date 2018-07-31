@@ -46,6 +46,7 @@ public class CollectionManager : MonoBehaviour {
 	int count;
 	public GameObject approved;
 	public int LIMITEDCARDS;
+	public Text deckTracker;
 
 	// Use this for initialization
 	void Start () {
@@ -58,6 +59,12 @@ public class CollectionManager : MonoBehaviour {
 			firstRun = false;
 			popInfo = popup.GetComponent<PopUp>();
 		}
+	}
+
+
+	void Update()
+	{
+		deckTracker.text = currentDeck.Count.ToString() + " of 20";
 	}
 
 	void OnEnable()	{

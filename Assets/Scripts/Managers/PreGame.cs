@@ -41,8 +41,7 @@ public class PreGame : MonoBehaviour {
 	
 
 	public void pressed(int currentDeck) {
-		Debug.Log(currentDeck);
-		Debug.Log(BackEndManager.instance.decks[currentDeck].cards.Count);
+
 
 		if(currentSelected != currentDeck) {
 			if(currentSelected != -1) {
@@ -61,13 +60,10 @@ public class PreGame : MonoBehaviour {
 
 			currentSelected = currentDeck;
 		} else {
-			Debug.Log("double clicked");
 			BackEndManager.instance.sGame = null;
 			BackEndManager.instance.deckChoice = currentSelected;
 			BackEndManager.instance.ChangeState(STATES.GAME);
 		}
-
-
 
 	}
 
@@ -98,7 +94,6 @@ public class PreGame : MonoBehaviour {
 			btn.onClick.RemoveAllListeners();
 		}
 
-		Debug.Log("COUNT " + BackEndManager.instance.decks.Count);
 		for(int i = 0; i < BackEndManager.instance.decks.Count; i++) {
 			btns[i].gameObject.SetActive(true);
 			btnImgs[i].sprite = po.stockImages[BackEndManager.instance.decks[i].imageNumber];

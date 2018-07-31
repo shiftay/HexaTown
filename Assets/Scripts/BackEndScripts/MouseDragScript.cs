@@ -118,8 +118,10 @@ public class MouseDragScript : MonoBehaviour {
                     if(hit.transform.tag == "Hex") {
                         TileInfo to = hit.transform.gameObject.GetComponent<TileInfo>();
                         if(to != null) {
-                            cm.CardDescription(true, to.cardNumber);
-                            description = true;
+                            if(to.type != TILETYPE.EVENT) {
+                                cm.CardDescription(true, to.cardNumber);
+                                description = true;
+                            }
                         }
                     }
 
