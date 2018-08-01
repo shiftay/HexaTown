@@ -768,6 +768,9 @@ public class GameManager : MonoBehaviour {
 					hc.warning = 35;
 				}
 				break;
+			default:
+				retVal = false;
+				break;
 		}
 
 		return retVal;

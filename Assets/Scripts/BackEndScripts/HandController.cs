@@ -8,7 +8,7 @@ public class HandController : MonoBehaviour {
 	public Vector3[] cardPositions;
 	public GridController hexGrid;
 	public CardManager cm;
-	public int warning;
+	public int warning = -1;
 	// 1- adjacency | 2- 
 	// 5- spell on water | spell
 	// Use this for initialization
@@ -101,6 +101,7 @@ public class HandController : MonoBehaviour {
 							} else {
 								currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 								retVal = false;
+								warning = 7;
 							}
 						} else {
 							currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
@@ -121,10 +122,11 @@ public class HandController : MonoBehaviour {
 					} else {
 						currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 						retVal = false;
+					
 					}
 					
-					cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
-				
+					// cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
+					cm.spellSpot.SetActive(false);
 				} else {
 					currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 					retVal = false;
@@ -135,12 +137,13 @@ public class HandController : MonoBehaviour {
 		} else {
 			currentCard.transform.position = cardPositions[indexOfCard(currentCard)];
 			retVal = false;
-			warning = 5;
+			warning = 9;
 			// not placed on anything.
 		}
 
 		if(!retVal && cm.isSpell(currentCard.GetComponent<SpriteRenderer>().sprite)) {
-			cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
+			// cm.spellArea.color = new Color(1,1,1,0); // TODO: FADE?
+			cm.spellSpot.SetActive(false);
 		}
 
 		if(!retVal) {
@@ -197,15 +200,21 @@ public class HandController : MonoBehaviour {
 			case 5: //played in a random spot
 				txt = "Must be played over the policy change area";
 				break;
+			case 7: //played in a random spot
+				txt = "Nothing to target with spell";
+				break;	
 		}
 
-		GameManager.instance.um.warningTxt.text = txt;
-		GameManager.instance.um.fadeIn();
-		Invoke("fadeOff", 1.0f);
+		if(txt != "") {
+			GameManager.instance.um.warningTxt.text = txt;
+			GameManager.instance.um.fadeIn();
+			Invoke("fadeOff", 1.0f);
+		}	
 	}
 
 	void fadeOff() {
 		GameManager.instance.um.fadeOut();
+		warning = -1;
 	}
 
 	public void setHand(List<int> hand) {

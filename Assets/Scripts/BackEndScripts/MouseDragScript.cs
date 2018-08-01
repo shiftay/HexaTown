@@ -100,7 +100,8 @@ public class MouseDragScript : MonoBehaviour {
                             // FIND OUT WHAT TYPE OF SPELL.
                             switch(cm.spellType(cm.ValueOfAll(card))) {
                                 case SPELLTYPE.ZONE:
-                                    cm.spellArea.color = new Color(1,1,1,1);
+                                    // cm.spellArea.color = new Color(1,1,1,1);
+                                    cm.spellSpot.SetActive(true);
                                     break;
 
                                 case SPELLTYPE.TARGETED:
