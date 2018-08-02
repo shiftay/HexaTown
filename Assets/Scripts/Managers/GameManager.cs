@@ -890,10 +890,12 @@ public class GameManager : MonoBehaviour {
 			for(int j = 0; j < gc.cols; j++) {
 				temp.tileSpace.Add(gc.gameplayObj[i,j]);
 				if(gc.gameplayObj[i,j] != -1) {
-					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().corruptVal);
-					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().buildTime);
-					temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().activeChild());
-				}
+					if(gc.grid[i,j].GetComponent<TileInfo>()) {
+						temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().corruptVal);
+						temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().buildTime);
+						temp.tileState.Add(gc.grid[i,j].GetComponent<TileInfo>().activeChild());
+					}
+				} 
 			}
 		}
 
