@@ -17,6 +17,7 @@ public class MouseDragScript : MonoBehaviour {
 	public Vector2 droppedPos;
     int valueOfCard = -1;
     float counter = 0f;
+    bool deckStats = false;
 
 
 	void Start()
@@ -30,11 +31,7 @@ public class MouseDragScript : MonoBehaviour {
         if (HasInput)
         {
             DragOrPickUp();
-            counter += Time.deltaTime;
-            if(counter > 1f && !description) {
-                cm.CardDescription(true, valueOfCard);
-                description = true;
-            }
+
         }
         else
         {
@@ -50,6 +47,12 @@ public class MouseDragScript : MonoBehaviour {
                 gc.ShowGrid(false);
                 indArea = false;
             }
+
+            if(deckStats) {
+                GameManager.instance.drawObj.SetActive(false);
+                deckStats = false;
+            }
+
             counter = 0;
         }
     }
@@ -80,6 +83,12 @@ public class MouseDragScript : MonoBehaviour {
             // Vector3 fix = draggedObject.transform.position;
             // fix.z = -5;
             // draggedObject.transform.position = fix;
+
+            counter += Time.deltaTime;
+            if(counter > 1f && !description) {
+                cm.CardDescription(true, valueOfCard);
+                description = true;
+            }
         }
         else
         {
@@ -129,6 +138,11 @@ public class MouseDragScript : MonoBehaviour {
                     if(hit.transform.tag == "Book") {
                         indArea = true;
                         gc.ShowGrid(true);
+                    }
+
+                    if(hit.transform.tag == "DrawPile") {
+                        deckStats = true;
+                        GameManager.instance.drawObj.SetActive(true);
                     }
                 }
             }

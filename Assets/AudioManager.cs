@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SFX { SHUFFLE, OFFICESOUNDS, STAMP }
+public enum SFX { SHUFFLE, OFFICESOUNDS, STAMP, COMMUTER, PARTY, RECYCLE, DEAL }
 
 public class AudioManager : MonoBehaviour {
 

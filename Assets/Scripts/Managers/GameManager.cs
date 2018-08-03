@@ -94,9 +94,31 @@ public class GameManager : MonoBehaviour {
 	bool unhappy = false;
 	int turnsSinceEvt = 0, amtofEvts;
 	public int prevHappy, prevObject, prevPopo;
+	bool commuters;
+	public bool COMMUTE {
+		set {
+			commuters = value;
+			buffs.COMMUTE(commuters);
+		}
 
-	public bool commuters = false;
-	public bool party = false;
+		get {
+			return commuters;
+		}
+	}
+	bool party;
+	public bool PARTY {
+		set {
+			party = value;
+			buffs.PARTY(party);
+		}
+
+		get {
+			return party;
+		}
+	}
+
+
+	public BuffTracker buffs;
 	public List<int> corruptVals;
 	public List<int> industryVals;
 
@@ -109,12 +131,16 @@ public class GameManager : MonoBehaviour {
 	public GameObject endgameUI;
 	public GameObject pause;
 	bool firstRun = true;
-
 	public Animation phone;
 	public AnimationClip[] clips;
 	public Sprite industryArea;
-	
-
+	bool discardAnim = false;
+	public Animation[] discardAnims;
+	public Animation deal;
+	public DeckManagement drawPile;
+	public Animation shuffle;
+	public GameObject drawObj;
+	public ParticleSystem fireworks;
 	// Use this for initialization
 	void OnEnable () {
 		
@@ -143,7 +169,8 @@ public class GameManager : MonoBehaviour {
 				Deal();
 			} while(possiblePlays() < 2);
 		}
-
+		// deal.Play();
+		drawPile.setCards(currentDeck.Count / 5);
 		phone.clip = clips[1];
 		phone.Play();
 	}
@@ -182,9 +209,13 @@ public class GameManager : MonoBehaviour {
 
 		if(turnOver && !calculated) {
 			//TODO: Discard cards.
-			disableHand();
-			um.TurnOVER();
-			AdvanceBuilds();
+			if(!discardAnim) {
+
+				DiscardAnim();
+				discardAnim = true;
+			}
+			
+
 			
 
 			//TODO: Calculate stats + show stats
@@ -194,6 +225,22 @@ public class GameManager : MonoBehaviour {
 
 			// CHECK GAMEOVER
 		}
+	}
+
+	void turnUISetup(){ 
+		disableHand();
+		um.TurnOVER();
+		AdvanceBuilds();	
+	}
+
+	void DiscardAnim() {
+		List<int> notPlayed = hc.notPlayed();
+
+		for(int i = 0; i < notPlayed.Count; i++) {
+			discardAnims[notPlayed[i]].Play();
+		}
+
+		Invoke("turnUISetup", 0.5f);
 	}
 
 	public void resolveTurn() {
@@ -237,13 +284,22 @@ public class GameManager : MonoBehaviour {
 			disableHand();
 			endgameUI.SetActive(true);
 		} else {
-			cardsPlayed = 0;
-			turnCardPlayed.Clear();
-			saveGame();
-		
-			turnOver = false;
-			calculated = false;
+			deal.Play();
+			AudioManager.instance.playSound(SFX.DEAL);
+			drawPile.setCards(currentDeck.Count / 5);
+			Invoke("afterDealt", 0.5f);
 		}
+	}
+
+
+	public void afterDealt() {
+		cardsPlayed = 0;
+		turnCardPlayed.Clear();
+		saveGame();
+		
+		turnOver = false;
+		calculated = false;
+		discardAnim = false;
 	}
 
 
@@ -334,7 +390,7 @@ public class GameManager : MonoBehaviour {
 			if(cardData[activeHAND[i]].TYPE() == TILETYPE.SPELL) {
 				switch(activeHAND[i]) {
 					case 28: //commuter
-						if(!commuters && dupCom == 0) {
+						if(!COMMUTE && dupCom == 0) {
 							possiblePlays++;
 							Debug.Log("COMMUTER POSSIBLE");
 						}
@@ -377,7 +433,7 @@ public class GameManager : MonoBehaviour {
 						break;
 					
 					case 31: // party
-						if(!party && dupPart == 0) {
+						if(!PARTY && dupPart == 0) {
 							possiblePlays++;
 							Debug.Log("party POSSIBLE");
 						}
@@ -480,18 +536,28 @@ public class GameManager : MonoBehaviour {
 		cardsPlayed++;
 		turnCardPlayed.Add(cardPlayed);
 		if(cardData[cardPlayed].RECYCLE()) {
-			TransferDiscard();
-			Shuffle();
+			if(currentDiscard.Count > 0) {
+				TransferDiscard();
+				Shuffle();
+				shuffle.Play();
+				AudioManager.instance.playSound(SFX.RECYCLE);
+				drawPile.setCards(currentDeck.Count / 5);
+			}
 			//TODO PLAY SHUFFLE ANIMATION.
 		}
 
-		if(cardData[cardPlayed].COMMUTE() && !commuters) {
-			commuters = true;
+		if(cardData[cardPlayed].COMMUTE() && !COMMUTE) {
+			//TODO: SOUND EFFECT BUS
+			AudioManager.instance.playSound(SFX.COMMUTER);
+			COMMUTE = true;
 			commuterTracker++;
 		}
 
-		if(cardData[cardPlayed].PARTY() && !party) {
-			party = true;
+		if(cardData[cardPlayed].PARTY() && !PARTY) {
+			//TODO: SPARKS / FIREWORKS
+			fireworks.Play();
+			AudioManager.instance.playSound(SFX.PARTY);
+			PARTY = true;
 			partyTracker++;
 		}
 
@@ -625,12 +691,12 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		if(party) {
+		if(PARTY) {
 			partyTracker--;
 			happinessVal *= 2;
 
 			if(partyTracker == 0) {
-				party = false;
+				PARTY = false;
 			}
 		} 
 
@@ -647,11 +713,11 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		if(commuters) {
+		if(COMMUTE) {
 			commuterTracker--;
 			populationVal *= 2;
 			if(commuterTracker == 0) {
-				commuters = false;
+				COMMUTE = false;
 			}
 		}
 
@@ -697,12 +763,13 @@ public class GameManager : MonoBehaviour {
 
 		switch(cardData[value].TVALUE()) {
 			case 20:
-				if(commuters) {
+				if(COMMUTE) {
 					retVal = false;
 					hc.warning = 20;
 				} else {
-					commuters = true;
+					COMMUTE = true;
 					commuterTracker = 2;
+					AudioManager.instance.playSound(SFX.COMMUTER);
 				}
 				break;
 
@@ -710,6 +777,9 @@ public class GameManager : MonoBehaviour {
 				if(currentDiscard.Count != 0) {
 					TransferDiscard();
 					Shuffle();
+					shuffle.Play();
+					drawPile.setCards(currentDeck.Count / 5);
+					AudioManager.instance.playSound(SFX.RECYCLE);
 				} else {
 					retVal = false;
 					hc.warning = 25;
@@ -717,12 +787,14 @@ public class GameManager : MonoBehaviour {
 				break;
 
 			case 28: // party
-				if(party) {
+				if(PARTY) {
 					retVal = false;
 					hc.warning = 28;
 				} else {
-					party = true;
+					PARTY = true;
 					partyTracker = 2;
+					AudioManager.instance.playSound(SFX.PARTY);
+					fireworks.Play();
 				}
 				break;
 
@@ -932,11 +1004,11 @@ public class GameManager : MonoBehaviour {
 		commuterTracker = BackEndManager.instance.sGame.commuter;
 
 		if(partyTracker > 0) {
-			party = true;
+			PARTY = true;
 		}
 		
 		if(commuterTracker > 0) {
-			commuters = true;
+			COMMUTE = true;
 		}
 
 		gc.ResumeGrid(BackEndManager.instance.sGame.tileSpace, BackEndManager.instance.sGame.tileState);

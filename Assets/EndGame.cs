@@ -70,17 +70,17 @@ public class EndGame : MonoBehaviour {
 
 		happy.positionCount = gm.prevHapp.Count;
 		for(int i = 0; i < happy.positionCount; i++) {
-			happy.SetPosition(i, new Vector3(i,(float)(gm.prevHapp[i]) / 5f, 0));
+			happy.SetPosition(i, new Vector3(i,(float)(gm.prevHapp[i]) / 8f, 0));
 		}
 
 		objective.positionCount = gm.prevObjec.Count;
 		for(int i = 0; i < objective.positionCount; i++) {
-			objective.SetPosition(i, new Vector3(i,(float)(gm.prevObjec[i]) / 5f, 0));
+			objective.SetPosition(i, new Vector3(i,(float)(gm.prevObjec[i]) / 8f, 0));
 		}
 
 		population.positionCount = gm.prevPop.Count;
 		for(int i = 0; i < population.positionCount; i++) {
-			population.SetPosition(i, new Vector3(i,(float)(gm.prevPop[i]) / 5f, 0));
+			population.SetPosition(i, new Vector3(i,(float)(gm.prevPop[i]) / 8f, 0));
 		}
 	}
 

@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour {
 
 
 	public void TurnOVER() {
-		mainUI.SetActive(false);
+		// mainUI.SetActive(false);
 		TurnOVERUI.SetActive(true);
 		EventUI.SetActive(false);
 		for(int i = 0; i < over.cardsPlayed.Length; i++) {
@@ -95,13 +95,13 @@ public class UIManager : MonoBehaviour {
 
 
 	public void EventActivate() {
-		mainUI.SetActive(false);
+		// mainUI.SetActive(false);
 		EventUI.SetActive(true);
 		TurnOVERUI.SetActive(false);
 	}
 
 	public void TurnStart() {
-		mainUI.SetActive(true);
+		// mainUI.SetActive(true);
 		EventUI.SetActive(false);
 		TurnOVERUI.SetActive(false);
 	}

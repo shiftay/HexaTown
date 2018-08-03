@@ -20,7 +20,18 @@ public class HandController : MonoBehaviour {
 		}
 	}
 	
+	public List<int> notPlayed() {
+		List<int> retVal = new List<int>();
 
+		for(int i = 0; i < cards.Length; i++) {
+			if(cards[i].transform.position == cardPositions[i]) {
+				retVal.Add(i);
+			}
+		}
+
+
+		return retVal;
+	}
 
 
 
@@ -226,7 +237,7 @@ public class HandController : MonoBehaviour {
 	public void resetHand() {
 		for (int i = 0; i < cards.Length; i++) {
 			cards[i].SetActive(true);
-			cards[i].transform.position = cardPositions[i];
+			// cards[i].transform.position = cardPositions[i];
 		}
 	}
 }
