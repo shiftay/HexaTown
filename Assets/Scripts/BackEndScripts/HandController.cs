@@ -217,9 +217,10 @@ public class HandController : MonoBehaviour {
 		}
 
 		if(txt != "") {
+			CancelInvoke();
 			GameManager.instance.um.warningTxt.text = txt;
 			GameManager.instance.um.fadeIn();
-			Invoke("fadeOff", 1.0f);
+			Invoke("fadeOff", 1.5f);
 		}	
 	}
 

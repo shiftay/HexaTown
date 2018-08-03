@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void fadeOut() {
+		CancelInvoke();
 		warningAnim.clip = warningClips[1];
 		warningAnim.Play();
 		Invoke("resetTxt", 0.75f);
