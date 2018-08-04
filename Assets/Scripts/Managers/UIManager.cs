@@ -22,10 +22,6 @@ public class UIManager : MonoBehaviour {
 	public Text warningTxt;
 	public Animation warningAnim;
 	public AnimationClip[] warningClips;
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
 	public void fadeIn() {
 		warningAnim.clip = warningClips[0];
