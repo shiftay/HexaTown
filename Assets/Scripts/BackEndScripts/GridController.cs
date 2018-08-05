@@ -25,6 +25,7 @@ public class GridController : MonoBehaviour {
 	public int testX = 0;
 	public int testY = 0;
 	public Sprite indTile;
+	public Heatmap hm;
 
 	public List<int> INDX {
 		get{
@@ -76,6 +77,7 @@ public class GridController : MonoBehaviour {
 			ClearTileInfo();
 		}
  		
+		 
 	}
 	
 
@@ -145,6 +147,7 @@ public class GridController : MonoBehaviour {
 		}
 
 		IndustrySprites();
+		hm.Setup(this);
 	}
 
 	public void IndustrySprites() {
