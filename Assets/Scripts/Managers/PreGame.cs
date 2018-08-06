@@ -14,7 +14,6 @@ public class PreGame : MonoBehaviour {
 	public Button[] editBtns;
 	public PopUp po;
 	public int currentSelected = -1;
-	public Sprite[] polaroids;
 
 	void OnEnable() {
 		BackEndManager.instance.editDeck = false;
