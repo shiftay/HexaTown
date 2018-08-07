@@ -42,7 +42,12 @@ public class TileInfo : MonoBehaviour {
 		if(buildTime <= 0 && type == TILETYPE.EVENT){
 			gameObject.GetComponent<BoxCollider2D>().enabled = true;
 			GameManager.instance.currentTiles.Remove(this);
-			gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
+			if(GameManager.instance.gc.industryCheck(xCoord, yCoord)) {
+				gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.gc.indTile;
+			} else {
+				gameObject.GetComponent<SpriteRenderer>().sprite = GameManager.instance.baseTile;
+			}
+			
 			Destroy(this);
 		}
 

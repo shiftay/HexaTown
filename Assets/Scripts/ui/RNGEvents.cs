@@ -49,6 +49,12 @@ public class RNGEvents : MonoBehaviour {
 				rngText[1].text = "Infestation causing citizens to move away";
 				GameManager.instance.bedbugs();
 				break;
+
+			case EVENT_RNG.QUAKE:
+				rngText[0].text = "EARTHQUAKE!";
+				rngText[1].text = "Natural disaste destroys multiple buildings in the area.";
+				GameManager.instance.earthquake();
+				break;
 		}
 
 	}

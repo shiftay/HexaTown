@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SFX { SHUFFLE, OFFICESOUNDS, STAMP, COMMUTER, PARTY, RECYCLE, DEAL }
+public enum SFX { SHUFFLE, OFFICESOUNDS, STAMP, COMMUTER, PARTY, RECYCLE, DEAL, CASH, CONSTRUCT, JUSTICE, EXPLODE }
 
 public class AudioManager : MonoBehaviour {
 
 	public List<AudioClip> clips = new List<AudioClip>();
 	static public AudioManager instance;
-	AudioSource sfxSource;
+	public AudioSource sfxSource;
 	public AudioSource musicSource;
 	public List<AudioClip> BGM = new List<AudioClip>();
 

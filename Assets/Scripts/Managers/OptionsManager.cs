@@ -20,6 +20,7 @@ public class OptionsManager : MonoBehaviour {
 	public AnimationClip clip;
 	public AnimationClip away;
 	public Image mutedImg;
+	
 
 	/// <summary>
 	/// This function is called when the object becomes enabled and active.
@@ -86,10 +87,14 @@ public class OptionsManager : MonoBehaviour {
 	}
 
 	public void mute(Image test) {
-		if(test.sprite == muted) {
+		if(test.sprite == muted && !(sfx.value == 0 && music.value == 0)) {
 			test.sprite = unmuted;	// unmute
 		} else {
 			test.sprite = muted; 	//mute
+		}
+
+		if(muted) {
+			muteVolumes();
 		}
 
 		AudioManager.instance.mute(test.sprite == muted);
@@ -98,11 +103,35 @@ public class OptionsManager : MonoBehaviour {
 	public void musicChanged() {
 		BackEndManager.instance.currentVolume = music.value;
 		AudioManager.instance.musicSource.volume = BackEndManager.instance.currentVolume;
+
+		if(music.value > 0) {
+			mutedImg.sprite = unmuted;
+			AudioManager.instance.mute(false);
+		} else if(sfx.value == 0 && music.value == 0) {
+			mutedImg.sprite = muted;
+			AudioManager.instance.mute(true);			
+		}
+	}
+	void muteVolumes() {
+		BackEndManager.instance.currentVolume = 0;
+		AudioManager.instance.musicSource.volume = BackEndManager.instance.currentVolume;
+		BackEndManager.instance.currentSFX = 0;
+		AudioManager.instance.sfxSource.volume = BackEndManager.instance.currentSFX;
+		music.value = 0;
+		sfx.value = 0;
 	}
 
 	public void sfxChanged() {
-		BackEndManager.instance.currentVolume = sfx.value;
-		AudioManager.instance.musicSource.volume = BackEndManager.instance.currentSFX;
+		BackEndManager.instance.currentSFX = sfx.value;
+		AudioManager.instance.sfxSource.volume = BackEndManager.instance.currentSFX;
+
+		if(sfx.value > 0) {
+			mutedImg.sprite = unmuted;
+			AudioManager.instance.mute(false);
+		} else if(sfx.value == 0 && music.value == 0) {
+			mutedImg.sprite = muted;
+			AudioManager.instance.mute(true);			
+		}
 	}
 
 	public void Credits() {

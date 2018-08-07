@@ -4,7 +4,7 @@ using System.IO;
 using System;
 using UnityEngine;
 
-public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, COUNT }
+public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, QUAKE, COUNT }
 
 public class CardData {
 	public string name;
@@ -251,8 +251,15 @@ public class GameManager : MonoBehaviour {
 			if(randomBool((float)(turnsSinceEvt * 0.1))) {
 				amtofEvts++;
 				um.EventActivate();
-				//(EVENT_RNG)UnityEngine.Random.Range(0, (int)EVENT_RNG.COUNT)
-				um.evnt.EVTChoice(EVENT_RNG.RAIN);
+
+
+				EVENT_RNG temp = (EVENT_RNG)UnityEngine.Random.Range(0, (int)EVENT_RNG.QUAKE);
+
+				if(temp == EVENT_RNG.RAIN && currentTiles.Count > 40) {
+					temp = EVENT_RNG.QUAKE;
+				} // change this to "earthquake"
+
+				um.evnt.EVTChoice(temp);
 				turnsSinceEvt = 0;
 			} else {
 				finishTurn();
@@ -811,12 +818,14 @@ public class GameManager : MonoBehaviour {
 					hc.warning = 32;
 				} else {
 					objectiveVal += count;
+					AudioManager.instance.playSound(SFX.CASH);
 				}
 				break;
 
 			case 2: // build
 				if(tile.buildTime > 0 && tile.type != TILETYPE.EVENT) {
 					tile.buildTile();
+					AudioManager.instance.playSound(SFX.CONSTRUCT);
 				} else {
 					retVal = false;
 					hc.warning = 2;
@@ -829,12 +838,14 @@ public class GameManager : MonoBehaviour {
 					hc.warning = -99;
 				} else {
 					tile.demolish(true);
+					AudioManager.instance.playSound(SFX.EXPLODE);
 				}
 				break;
 
 			case 35: // justice
 				if(tile.corruptVal != 0) {
 					tile.purify();
+					AudioManager.instance.playSound(SFX.JUSTICE);
 				} else {
 					retVal = false;
 					hc.warning = 35;
@@ -945,6 +956,25 @@ public class GameManager : MonoBehaviour {
 	}
 
 
+	public void earthquake() {
+		bool flag = false;
+		int counter = 0;
+
+		do {
+			int x = UnityEngine.Random.Range(0,currentTiles.Count);
+
+			if(currentTiles[x].type != TILETYPE.EVENT) {
+				currentTiles[x].clearTile();
+				counter++;
+			}
+
+			if(counter >= 2) {
+				flag = true;
+			}
+		} while(!flag);
+	}
+
+//=====================================EVENTS=============================================
 	void saveGame() {
 		SavedGame temp = new SavedGame();
 
@@ -1024,17 +1054,13 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-//=====================================EVENTS=============================================
+
 
 	public void Pause() {
 		phone.clip = clips[0];
 		phone.Play();
 		Invoke("changestate", 0.4f);
-		
 	}
-
-	
-
 
 	void changestate() {
 		BackEndManager.instance.ChangeState(STATES.OPTIONS);
