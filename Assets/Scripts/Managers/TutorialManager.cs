@@ -92,13 +92,14 @@ public class TutorialManager : MonoBehaviour {
 			button.SetActive(true);
 		}
 
-		
-		tutorialStages[currentStage].SetActive(true);
-
 		currentGW = 0;
 		currentStage = 0;
 		currentString = 0;
 		counter = 0;
+
+		tutorialStages[currentStage].SetActive(true);
+
+
 		SetupBtns();
 		clear();
 
@@ -342,7 +343,7 @@ public class TutorialManager : MonoBehaviour {
 			btns[1].SetActive(true);
 		}
 
-		if(currentStage == (int)TUTSTAGE.CARDDESC) {
+		if(currentStage == (int)TUTSTAGE.BOARD) {
 			btns[0].SetActive(false);
 		} else {
 			btns[0].SetActive(true);

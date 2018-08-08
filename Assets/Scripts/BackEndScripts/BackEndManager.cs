@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, HELP }
+public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, TUTORIAL, HELP }
 
 public class Deck {
 	public List<int> cards = new List<int>();
@@ -95,7 +95,7 @@ public class BackEndManager : MonoBehaviour {
 		}
 
 		if(firstRun) {
-			currentState = (int)STATES.HELP;
+			currentState = (int)STATES.TUTORIAL;
 		} else {
 			currentState = (int)STATES.MAINMENU;
 		}
@@ -504,9 +504,9 @@ public class BackEndManager : MonoBehaviour {
 		return ret;
 	}
 	void ClearFiles() {
-		File.Delete(Application.persistentDataPath + GAMEPATH);
-		File.Delete(Application.persistentDataPath + SAVEPATH);
-		File.Delete(Application.persistentDataPath + SETTINGSPATH);
+		File.Delete(Application.persistentDataPath + DELIMITER + GAMEPATH);
+		File.Delete(Application.persistentDataPath + DELIMITER + SAVEPATH);
+		File.Delete(Application.persistentDataPath + DELIMITER + SETTINGSPATH);
 	}
 // ============= BACK END UTILITIES ====================
 }
