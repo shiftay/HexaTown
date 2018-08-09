@@ -150,19 +150,13 @@ public class GridController : MonoBehaviour {
 		hm.Setup(this);
 	}
 
-	public void IndustrySprites() {
-		
-		foreach(SpriteRenderer s in indGsprite) {
-			s.sprite = null;
-		}
-		
+	public void IndustrySprites() {		
 		foreach(Coords c in industryArea) {
-			spriteGrid[c.x,c.y].sprite = GameManager.instance.industryArea;
+			// spriteGrid[c.x,c.y].sprite = GameManager.instance.industryArea;
 			if(!grid[c.x,c.y].GetComponent<TileInfo>()) {
 				grid[c.x,c.y].GetComponent<SpriteRenderer>().sprite = indTile;
 			}
 		}
-
 		industryGrid.SetActive(false);
 	}
 
