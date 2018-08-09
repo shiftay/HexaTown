@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using GoogleMobileAds.Api;
 
-public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, TUTORIAL, HELP }
+public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, TUTORIAL, HELP, ADVERT }
 
 public class Deck {
 	public List<int> cards = new List<int>();
@@ -75,6 +76,8 @@ public class BackEndManager : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		MobileAds.Initialize("ca-app-pub-4034976310982091~9236434181");
+
 		instance = this;
 		for(int i = 0; i < transform.childCount; i++) {
 			states.Add(transform.GetChild(i).gameObject);
@@ -94,11 +97,13 @@ public class BackEndManager : MonoBehaviour {
 			ReadSave();
 		}
 
-		if(firstRun) {
-			currentState = (int)STATES.TUTORIAL;
-		} else {
-			currentState = (int)STATES.MAINMENU;
-		}
+		// if(firstRun) {
+		// 	currentState = (int)STATES.TUTORIAL;
+		// } else {
+		// 	currentState = (int)STATES.MAINMENU;
+		// }
+
+		currentState = (int)STATES.ADVERT;
 
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 		AudioManager.instance.mute(mutedMusic);
