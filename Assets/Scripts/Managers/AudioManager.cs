@@ -70,6 +70,13 @@ public class AudioManager : MonoBehaviour {
 		Invoke("clearCoroutines", 1f);
 	}
 
+	public void MenuMusic() {
+		musicSource.clip = BGM[0];
+		
+		StartCoroutine(fadeIn(1f));
+		Invoke("clearCoroutines", 1f);
+	}
+
 
 	void clearCoroutines() {
 		StopAllCoroutines();

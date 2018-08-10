@@ -49,12 +49,14 @@ public class GameOver : MonoBehaviour {
 
 	void end() {
 		BackEndManager.instance.ChangeState(STATES.ENDGAME);
+		AudioManager.instance.MenuMusic();
 		BackEndManager.instance.clear = null;
 		this.gameObject.SetActive(false);
 	}
 
 	void pre() {
 		BackEndManager.instance.ChangeState(STATES.PREGAME);
+		AudioManager.instance.MenuMusic();
 		BackEndManager.instance.clear = null;
 		this.gameObject.SetActive(false);
 	}

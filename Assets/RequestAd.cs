@@ -22,8 +22,8 @@ public class RequestAd : MonoBehaviour {
 
 		inter.OnAdClosed += HandleOnAdClosed;
 		inter.OnAdFailedToLoad += adFailed;
-
-
+		// BackEndManager.instance.fo.creditsFade();
+		
 	}
 
 	/// <summary>
@@ -33,7 +33,8 @@ public class RequestAd : MonoBehaviour {
 	{
 		if(!loaded && inter.IsLoaded()) {
 			loaded = true;
-			inter.Show();
+			BackEndManager.instance.fo.outtro();
+			Invoke("callAd", 1f);
 		}
 	}
 
@@ -54,4 +55,9 @@ public class RequestAd : MonoBehaviour {
 		}
 		inter.Destroy();
 	}
+
+	void callAd() {
+		inter.Show();
+	}
+
 }

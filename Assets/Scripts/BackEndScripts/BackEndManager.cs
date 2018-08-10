@@ -73,6 +73,7 @@ public class BackEndManager : MonoBehaviour {
 	public FadeOut fo;
 
 	public bool firstRun;
+	public bool disableAd;
 	
 	// Use this for initialization
 	void Start () {
@@ -104,6 +105,10 @@ public class BackEndManager : MonoBehaviour {
 		// }
 
 		currentState = (int)STATES.ADVERT;
+
+		if(disableAd) {
+			currentState = (int)STATES.MAINMENU;
+		}
 
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 		AudioManager.instance.mute(mutedMusic);

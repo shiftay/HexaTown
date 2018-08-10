@@ -33,13 +33,14 @@ public class HandController : MonoBehaviour {
 		return retVal;
 	}
 
-
-
-
-	// Update is called once per frame
-	void Update () {
-		
+	/// <summary>
+	/// This function is called when the object becomes enabled and active.
+	/// </summary>
+	void OnEnable()
+	{
+		GameManager.instance.deal.Play();
 	}
+
 
 
 	public bool reorganizeHand(GameObject currentCard, Vector2 droppedPos, int value) {

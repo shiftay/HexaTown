@@ -90,6 +90,10 @@ public class FadeOut : MonoBehaviour {
 		box.Play("FadeIn");
 	}
 
+	public void outtro() {
+		box.Play("FadeOut");
+	}
+
 
 
 

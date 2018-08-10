@@ -151,8 +151,7 @@ public class GameManager : MonoBehaviour {
 			ReadCardData();
 			gc = GetComponent<GridController>();
 			um = GetComponent<UIManager>();
-		} else {
-			
+			firstRun = false;
 		}
 
 		
@@ -190,10 +189,13 @@ public class GameManager : MonoBehaviour {
 		party = false;
 		commuters = false;
 		turnOver = false;
+		calculated = false;
+		discardAnim = false;
 		turnCardPlayed.Clear();
 		hc.resetHand();
 		currentTiles.Clear();
 		gc.resetTiles(baseTile);
+		um.TurnStart();
 	}
 
 	void AddCorruption() {
