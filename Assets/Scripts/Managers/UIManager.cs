@@ -15,10 +15,6 @@ public class UIManager : MonoBehaviour {
 	public TurnOVER over;
 	public List<string> titles;
 	public Sprite[] newsPaperImgs;
-	public LineRenderer popGraph;
-	public LineRenderer happGraph;
-	public LineRenderer objectGraph;
-
 	public Text warningTxt;
 	public Animation warningAnim;
 	public AnimationClip[] warningClips;

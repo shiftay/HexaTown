@@ -61,6 +61,15 @@ public class TileInfo : MonoBehaviour {
 		}
 	}
 
+	public void funding() {
+		buildTime -= Mathf.RoundToInt(buildTime / 2);
+
+		if(buildTime <= 0) {
+			buildTime = 0;
+			turnOffBuild = true;
+		}
+	}
+
 	public void SetInfo(List<int> coords, int tileNum) {
 		CardData temp = GameManager.instance.Info(tileNum);	
 		cardNumber = tileNum;

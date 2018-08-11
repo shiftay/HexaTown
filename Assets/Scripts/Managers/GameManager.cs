@@ -4,17 +4,21 @@ using System.IO;
 using System;
 using UnityEngine;
 
-public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, QUAKE, COUNT }
+public enum EVENT_RNG {	PERMITS = 0, RAIN, BEDBUGS, CRIMEWAVE, MONEYTROUBLES, QUAKE, COUNT }
 
 public class CardData {
 	public string name;
 	TILETYPE type;
 	SPELLTYPE spell;
-	bool recycle, party, commute;
+	bool recycle, party, commute, funded;
 	int buildTime, tileValue, corruptValue;
 	
 	public bool PARTY() {
 		return party;
+	}
+
+	public bool FUNDED() {
+		return funded;
 	}
 
 	public bool COMMUTE() {
@@ -44,7 +48,7 @@ public class CardData {
 		return spell;
 	}
 
-	public void SetData(int x, int y, TILETYPE t, bool r, bool p, bool com,  int c, string n) {
+	public void SetData(int x, int y, TILETYPE t, bool r, bool p, bool com, bool f,  int c, string n) {
 		type = t;
 		buildTime = x;
 		tileValue = y;
@@ -53,9 +57,10 @@ public class CardData {
 		party = p;
 		commute = com;
 		name = n;
+		funded = f;
 	}
 
-	public void SetData(int x, int y, SPELLTYPE t, bool r, bool p, bool com, string n) {
+	public void SetData(int x, int y, SPELLTYPE t, bool r, bool p, bool com, bool f, string n) {
 		spell = t;
 		buildTime = x;
 		tileValue = y;
@@ -64,6 +69,7 @@ public class CardData {
 		type = TILETYPE.SPELL;
 		party = p;
 		commute = com;
+		funded = f;
 	}
 }
 
@@ -141,6 +147,19 @@ public class GameManager : MonoBehaviour {
 	public Animation shuffle;
 	public GameObject drawObj;
 	public ParticleSystem fireworks;
+
+	bool funding = false;
+
+	public bool FUNDING {
+		set {
+			funding = value;
+			buffs.FUNDING(funding);
+		}
+
+		get {
+			return funding;
+		}
+	}
 	// Use this for initialization
 	void OnEnable () {
 		
@@ -191,6 +210,7 @@ public class GameManager : MonoBehaviour {
 		turnOver = false;
 		calculated = false;
 		discardAnim = false;
+		funding = false;
 		turnCardPlayed.Clear();
 		hc.resetHand();
 		currentTiles.Clear();
@@ -373,7 +393,7 @@ public class GameManager : MonoBehaviour {
 
 	int possiblePlays() {
 		int possiblePlays = 0;
-		int dupCom = 0, dupPart = 0, dupJust = 0, dupBuild = 0, dupRecyc = 0;
+		int dupCom = 0, dupPart = 0, dupJust = 0, dupBuild = 0, dupRecyc = 0, dupFund = 0;
 
 		int amtofInd = gc.INDX.Count;
 		int factory = 0;
@@ -398,7 +418,7 @@ public class GameManager : MonoBehaviour {
 			bool flip = false;
 			if(cardData[activeHAND[i]].TYPE() == TILETYPE.SPELL) {
 				switch(activeHAND[i]) {
-					case 28: //commuter
+					case 32: //commuter
 						if(!COMMUTE && dupCom == 0) {
 							possiblePlays++;
 							Debug.Log("COMMUTER POSSIBLE");
@@ -407,7 +427,7 @@ public class GameManager : MonoBehaviour {
 						dupCom++;
 						break;
 
-					case 29: // demo?
+					case 33: // demo?
 						if(notDemos > 0) {
 							notDemos--;
 							possiblePlays++;
@@ -416,7 +436,16 @@ public class GameManager : MonoBehaviour {
 						
 						break;
 
-					case 30: // justice
+					case 34: // funding
+						if(!FUNDING && dupFund == 0) {
+							possiblePlays++;
+							Debug.Log("FUNDING POSSIBLE");
+						}
+
+						dupFund++;
+						break;
+
+					case 35: // justice
 						int corruptTiles = 0;
 
 						for(int x = 0; x < currentTiles.Count; x++) {
@@ -441,7 +470,7 @@ public class GameManager : MonoBehaviour {
 						dupJust++;
 						break;
 					
-					case 31: // party
+					case 36: // party
 						if(!PARTY && dupPart == 0) {
 							possiblePlays++;
 							Debug.Log("party POSSIBLE");
@@ -450,7 +479,7 @@ public class GameManager : MonoBehaviour {
 						dupPart++;
 						break;
 					
-					case 32: // quick build
+					case 37: // quick build
 						int incompleteBuilds = 0;
 						for(int x = 0; x < currentTiles.Count; x++) {
 							if(currentTiles[x].buildTime != 0 && currentTiles[x].type != TILETYPE.EVENT && !currentTiles[x].scheduledDemo) {
@@ -473,7 +502,7 @@ public class GameManager : MonoBehaviour {
 						dupBuild++;
 						break;
 
-					case 33: // recycle
+					case 38: // recycle
 						if(currentDiscard.Count != 0 && dupRecyc == 0) {
 							possiblePlays++;
 							Debug.Log("recycle POSSIBLE");
@@ -481,7 +510,7 @@ public class GameManager : MonoBehaviour {
 						dupRecyc++;
 						break;
 
-					case 34: // rush order
+					case 39: // rush order
 						for(int x = 0; x < currentTiles.Count; x++) {
 							if(flip) {
 								continue;
@@ -552,7 +581,11 @@ public class GameManager : MonoBehaviour {
 				AudioManager.instance.playSound(SFX.RECYCLE);
 				drawPile.setCards(currentDeck.Count / 5);
 			}
-			//TODO PLAY SHUFFLE ANIMATION.
+		}
+
+		if(FUNDING) {
+			currentTiles[currentTiles.Count-1].funding();
+			FUNDING = false;
 		}
 
 		if(cardData[cardPlayed].COMMUTE() && !COMMUTE) {
@@ -568,6 +601,11 @@ public class GameManager : MonoBehaviour {
 			AudioManager.instance.playSound(SFX.PARTY);
 			PARTY = true;
 			partyTracker++;
+		}
+
+		if(cardData[cardPlayed].FUNDED() && !FUNDING) {
+			// PLAY SOUND
+			FUNDING = true;
 		}
 
 
@@ -637,11 +675,11 @@ public class GameManager : MonoBehaviour {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), bool.Parse(temp[6]), temp[7]);
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), bool.Parse(temp[6]), int.Parse(temp[7]), temp[8]);
 				cardData.Add(x);
 			}
 		}
@@ -653,7 +691,7 @@ public class GameManager : MonoBehaviour {
 		} else {
 			// FOR EVENT: WATER
 			CardData d = new CardData();
-			d.SetData(3, -1, TILETYPE.EVENT, false, false, false, 0, "Water");
+			d.SetData(3, -1, TILETYPE.EVENT, false, false, false, false, 0, "Water");
 			return d;
 		}
 	}
@@ -777,7 +815,14 @@ public class GameManager : MonoBehaviour {
 					hc.warning = 20;
 				} else {
 					COMMUTE = true;
-					commuterTracker = 2;
+
+					if(FUNDING) {
+						commuterTracker = 4;
+						FUNDING = false;
+					} else {
+						commuterTracker = 2;
+					}
+
 					AudioManager.instance.playSound(SFX.COMMUTER);
 				}
 				break;
@@ -801,7 +846,14 @@ public class GameManager : MonoBehaviour {
 					hc.warning = 28;
 				} else {
 					PARTY = true;
-					partyTracker = 2;
+
+					if(FUNDING) {
+						FUNDING = false;
+						partyTracker = 4;
+					} else {
+						partyTracker = 2;
+					}
+
 					AudioManager.instance.playSound(SFX.PARTY);
 					fireworks.Play();
 				}
@@ -819,10 +871,39 @@ public class GameManager : MonoBehaviour {
 					retVal = false;
 					hc.warning = 32;
 				} else {
-					objectiveVal += count;
+
+
+					if(FUNDING)  {
+
+						objectiveVal += (count * 2);
+						FUNDING = false;
+					} else {
+						objectiveVal += count;
+					}
+
+
 					AudioManager.instance.playSound(SFX.CASH);
 				}
 				break;
+			case 39: //funding
+
+				if(FUNDING) {
+					retVal = false;
+					hc.warning = 39;
+				} else if(objectiveVal < 5) {
+					retVal = false;
+					hc.warning = 38;
+				} else {
+					FUNDING = true;
+					objectiveVal -= 5;
+					// PLAY SOUND
+
+				}
+
+
+
+				break;	
+		
 
 			case 2: // build
 				if(tile.buildTime > 0 && tile.type != TILETYPE.EVENT) {
@@ -974,6 +1055,11 @@ public class GameManager : MonoBehaviour {
 				flag = true;
 			}
 		} while(!flag);
+	}
+
+
+	public void economy() {
+		objectiveVal -= Mathf.RoundToInt(objectiveVal / 5);
 	}
 
 //=====================================EVENTS=============================================

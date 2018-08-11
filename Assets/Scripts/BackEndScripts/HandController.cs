@@ -38,7 +38,9 @@ public class HandController : MonoBehaviour {
 	/// </summary>
 	void OnEnable()
 	{
-		GameManager.instance.deal.Play();
+		if(GameManager.instance) {
+			GameManager.instance.deal.Play();
+		}
 	}
 
 
@@ -199,6 +201,12 @@ public class HandController : MonoBehaviour {
 				break;
 			case 32: // rush
 				txt = "No factories to rush";
+				break;
+			case 38:
+				txt = "Not enough minerals to spend.";
+				break;
+			case 39:
+				txt = "Funding already active.";
 				break;
 			case 2: // build
 				txt = "Building is already built";

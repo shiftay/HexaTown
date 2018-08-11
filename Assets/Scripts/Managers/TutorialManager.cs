@@ -19,6 +19,7 @@ public class TutorialManager : MonoBehaviour {
 	public List<string> recycleTxt;
 	public List<string> industryTxt;
 	public List<string> boardTxt;
+	public List<string> fundingTxt;
 	public GameObject[] indArrow;
 	public int currentString;
 	public int currentGW;
@@ -64,6 +65,7 @@ public class TutorialManager : MonoBehaviour {
 		gw.Add(new GhostWrites(corruptionTxt, ghostWriteArea[3]));
 		gw.Add(new GhostWrites(partyCommuteTxt, ghostWriteArea[4]));
 		gw.Add(new GhostWrites(recycleTxt, ghostWriteArea[5]));
+		gw.Add(new GhostWrites(fundingTxt, ghostWriteArea[6]));
 	}
 
 	public void changeState(TUTSTAGE stage) {

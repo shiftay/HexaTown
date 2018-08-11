@@ -155,6 +155,9 @@ public class CollectionManager : MonoBehaviour {
 
 		if(cardsShowing.Count == cardPositions.Length) {
 			for(int i = 0 ; i < cardPositions.Length; i++) {
+				if(cardsShowing[i].name.Contains("funding")) {
+					Debug.Log("FUNDINGINDEX: " + cardData.IndexOf(cardsShowing[i]));
+				}
 				cardPositions[i].sprite = cards[cardData.IndexOf(cardsShowing[i])];
 			}
 		} else {
@@ -180,6 +183,9 @@ public class CollectionManager : MonoBehaviour {
 				modifiedList.Remove(x);
 			}
 		}
+
+
+		Debug.Log("TEST");
 	}
 
 	public void Commute(GameObject t) {
@@ -231,91 +237,17 @@ public class CollectionManager : MonoBehaviour {
 	void updateSearch() {
 		resetSearch();
 		currentPage = 0;
+		List<CardData> temp = new List<CardData>();
 
-		if(!spell && !comm && !res && !commuter && !party && !recycle) {
-	
-		} else {
-			List<CardData> temp = new List<CardData>();
-
-			foreach(CardData x in currentSearch) {
-				// if(searchParams().Count == 0) {
-				// 	if((x.COMMUTE() && commuter) || (x.PARTY() && party) ||	(x.RECYCLE() && recycle)) {
-				// 		temp.Add(x);
-				// 	}
-				// } else if()
-				if(res) {
-					if(x.TYPE() == TILETYPE.RESIDENTIAL) {
-
-						if(commuter || recycle || party) {
-							if((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-							(x.RECYCLE() && recycle)) {
-								if(!temp.Contains(x)) {
-									temp.Add(x);
-								}
-							}
-						} else {
-							if(!temp.Contains(x)) {
-								temp.Add(x);
-							}
-						}
-
-					}
-				}
-
-				if(comm) {
-					if(x.TYPE() == TILETYPE.COMMERCIAL) {
-						if(commuter || recycle || party) {
-							if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-							(x.RECYCLE() && recycle)) {
-								if(!temp.Contains(x)) {
-									temp.Add(x);
-								}
-							}
-						} else {
-							if(!temp.Contains(x)) {
-								temp.Add(x);
-							}
-						}
-
-					} 
-				}
-
-				if(spell) {
-					if(x.TYPE() == TILETYPE.SPELL) {
-						if(commuter || recycle || party) {
-							if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-							(x.RECYCLE() && recycle)) {
-								if(!temp.Contains(x)) {
-									temp.Add(x);
-								}
-							}
-						}else {
-							if(!temp.Contains(x)) {
-								temp.Add(x);
-							}
-						}
-					}
-				}
-
-
-				if((commuter || recycle || party) && (searchParams().Count == 0)) {
-					if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-					(x.RECYCLE() && recycle)) {
-						if(!temp.Contains(x)) {
-							temp.Add(x);
-						}
-					}
-				}
-				// if((x.TYPE() == TILETYPE.COMMERCIAL && comm ) || (x.TYPE() == TILETYPE.RESIDENTIAL && res) || 
-				// 	(x.TYPE() == TILETYPE.SPELL && spell ) || (x.COMMUTE() && commuter) || (x.PARTY() && party) ||
-				// 	(x.RECYCLE() && recycle)) {
-				// 	temp.Add(x);
-				// }
+		foreach(CardData x in currentSearch) {
+			if(x.TYPE() == currSearch()) {
+				temp.Add(x);
 			}
-
-			currentSearch.Clear();
-			currentSearch.AddRange(temp);
 		}
+
+		currentSearch.Clear();
+		currentSearch.AddRange(temp);
+
 
 		maxPages = currentSearch.Count / 8;
 
@@ -328,22 +260,140 @@ public class CollectionManager : MonoBehaviour {
 		updatePage();
 	}
 
-	List<TILETYPE> searchParams() {
-		List<TILETYPE> temp = new List<TILETYPE>();
+
+	TILETYPE currSearch() {
+		TILETYPE retVal;
+
+
 		if(res) {
-			temp.Add(TILETYPE.RESIDENTIAL);
+			retVal = TILETYPE.RESIDENTIAL;
+		} else if(comm) {
+			retVal = TILETYPE.COMMERCIAL;
+		} else {
+			retVal = TILETYPE.SPELL;
 		}
 
-		if(comm) {
-			temp.Add(TILETYPE.COMMERCIAL);
-		}
 
-		if(spell) {
-			temp.Add(TILETYPE.SPELL);
-		}
-
-		return temp;
+		return retVal;
 	}
+
+//========
+	// void updateSearch222() {
+	// 	resetSearch();
+	// 	currentPage = 0;
+
+	// 	if(!spell && !comm && !res && !commuter && !party && !recycle) {
+	
+	// 	} else {
+	// 		List<CardData> temp = new List<CardData>();
+
+	// 		foreach(CardData x in currentSearch) {
+	// 			// if(searchParams().Count == 0) {
+	// 			// 	if((x.COMMUTE() && commuter) || (x.PARTY() && party) ||	(x.RECYCLE() && recycle)) {
+	// 			// 		temp.Add(x);
+	// 			// 	}
+	// 			// } else if()
+	// 			if(res) {
+	// 				if(x.TYPE() == TILETYPE.RESIDENTIAL) {
+
+	// 					if(commuter || recycle || party) {
+	// 						if((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+	// 						(x.RECYCLE() && recycle)) {
+	// 							if(!temp.Contains(x)) {
+	// 								temp.Add(x);
+	// 							}
+	// 						}
+	// 					} else {
+	// 						if(!temp.Contains(x)) {
+	// 							temp.Add(x);
+	// 						}
+	// 					}
+
+	// 				}
+	// 			}
+
+	// 			if(comm) {
+	// 				if(x.TYPE() == TILETYPE.COMMERCIAL) {
+	// 					if(commuter || recycle || party) {
+	// 						if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+	// 						(x.RECYCLE() && recycle)) {
+	// 							if(!temp.Contains(x)) {
+	// 								temp.Add(x);
+	// 							}
+	// 						}
+	// 					} else {
+	// 						if(!temp.Contains(x)) {
+	// 							temp.Add(x);
+	// 						}
+	// 					}
+
+	// 				} 
+	// 			}
+
+	// 			if(spell) {
+	// 				if(x.TYPE() == TILETYPE.SPELL) {
+	// 					if(commuter || recycle || party) {
+	// 						if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+	// 						(x.RECYCLE() && recycle)) {
+	// 							if(!temp.Contains(x)) {
+	// 								temp.Add(x);
+	// 							}
+	// 						}
+	// 					}else {
+	// 						if(!temp.Contains(x)) {
+	// 							temp.Add(x);
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+
+
+	// 			if((commuter || recycle || party) && (searchParams().Count == 0)) {
+	// 				if ((x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+	// 				(x.RECYCLE() && recycle)) {
+	// 					if(!temp.Contains(x)) {
+	// 						temp.Add(x);
+	// 					}
+	// 				}
+	// 			}
+	// 			// if((x.TYPE() == TILETYPE.COMMERCIAL && comm ) || (x.TYPE() == TILETYPE.RESIDENTIAL && res) || 
+	// 			// 	(x.TYPE() == TILETYPE.SPELL && spell ) || (x.COMMUTE() && commuter) || (x.PARTY() && party) ||
+	// 			// 	(x.RECYCLE() && recycle)) {
+	// 			// 	temp.Add(x);
+	// 			// }
+	// 		}
+
+	// 		currentSearch.Clear();
+	// 		currentSearch.AddRange(temp);
+	// 	}
+
+	// 	maxPages = currentSearch.Count / 8;
+
+	// 	if(maxPages == 0 && currentSearch.Count > 0) {
+	// 		maxPages++;
+	// 	} else if(currentSearch.Count % 8 != 0) {
+	// 		maxPages++;
+	// 	}
+
+	// 	updatePage();
+	// }
+
+	// List<TILETYPE> searchParams() {
+	// 	List<TILETYPE> temp = new List<TILETYPE>();
+	// 	if(res) {
+	// 		temp.Add(TILETYPE.RESIDENTIAL);
+	// 	}
+
+	// 	if(comm) {
+	// 		temp.Add(TILETYPE.COMMERCIAL);
+	// 	}
+
+	// 	if(spell) {
+	// 		temp.Add(TILETYPE.SPELL);
+	// 	}
+
+	// 	return temp;
+	// }
 
 
 
@@ -370,7 +420,7 @@ public class CollectionManager : MonoBehaviour {
 		}
 	
 	 */
-
+//========
 
 
 
@@ -457,11 +507,11 @@ public class CollectionManager : MonoBehaviour {
 				flip = true;
 			} else if (flip) {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), temp[6]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (SPELLTYPE)Enum.Parse(typeof(SPELLTYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), bool.Parse(temp[6]), temp[7]);
 				cardData.Add(x);
 			} else {
 				CardData x = new CardData();	
-				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), int.Parse(temp[6]), temp[7]);
+				x.SetData(int.Parse(temp[1]), int.Parse(temp[2]), (TILETYPE)Enum.Parse(typeof(TILETYPE), temp[0]), bool.Parse(temp[3]), bool.Parse(temp[4]), bool.Parse(temp[5]), bool.Parse(temp[6]), int.Parse(temp[7]), temp[8]);
 				cardData.Add(x);
 			}
 		}
@@ -482,8 +532,6 @@ public class CollectionManager : MonoBehaviour {
 
 				bookTest.transform.SetAsLastSibling();
 				
-				
-
 			} else {
 				// int pos = -1;
 				int amt = 0;

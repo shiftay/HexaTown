@@ -9,6 +9,8 @@ public class BuffTracker : MonoBehaviour {
 	public AnimationClip[] pSlides;
 	public Animation commChip;
 	public AnimationClip[] cSlides;
+	public Animation fundChip;
+	public AnimationClip[] fSlides;
 
 	/// <summary>
 	/// Update is called every frame, if the MonoBehaviour is enabled.
@@ -26,6 +28,16 @@ public class BuffTracker : MonoBehaviour {
 		} else {
 			partyChip.clip = pSlides[1];
 			partyChip.Play();
+		}
+	}
+
+	public void FUNDING(bool val) {
+		if(val) {
+			fundChip.clip = fSlides[0];
+			fundChip.Play();
+		} else {
+			fundChip.clip = fSlides[1];
+			fundChip.Play();
 		}
 	}
 

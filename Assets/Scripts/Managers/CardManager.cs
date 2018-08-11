@@ -16,12 +16,6 @@ public class CardManager : MonoBehaviour {
 	void Start () {
 		spellArea = spellSpot.GetComponent<SpriteRenderer>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 
 	public Sprite changetoTile(Sprite currCard) {
 		int index = -1;
@@ -82,13 +76,13 @@ public class CardManager : MonoBehaviour {
 		Sprite temp;
 
 		switch(val) {
-			case 29: //demo
+			case 33: //demo
 				temp = spells[2];
 				break;
-			case 30: //justice
+			case 35: //justice
 				temp = spells[0];
 				break;
-			case 32: // build
+			case 37: // build
 				temp = spells[1];
 				break;
 			default:

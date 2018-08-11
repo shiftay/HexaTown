@@ -55,6 +55,12 @@ public class RNGEvents : MonoBehaviour {
 				rngText[1].text = "Natural disaste destroys multiple buildings in the area.";
 				GameManager.instance.earthquake();
 				break;
+
+			case EVENT_RNG.MONEYTROUBLES:
+				rngText[0].text = "Economy Troubles";
+				rngText[1].text = "One fifth of our minerals have to be exported to cover funding.";
+				GameManager.instance.economy();
+				break;
 		}
 
 	}
