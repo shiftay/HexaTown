@@ -178,19 +178,19 @@ public class TileInfo : MonoBehaviour {
 		int retVal = 0;
 
 		switch(cardNumber) {
-			case 8:
+			case 10:
 				retVal = 1;
 				break;
-			case 9:
+			case 11:
 				retVal = 3;
 				break;
-			case 10:
+			case 12:
 				retVal = 2;
 				break;
-			case 26:
+			case 30:
 				retVal = 2;
 				break;
-			case 27:
+			case 31:
 				retVal = 2;
 				break;
 		}

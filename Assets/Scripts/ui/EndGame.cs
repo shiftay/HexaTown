@@ -10,7 +10,6 @@ public class EndGame : MonoBehaviour {
 	public LineRenderer population;
 
 	public Text title;
-	public Text turnNumbers;
 
 	public GameObject[] infoBlocks;
 	public int currentChoice = 0;
@@ -19,6 +18,14 @@ public class EndGame : MonoBehaviour {
 	public Outline[] btnOutlines;
 	GameManager gm;
 	public GameObject[] folders;
+
+	public Text[] turnNums;
+	public GameObject back;
+	public GameObject next;
+
+	int currentPage = 0;
+	List<int> turnEnds = new List<int>();
+	
 
 	void OnEnable()
 	{
@@ -33,6 +40,7 @@ public class EndGame : MonoBehaviour {
 		gm = GameManager.instance;
 		currentChoice = 0;
 		SetInfoBlock();
+		setTURNS();
 	}
 
 
@@ -64,25 +72,107 @@ public class EndGame : MonoBehaviour {
 			ol.enabled = true;
 		}
 
+		setTURNS();
 		happy.gameObject.SetActive(true);
 		population.gameObject.SetActive(true);
 		objective.gameObject.SetActive(true);
+		enableBtns();
+		turnText();
+		
 
-		happy.positionCount = gm.prevHapp.Count;
-		for(int i = 0; i < happy.positionCount; i++) {
+
+		happy.positionCount = turnEnds[currentPage];
+		for(int i = currentPage * 30; i < happy.positionCount; i++) {
 			happy.SetPosition(i, new Vector3(i,(float)(gm.prevHapp[i]) / 10f, 0));
 		}
 
-		objective.positionCount = gm.prevObjec.Count;
-		for(int i = 0; i < objective.positionCount; i++) {
+		objective.positionCount = turnEnds[currentPage];
+		for(int i = currentPage * 30; i < objective.positionCount; i++) {
 			objective.SetPosition(i, new Vector3(i,(float)(gm.prevObjec[i]) / 10f, 0));
 		}
 
-		population.positionCount = gm.prevPop.Count;
-		for(int i = 0; i < population.positionCount; i++) {
+		population.positionCount = turnEnds[currentPage];
+		for(int i = currentPage * 30; i < population.positionCount; i++) {
 			population.SetPosition(i, new Vector3(i,(float)(gm.prevPop[i]) / 10f, 0));
 		}
 	}
+
+	void enableBtns() {
+		if(turns() > 1) {
+			back.SetActive(true);
+			next.SetActive(true);
+
+		} else {
+			//turn off
+			back.SetActive(false);
+			next.SetActive(false);
+		}
+	}
+
+	void pageBtns() {
+		if(currentPage == 0) {
+			//forward on
+			//back off
+			back.SetActive(false);
+			next.SetActive(true);
+		} 
+
+
+		if(currentPage == Mathf.Round(turns())) {
+			//forward off
+			//back on
+
+			back.SetActive(true);
+			next.SetActive(false);
+		}
+	}
+
+	float turns() {
+		return gm.prevHapp.Count / 30f;
+	}
+
+	void setTURNS() {
+		int x = gm.prevHapp.Count;
+		int count = 1;
+		do {
+
+			if(x - 30 > 0) {
+				turnEnds.Add(count * 30);
+				count++;
+			} else {
+				turnEnds.Add(x);
+				x -= x;
+			}
+
+		} while(x > 0);
+	}
+
+	void turnText() {
+
+		int x = currentPage * 30;
+		for(int i = 0; i < turnNums.Length; i++) {
+			if(x > turnEnds[currentPage]) {
+				turnNums[i].gameObject.SetActive(false);
+			} else {
+				turnNums[i].text = x.ToString();
+				x += 5;
+			}	
+		}
+
+	}
+
+	public void forward() {
+		currentPage++;
+		setupGraphs();
+	}
+
+	public void backward() {
+		currentPage--;
+		setupGraphs();
+	}
+
+
+
 
 	void setupInfo() {
 		information[0].text = gm.populationVal.ToString();

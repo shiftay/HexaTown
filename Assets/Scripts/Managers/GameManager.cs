@@ -75,7 +75,7 @@ public class CardData {
 
 
 public class GameManager : MonoBehaviour {
-	int WINCONDITION = 100;
+	int WINCONDITION = 150;
 	public Sprite baseTile;
 	public Sprite water;
 	public static GameManager instance;
@@ -583,7 +583,8 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 
-		if(FUNDING) {
+
+		if(FUNDING && (cardData[cardPlayed].TYPE() != TILETYPE.SPELL)) {
 			currentTiles[currentTiles.Count-1].funding();
 			FUNDING = false;
 		}
@@ -603,9 +604,11 @@ public class GameManager : MonoBehaviour {
 			partyTracker++;
 		}
 
-		if(cardData[cardPlayed].FUNDED() && !FUNDING) {
+		if(cardData[cardPlayed].FUNDED() && !FUNDING && objectiveVal > 5) {
 			// PLAY SOUND
+			objectiveVal -= 5;
 			FUNDING = true;
+			AudioManager.instance.playSound(SFX.COIN);
 		}
 
 
@@ -897,6 +900,8 @@ public class GameManager : MonoBehaviour {
 					FUNDING = true;
 					objectiveVal -= 5;
 					// PLAY SOUND
+					AudioManager.instance.playSound(SFX.COIN);
+
 
 				}
 
