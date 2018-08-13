@@ -149,5 +149,6 @@ public class OptionsManager : MonoBehaviour {
 
 	void exit() {
 		BackEndManager.instance.LeaveGame();
+		AudioManager.instance.MenuMusic();
 	}
 }

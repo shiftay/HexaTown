@@ -11,7 +11,10 @@ public class AudioManager : MonoBehaviour {
 	public AudioSource sfxSource;
 	public AudioSource musicSource;
 	public List<AudioClip> BGM = new List<AudioClip>();
-
+	public bool fadeIn = false;
+	public bool fadeOut = false;
+	public AudioClip clipToUse;
+	public float multiplier;
 
 	// Use this for initialization
 	void Start () {
@@ -35,7 +38,31 @@ public class AudioManager : MonoBehaviour {
 
 
 	void Update() {
-		
+
+		if(!musicSource.mute) {
+			if(fadeIn) {
+				if(musicSource.volume < BackEndManager.instance.currentVolume) {
+					musicSource.volume += Time.deltaTime * multiplier;
+				} else {
+					fadeIn = false;
+				}
+
+			}
+
+
+			if(fadeOut) {
+				if(musicSource.volume > 0) {
+					musicSource.volume -= Time.deltaTime * multiplier;
+				} else {
+					fadeOut = false;
+					fadeIn = true;
+					musicSource.clip = clipToUse;
+					musicSource.Play();
+				}
+			}
+		} 
+
+
 	}
 	
 	public void playSound(SFX sound) {
@@ -44,58 +71,22 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void startFadeO(bool game) {
-		Debug.Log(musicSource.volume);
-
-		StartCoroutine(fadeOut(1.0f));
-		if(game) {
-			Invoke("GameMusic", 1.0f);
-		}
+		fadeOut = true;
+		GameMusic();
 	}
 
-	IEnumerator fadeOut(float fadeTime) {
-		float startVolume = BackEndManager.instance.currentVolume;
 
-		while(musicSource.volume > 0) {
-			float vol = startVolume * Time.deltaTime / fadeTime;
-			musicSource.volume -= vol;
-
-			yield return null;
-		}
-	}
 
 	public void GameMusic() {
-		musicSource.clip = BGM[1];
-		
-		StartCoroutine(fadeIn(1f));
-		Invoke("clearCoroutines", 1f);
+		clipToUse = BGM[1];
+		// fadeIn = true;
 	}
 
 	public void MenuMusic() {
-		musicSource.clip = BGM[0];
-		
-		StartCoroutine(fadeIn(1f));
-		Invoke("clearCoroutines", 1f);
+		fadeOut = true;
+		clipToUse = BGM[0];
 	}
 
 
-	void clearCoroutines() {
-		StopAllCoroutines();
-		musicSource.volume = BackEndManager.instance.currentVolume;
-	}
-
-
-	IEnumerator fadeIn(float fadeTime) {
-        musicSource.volume = 0f;
-        musicSource.Play();
- 
-        while (musicSource.volume < BackEndManager.instance.currentVolume)
-        {
-            musicSource.volume += Time.deltaTime * fadeTime;
- 
-            yield return null;
-        }
- 
-        musicSource.volume = BackEndManager.instance.currentVolume;
-	}
 
 }
