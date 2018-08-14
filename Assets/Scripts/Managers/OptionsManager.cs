@@ -131,7 +131,7 @@ public class OptionsManager : MonoBehaviour {
 		} else if(sfx.value == 0 && music.value == 0) {
 			mutedImg.sprite = muted;
 			AudioManager.instance.mute(true);			
-		}
+		}	
 	}
 
 	public void Credits() {

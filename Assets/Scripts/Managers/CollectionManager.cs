@@ -47,6 +47,32 @@ public class CollectionManager : MonoBehaviour {
 	public GameObject approved;
 	public int LIMITEDCARDS;
 	public Text deckTracker;
+	int currentHappiness = 0;
+	int currentPopulation = 0;
+	const int DECKMODIFIER = 20;
+	public int CURRENTPOP {
+		get {
+			return currentPopulation;
+		}
+
+		set {
+			currentPopulation = value;
+			popColor();
+		}
+	}
+
+	public int CURRENTHAPP {
+		get {
+			return currentHappiness;
+		}
+
+		set {
+			currentHappiness = value;
+			happColor();
+		}
+	}
+	public Text commercial;
+	public Text residential;
 
 	// Use this for initialization
 	void Start () {
@@ -54,7 +80,6 @@ public class CollectionManager : MonoBehaviour {
 			// filePath = Path.Combine(Application.streamingAssetsPath, "cards.txt");
 			// StartCoroutine(Example());
 			ReadCards();
-			// ReadCardData();
 			modify();
 			firstRun = false;
 			popInfo = popup.GetComponent<PopUp>();
@@ -65,6 +90,8 @@ public class CollectionManager : MonoBehaviour {
 	void Update()
 	{
 		deckTracker.text = currentDeck.Count.ToString() + " of 20";
+		residential.text = currentPopulation.ToString();
+		commercial.text = currentHappiness.ToString();
 	}
 
 	void OnEnable()	{
@@ -98,8 +125,6 @@ public class CollectionManager : MonoBehaviour {
 
 		if(BackEndManager.instance) {
 			if(BackEndManager.instance.editDeck) {
-				Debug.Log("On Edit: " + BackEndManager.instance.decks[BackEndManager.instance.deckToEdit].cards.Count);
-				Debug.Log("On Edit: " + BackEndManager.instance.decks[0].cards.Count);
 				EditDeck();
 			}
 		}
@@ -113,6 +138,21 @@ public class CollectionManager : MonoBehaviour {
 		updatePage();
 	}
 
+	void popColor() {
+		if(CURRENTPOP > DECKMODIFIER) {
+			residential.color = Color.red;
+		} else {
+			residential.color = Color.black;
+		}
+	}
+	void happColor() {
+		if(CURRENTHAPP > DECKMODIFIER) {
+			commercial.color = Color.red;
+		} else {
+			commercial.color = Color.black;
+		}
+	}
+
 	void EditDeck() {
 		foreach(int val in BackEndManager.instance.decks[BackEndManager.instance.deckToEdit].cards) {
 
@@ -124,6 +164,8 @@ public class CollectionManager : MonoBehaviour {
 				currentDeck.Add(val);
 
 				bookTest.transform.SetAsLastSibling();
+
+
 				
 			} else {
 				// int pos = -1;
@@ -143,6 +185,12 @@ public class CollectionManager : MonoBehaviour {
 					}
 				}
 			}
+
+			if(cardData[val].TYPE() == TILETYPE.COMMERCIAL) {
+				CURRENTHAPP += cardData[val].TVALUE();
+			} else if(cardData[val].TYPE() == TILETYPE.RESIDENTIAL) {
+				CURRENTPOP += cardData[val].TVALUE();
+			}
 					
 		}
 	}
@@ -155,9 +203,6 @@ public class CollectionManager : MonoBehaviour {
 
 		if(cardsShowing.Count == cardPositions.Length) {
 			for(int i = 0 ; i < cardPositions.Length; i++) {
-				if(cardsShowing[i].name.Contains("funding")) {
-					Debug.Log("FUNDINGINDEX: " + cardData.IndexOf(cardsShowing[i]));
-				}
 				cardPositions[i].sprite = cards[cardData.IndexOf(cardsShowing[i])];
 			}
 		} else {
@@ -183,9 +228,6 @@ public class CollectionManager : MonoBehaviour {
 				modifiedList.Remove(x);
 			}
 		}
-
-
-		Debug.Log("TEST");
 	}
 
 	public void Commute(GameObject t) {
@@ -194,7 +236,6 @@ public class CollectionManager : MonoBehaviour {
 		t.GetComponent<Outline>().enabled = !t.GetComponent<Outline>().enabled;
 
 		updateSearch();
-
 	}
 
 	public void Residential(GameObject t) {
@@ -527,6 +568,8 @@ public class CollectionManager : MonoBehaviour {
 				GameObject test = GameObject.Instantiate(cardPrefab, Vector3.zero, Quaternion.identity);
 				cardsInDeck.Add(test.GetComponent<CardInfo>());
 				test.GetComponent<CardInfo>().SetInfo(val, cardData[val].name, cardData[val].TYPE(), this);
+				
+
 				test.transform.SetParent(scrollContent.transform);
 				currentDeck.Add(val);
 
@@ -550,6 +593,13 @@ public class CollectionManager : MonoBehaviour {
 					}
 				}
 			}
+
+
+			if(cardData[val].TYPE() == TILETYPE.COMMERCIAL) {
+				CURRENTHAPP += cardData[val].TVALUE();
+			} else if(cardData[val].TYPE() == TILETYPE.RESIDENTIAL) {
+				CURRENTPOP += cardData[val].TVALUE();
+			}
 		}
 
 
@@ -563,7 +613,7 @@ public class CollectionManager : MonoBehaviour {
 		warning.fontSize = 12;
 		string test = "";
 
-		if(currentDeck.Count == 20 && popInfo.dName != "" ) { // || and the warning is on.
+		if(currentDeck.Count == 20 && popInfo.dName != ""  && currentHappiness <= DECKMODIFIER && currentPopulation <= DECKMODIFIER) { // || and the warning is on.
 			test = validateDeck();
 
 			if(test == "" || count > 0) {
@@ -601,6 +651,14 @@ public class CollectionManager : MonoBehaviour {
 
 			if(popInfo.dName == "") {
 				test += " Deck needs a name.";
+			}
+
+			if(currentHappiness > DECKMODIFIER) {
+				test += " Commercial over zoning limit.";
+			}
+
+			if(currentPopulation > DECKMODIFIER) {
+				test += " Residential over zoning limit.";
 			}
 
 			warning.gameObject.SetActive(true);
@@ -663,12 +721,24 @@ public class CollectionManager : MonoBehaviour {
 	public void RemoveInfo(CardInfo ci) {
 		currentDeck.Remove(ci.cardNum);
 		cardsInDeck.Remove(ci);
+
+		if(cardData[ci.cardNum].TYPE() == TILETYPE.COMMERCIAL) {
+			CURRENTHAPP -= cardData[ci.cardNum].TVALUE();
+		} else if(cardData[ci.cardNum].TYPE() == TILETYPE.RESIDENTIAL) {
+			CURRENTPOP -= cardData[ci.cardNum].TVALUE();
+		}
+
 	}
 
 	public void AmtChange(int val) {
 		currentDeck.Remove(val);
 
-		Debug.Log("hello");
+		if(cardData[val].TYPE() == TILETYPE.COMMERCIAL) {
+			CURRENTHAPP -= cardData[val].TVALUE();
+		} else if(cardData[val].TYPE() == TILETYPE.RESIDENTIAL) {
+			CURRENTPOP -= cardData[val].TVALUE();
+		}
+	
 	}
 
 
