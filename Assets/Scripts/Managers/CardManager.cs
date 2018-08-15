@@ -86,7 +86,7 @@ public class CardManager : MonoBehaviour {
 				temp = spells[1];
 				break;
 			default:
-				temp = new Sprite();
+				temp = spells[1];
 				break;
 		}
 

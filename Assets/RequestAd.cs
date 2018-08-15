@@ -10,12 +10,14 @@ public class RequestAd : MonoBehaviour {
 	InterstitialAd inter;
 	AdRequest req;
 	bool firstRun = false;
+	string beginning = "ca-app-pub-4034976310982091/7707003742";
+	string testAd = "ca-app-pub-3940256099942544/1033173712";
 	/// <summary>
 	/// This function is called when the object becomes enabled and active.
 	/// </summary>
 	void OnEnable()
 	{
-		inter = new InterstitialAd("ca-app-pub-3940256099942544/1033173712");
+		inter = new InterstitialAd(testAd);
 		firstRun = BackEndManager.instance.firstRun;
 		req = new AdRequest.Builder().Build();
 		inter.LoadAd(req);
