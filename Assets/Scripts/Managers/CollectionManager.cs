@@ -574,6 +574,7 @@ public class CollectionManager : MonoBehaviour {
 				currentDeck.Add(val);
 
 				bookTest.transform.SetAsLastSibling();
+				updateLimits(val);
 				
 			} else {
 				// int pos = -1;
@@ -589,20 +590,25 @@ public class CollectionManager : MonoBehaviour {
 						if(cardsInDeck[i].cardNum == val) {
 							cardsInDeck[i].UpdateAmt(1);
 							currentDeck.Add(val);
+							updateLimits(val);
 						}
 					}
 				}
 			}
 
 
-			if(cardData[val].TYPE() == TILETYPE.COMMERCIAL) {
-				CURRENTHAPP += cardData[val].TVALUE();
-			} else if(cardData[val].TYPE() == TILETYPE.RESIDENTIAL) {
-				CURRENTPOP += cardData[val].TVALUE();
-			}
+
 		}
 
 
+	}
+
+	void updateLimits(int val) {
+		if(cardData[val].TYPE() == TILETYPE.COMMERCIAL) {
+			CURRENTHAPP += cardData[val].TVALUE();
+		} else if(cardData[val].TYPE() == TILETYPE.RESIDENTIAL) {
+			CURRENTPOP += cardData[val].TVALUE();
+		}
 	}
 
 	public void SaveAndExit() {

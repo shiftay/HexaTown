@@ -186,6 +186,7 @@ public class GameManager : MonoBehaviour {
 				Shuffle();
 				Deal();
 			} while(possiblePlays() < 2);
+			WINCONDITION = BackEndManager.instance.WINCONDITION;
 		}
 		// deal.Play();
 		drawPile.setCards(currentDeck.Count / 5);
@@ -1079,7 +1080,7 @@ public class GameManager : MonoBehaviour {
 		temp.prevHappiness.AddRange(prevHapp);
 		temp.prevObjective.AddRange(prevObjec);
 		temp.prevPopulation.AddRange(prevPop);
-		
+		temp.wincondition = WINCONDITION;
 
 		for(int i = 0; i < gc.rows; i++) {
 			for(int j = 0; j < gc.cols; j++) {
@@ -1125,6 +1126,7 @@ public class GameManager : MonoBehaviour {
 		objectiveVal = BackEndManager.instance.sGame.objectiveVal;
 		partyTracker = BackEndManager.instance.sGame.party;
 		commuterTracker = BackEndManager.instance.sGame.commuter;
+		WINCONDITION = BackEndManager.instance.sGame.wincondition;
 
 		if(partyTracker > 0) {
 			PARTY = true;

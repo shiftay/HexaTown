@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PreGame : MonoBehaviour {
 
@@ -14,6 +15,42 @@ public class PreGame : MonoBehaviour {
 	public Button[] editBtns;
 	public PopUp po;
 	public int currentSelected = -1;
+
+	public int LOWEND;
+	public int HIGHEND;
+	public int currentWin;
+	public Text WINCONDITION;
+	bool plusDown = false;
+	float delay = 0;
+	bool minusDown = false;
+	int holdCount = 0;
+
+	/// <summary>
+	/// Update is called every frame, if the MonoBehaviour is enabled.
+	/// </summary>
+	void Update()
+	{
+		WINCONDITION.text = currentWin.ToString();
+		
+		if(plusDown || minusDown) {
+			delay += Time.deltaTime;
+			if(delay > 0.1f) {
+				hold();
+				
+			}
+
+		}
+	}
+
+	void hold() {
+		if(plusDown) {
+			plus();
+		} else {
+			minus();
+		}
+		holdCount++;
+		delay = 0;
+	}
 
 	void OnEnable() {
 		BackEndManager.instance.editDeck = false;
@@ -35,7 +72,7 @@ public class PreGame : MonoBehaviour {
 		}
 
 		currentSelected = -1;
-
+		currentWin = BackEndManager.instance.WINCONDITION;
 		SetupBtns();
 	}
 	
@@ -62,8 +99,11 @@ public class PreGame : MonoBehaviour {
 		} else {
 			BackEndManager.instance.sGame = null;
 			BackEndManager.instance.deckChoice = currentSelected;
-			BackEndManager.instance.ChangeState(STATES.GAME);
+			BackEndManager.instance.WINCONDITION = currentWin;
+			BackEndManager.instance.ChangeState(STATES.GAME);	
 		}
+
+		
 
 	}
 
@@ -86,6 +126,58 @@ public class PreGame : MonoBehaviour {
 		btnOutLines[currentSelected].enabled = false;
 		currentSelected = -1;
 		SetupBtns();
+	}
+
+	public void plus() {
+		int mod = 1;
+		if(holdCount > 20 && holdCount < 40) {
+			mod = 2;
+		} else if(holdCount > 40) {
+			mod = 5;
+		}
+
+		currentWin += mod;
+
+
+		if(currentWin > HIGHEND) {
+			currentWin = HIGHEND;
+		}
+	}
+
+	public void minus() {
+		int mod = 1;
+		if(holdCount > 20 && holdCount < 40) {
+			mod = 2;
+		} else if(holdCount > 40) {
+			mod = 5;
+		}
+
+		currentWin -= mod;
+
+
+		if(currentWin < LOWEND) {
+			currentWin = LOWEND;
+		}
+	}
+
+	public void plusPressed() {
+		plusDown = true;
+	}
+
+	public void plusLetgo() {
+		plusDown = false;
+		delay = 0;
+		holdCount = 0;
+	}
+
+	public void minusPress() {
+		minusDown = true;
+	}
+
+	public void minusLetgo() {
+		minusDown = false;
+		delay = 0;
+		holdCount = 0;
 	}
 
 	void SetupBtns(){ 

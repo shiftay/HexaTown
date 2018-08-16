@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using System.IO;
 using GoogleMobileAds.Api;
@@ -23,7 +24,7 @@ public class SavedGame {
 	public List<int> currentDiscard = new List<int>();
 	public List<int> currentDeck = new List<int>();
 	public List<int> tileSpace = new List<int>();
-	public int objectiveVal, populationVal, happinessVal, commuter, party;
+	public int objectiveVal, populationVal, happinessVal, commuter, party, wincondition;
 	public List<int> prevObjective = new List<int>();
 	public List<int> prevPopulation = new List<int>();
 	public List<int> prevHappiness = new List<int>();
@@ -49,6 +50,7 @@ public class BackEndManager : MonoBehaviour {
 	public SavedGame sGame;
 	public bool resume = false;
 	public bool changingState = false;
+	public int WINCONDITION;
 	public SavedGame clear {
 		set {
 			sGame = value;
@@ -74,6 +76,12 @@ public class BackEndManager : MonoBehaviour {
 
 	public bool firstRun;
 	public bool disableAd;
+
+	InterstitialAd inter;
+
+	AdRequest req;
+	string beginning = "ca-app-pub-4034976310982091/7707003742";
+	string testAd = "ca-app-pub-3940256099942544/1033173712";
 	
 	// Use this for initialization
 	void Start () {
@@ -87,8 +95,6 @@ public class BackEndManager : MonoBehaviour {
 		foreach(GameObject state in states) {
 			state.SetActive(false);
 		}
-
-
 
 		if(deleteFiles) {
 			ClearFiles();
@@ -113,8 +119,43 @@ public class BackEndManager : MonoBehaviour {
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 		AudioManager.instance.mute(mutedMusic);
 		states[currentState].SetActive(true);
+		setupAds();
 	}
-	
+
+	void setupAds() {
+		inter = new InterstitialAd(testAd);
+		inter.OnAdClosed += HandleOnAdClosed;
+		inter.OnAdFailedToLoad += adFailed;
+		firstRun = BackEndManager.instance.firstRun;
+		req = new AdRequest.Builder().Build();
+		inter.LoadAd(req);
+	}
+
+	public bool doneLoading() {
+		return inter.IsLoaded();
+	}
+
+	public void loadAd() {
+		inter.Show();
+	}
+
+	public void HandleOnAdClosed(object sender, EventArgs args)	{
+		if(firstRun) {
+			BackEndManager.instance.ChangeState(STATES.TUTORIAL);
+		} else {
+			BackEndManager.instance.ChangeState(STATES.MAINMENU);
+		}
+		inter.Destroy();
+	}
+
+	public void adFailed(object sender, EventArgs args)	{
+		if(firstRun) {
+			BackEndManager.instance.ChangeState(STATES.TUTORIAL);
+		} else {
+			BackEndManager.instance.ChangeState(STATES.MAINMENU);
+		}
+		inter.Destroy();
+	}
 
 	public void ChangeState(STATES state) {
 		if(!changingState) {
@@ -264,7 +305,7 @@ public class BackEndManager : MonoBehaviour {
 					case 1:	//discard
 						foreach(string x in split) {
 							if(x != "") {
-							temp.currentDiscard.Add(int.Parse(x));
+								temp.currentDiscard.Add(int.Parse(x));
 							}
 						}
 
@@ -333,6 +374,7 @@ public class BackEndManager : MonoBehaviour {
 						temp.objectiveVal = int.Parse(split[2]);
 						temp.party = int.Parse(split[3]);
 						temp.commuter = int.Parse(split[4]);
+						temp.wincondition = int.Parse(split[5]);
 						break;
 				}
 
@@ -475,7 +517,7 @@ public class BackEndManager : MonoBehaviour {
 			test.WriteLine(temp);
 
 			temp = sGame.happinessVal.ToString() + "/" + sGame.populationVal.ToString() + "/" + sGame.objectiveVal.ToString() + "/" +
-				sGame.party + "/" + sGame.commuter;
+				sGame.party + "/" + sGame.commuter + "/" + sGame.wincondition.ToString();
 			test.WriteLine(temp);
 
 			test.Close();
