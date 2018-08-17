@@ -7,15 +7,12 @@ public class HelpManager : MonoBehaviour {
 	public GameObject[] helpStates;
 	public GameObject[] icons;
 	public GameObject[] cardLayout;
-	int currentState = 0;
-	int maxStates;
 	
 	/// <summary>
 	/// This function is called when the object becomes enabled and active.
 	/// </summary>
 	void OnEnable()
 	{
-		maxStates = helpStates.Length;
 		changeState(0);
 	}
 

@@ -10,7 +10,6 @@ public class FadeOut : MonoBehaviour {
 	public Image blackBox;
 	// public bool fade = false;
 	public bool flag = false;
-	int counter = 0;
 
 
 	/// <summary>

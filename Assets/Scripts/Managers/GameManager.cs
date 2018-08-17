@@ -97,7 +97,6 @@ public class GameManager : MonoBehaviour {
 	string path = "cards.txt";
 	bool calculated = false;
 	List<TileInfo> residential = new List<TileInfo>();
-	bool unhappy = false;
 	int turnsSinceEvt = 0, amtofEvts;
 	public int prevHappy, prevObject, prevPopo;
 	bool commuters;
@@ -388,7 +387,6 @@ public class GameManager : MonoBehaviour {
 			gameOver = true;
 		}
 
-		// Debug.Log("POSSIBLE PLAYS: " + possiblePlays());
 
 	}
 
@@ -422,7 +420,7 @@ public class GameManager : MonoBehaviour {
 					case 32: //commuter
 						if(!COMMUTE && dupCom == 0) {
 							possiblePlays++;
-							Debug.Log("COMMUTER POSSIBLE");
+							// Debug.Log("COMMUTER POSSIBLE");
 						}
 
 						dupCom++;
@@ -432,7 +430,7 @@ public class GameManager : MonoBehaviour {
 						if(notDemos > 0) {
 							notDemos--;
 							possiblePlays++;
-							Debug.Log("DEMO POSSIBLE");
+							// Debug.Log("DEMO POSSIBLE");
 						}
 						
 						break;
@@ -440,7 +438,7 @@ public class GameManager : MonoBehaviour {
 					case 34: // funding
 						if(!FUNDING && dupFund == 0) {
 							possiblePlays++;
-							Debug.Log("FUNDING POSSIBLE");
+							// Debug.Log("FUNDING POSSIBLE");
 						}
 
 						dupFund++;
@@ -460,11 +458,11 @@ public class GameManager : MonoBehaviour {
 								corruptTiles -= dupJust;
 								if(corruptTiles != 0) {
 									possiblePlays++;
-									Debug.Log("justice POSSIBLE");
+									// Debug.Log("justice POSSIBLE");
 								}
 							} else {
 								possiblePlays++;
-								Debug.Log("justice POSSIBLE");
+								// Debug.Log("justice POSSIBLE");
 							}
 						}
 
@@ -474,7 +472,7 @@ public class GameManager : MonoBehaviour {
 					case 36: // party
 						if(!PARTY && dupPart == 0) {
 							possiblePlays++;
-							Debug.Log("party POSSIBLE");
+							// Debug.Log("party POSSIBLE");
 						}
 						
 						dupPart++;
@@ -493,11 +491,11 @@ public class GameManager : MonoBehaviour {
 								incompleteBuilds -= dupBuild;
 								if(incompleteBuilds != 0) {
 									possiblePlays++;
-									Debug.Log("quick build POSSIBLE");
+									// Debug.Log("quick build POSSIBLE");
 								}
 							} else {
 								possiblePlays++;
-								Debug.Log("quick build POSSIBLE");
+								// Debug.Log("quick build POSSIBLE");
 							}
 						}
 						dupBuild++;
@@ -506,7 +504,7 @@ public class GameManager : MonoBehaviour {
 					case 38: // recycle
 						if(currentDiscard.Count != 0 && dupRecyc == 0) {
 							possiblePlays++;
-							Debug.Log("recycle POSSIBLE");
+							// Debug.Log("recycle POSSIBLE");
 						}
 						dupRecyc++;
 						break;
@@ -517,7 +515,7 @@ public class GameManager : MonoBehaviour {
 								continue;
 							} else if(currentTiles[x].type == TILETYPE.INDUSTRIAL && currentTiles[x].buildTime <= 0) {
 								possiblePlays++;
-								Debug.Log("rush order POSSIBLE");
+								// Debug.Log("rush order POSSIBLE");
 								flip = true;
 							}
 						}
@@ -529,7 +527,7 @@ public class GameManager : MonoBehaviour {
 				if(possInd > 0) {
 					possInd--;
 					possiblePlays++;
-					Debug.Log("INDUSTRIAL POSSIBLE");
+					// Debug.Log("INDUSTRIAL POSSIBLE");
 				}
 			}
 
@@ -538,7 +536,7 @@ public class GameManager : MonoBehaviour {
 				if(spotsLeft > 0) {
 					spotsLeft--;
 					possiblePlays++;
-					Debug.Log("RESIDENTIAL || COMMERCIAL POSSIBLE");
+					// Debug.Log("RESIDENTIAL || COMMERCIAL POSSIBLE");
 				}
 			}
 

@@ -123,7 +123,7 @@ public class BackEndManager : MonoBehaviour {
 	}
 
 	void setupAds() {
-		inter = new InterstitialAd(testAd);
+		inter = new InterstitialAd(beginning);
 		inter.OnAdClosed += HandleOnAdClosed;
 		inter.OnAdFailedToLoad += adFailed;
 		firstRun = BackEndManager.instance.firstRun;
@@ -529,7 +529,11 @@ public class BackEndManager : MonoBehaviour {
 		if(pauseStatus) {
 			SaveDecks();
 			SaveSettings();
-		}
+		} 
+		// else {
+		// 	setupAds();
+		// 	ChangeState(STATES.ADVERT);
+		// }
 
 	}
 
@@ -541,6 +545,8 @@ public class BackEndManager : MonoBehaviour {
 		SaveDecks();
 		SaveSettings();
 	}
+
+
 
 // ============= BACK END UTILITIES ====================
 	string Encryption(string input) {

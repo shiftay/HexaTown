@@ -7,15 +7,12 @@ public class OptionsManager : MonoBehaviour {
 	BackEndManager bm;
 	public Slider music;
 	public Slider sfx;
-	bool firstRun = true;
 	public Sprite muted;
 	public Sprite unmuted;
 	public GameObject phone;
 	public GameObject gameBtns;
 	public GameObject outofGameBtns;
 	bool movePhone;
-	Vector3 startPos;
-	Vector3 endPos;
 	public Animation anim;
 	public AnimationClip clip;
 	public AnimationClip away;
@@ -52,14 +49,6 @@ public class OptionsManager : MonoBehaviour {
 		movePhone = true;
 		
 	}
-
-	void Start() {
-		startPos = phone.transform.position;
-		Vector3 temp = startPos;
-		temp.y += 260;
-		endPos = temp;
-	}
-
 	/// <summary>
 	/// Update is called every frame, if the MonoBehaviour is enabled.
 	/// </summary>

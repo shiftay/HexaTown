@@ -21,7 +21,6 @@ public class BGMovement : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		Debug.Log("hi");
 		other.gameObject.GetComponent<TrailFix>().ChangeObject();
 		speed *= -1;
 	}

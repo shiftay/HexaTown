@@ -35,14 +35,11 @@ public class Heatmap : MonoBehaviour
             intensities[i] = 1.5f;
         } 
         
-
-        Vector4[] properties = new Vector4[positions.Length];
         material.SetInt("_Points_Length", positions.Length);
        
         material.SetFloatArray("_Intensity", intensities);
         material.SetFloatArray("_Radius", radiuses);
         material.SetVectorArray("_Points", positions);
-
     }
 
     void Update()

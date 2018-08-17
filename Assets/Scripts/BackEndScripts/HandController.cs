@@ -127,7 +127,6 @@ public class HandController : MonoBehaviour {
 					// draggedObject.GetComponent<SpriteRenderer>().sprite = cm.changetoTile(draggedObject.GetComponent<SpriteRenderer>().sprite);
 				} else if(hit.transform.tag == "SpellArea") {
 					// PLAY THE CARD
-					Debug.Log("SPELL");
 					
 					if(GameManager.instance.playSpell(value, null)) {
 						currentCard.transform.position = new Vector2(-100,-100);

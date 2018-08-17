@@ -12,7 +12,6 @@ public class MouseDragScript : MonoBehaviour {
     bool description = false;
     bool indArea = false;
     private GameObject draggedObject;
-    private Vector2 touchOffset;
 	public bool reorderPuz = false;
 	public Vector2 droppedPos;
     int valueOfCard = -1;
@@ -75,9 +74,7 @@ public class MouseDragScript : MonoBehaviour {
         if (draggingItem)
         {
             draggedObject.transform.position = inputPosition;
-            // Debug.Log("Object: " + draggedObject.transform.position);
-            // Debug.Log("Input: " + inputPosition);
-            // Debug.Log("Offset: " + touchOffset);
+
 
             draggedObject.transform.position = changeZ(draggedObject.transform.position);
             // Vector3 fix = draggedObject.transform.position;
@@ -100,8 +97,6 @@ public class MouseDragScript : MonoBehaviour {
                     if(hit.transform.tag == "Card") {
                         draggingItem = true;
                         draggedObject = hit.transform.gameObject;
-                        touchOffset = (Vector2)hit.transform.position - inputPosition;
-                        // Debug.Log(touchOffset);
                         draggedObject.transform.localScale = new Vector3(1.2f,1.2f,1.2f);
                         Sprite card = draggedObject.GetComponent<SpriteRenderer>().sprite;
                         valueOfCard = cm.ValueOfAll(card);

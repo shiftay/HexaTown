@@ -20,10 +20,6 @@ public class GridController : MonoBehaviour {
 
 	bool firstRun = true;
 	public GameObject industryGrid;
-	public SpriteRenderer[] indGsprite;
-	SpriteRenderer[,] spriteGrid;
-	public int testX = 0;
-	public int testY = 0;
 	public Sprite indTile;
 	public Heatmap hm;
 
@@ -57,7 +53,6 @@ public class GridController : MonoBehaviour {
 		if(firstRun) {
 			grid = new GameObject[rows,cols];
 			gameplayObj = new int[rows,cols];
-			spriteGrid = new SpriteRenderer[rows,cols];
 			int currentRow = 0;
 			int currentCol = 0;
 
@@ -68,7 +63,6 @@ public class GridController : MonoBehaviour {
 				}
 				gameplayObj[currentRow, currentCol] = -1;
 				grid[currentRow, currentCol] = hexCells[i];
-				spriteGrid[currentRow, currentCol] = indGsprite[i];
 				currentCol++;
 			}
 			firstRun = false;
@@ -80,14 +74,8 @@ public class GridController : MonoBehaviour {
 		 
 	}
 	
-
 	public void SetupCoord(int x, int y) {
 		industryArea.Add(new Coords(x,y));
-	}
-
-	// Update is called once per frame
-	void Update () {
-		// Debug.Log("Hello");
 	}
 
 	public void ClearTileInfo() {
@@ -146,7 +134,7 @@ public class GridController : MonoBehaviour {
 			}
 		}
 
-		IndustrySprites();
+		setupBoard();
 		hm.Setup(this);
 	}
 
@@ -158,6 +146,12 @@ public class GridController : MonoBehaviour {
 			}
 		}
 		industryGrid.SetActive(false);
+	}
+
+	public void setupBoard() {
+		foreach(Coords c in industryArea) {
+			grid[c.x,c.y].GetComponent<SpriteRenderer>().sprite = indTile;
+		}
 	}
 
 	void temp(int xC, int yC) {
@@ -338,7 +332,6 @@ public class GridController : MonoBehaviour {
 				temp.Add(currentRow);
 				temp.Add(currentCol);
 
-				Debug.Log("COORDS : " + currentRow + " / " + currentCol);
 				grid[currentRow,currentCol].AddComponent<TileInfo>();
 				if(saved[i] == -3) {
 					grid[currentRow,currentCol].GetComponent<SpriteRenderer>().sprite = GameManager.instance.water;
@@ -387,7 +380,6 @@ public class GridController : MonoBehaviour {
 	// ODD 	= [-1, 0] [-1, +1] [0, -1] [0, +1] [+1, 0]  [+1, +1]
 	public bool placeTile(List<int> coords, TILETYPE tileType, bool first, bool completeFirst) {
 		bool retVal = false;
-		GameManager gm = GameManager.instance;
 		int x = coords[0]; // row
 		int y = coords[1]; // col
 		bool oddN = (x + 1) % 2 == 0;
