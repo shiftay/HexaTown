@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using System.IO;
-using GoogleMobileAds.Api;
 
 public enum STATES { MAINMENU, PREGAME, COLLECTION, GAME, ENDGAME, OPTIONS, CREDITS, TUTORIAL, HELP, ADVERT }
 
@@ -77,16 +76,9 @@ public class BackEndManager : MonoBehaviour {
 	public bool firstRun;
 	public bool disableAd;
 
-	InterstitialAd inter;
-
-	AdRequest req;
-	string beginning = "ca-app-pub-4034976310982091/7707003742";
-	string testAd = "ca-app-pub-3940256099942544/1033173712";
 	
 	// Use this for initialization
 	void Start () {
-		MobileAds.Initialize("ca-app-pub-4034976310982091~9236434181");
-
 		instance = this;
 		for(int i = 0; i < transform.childCount; i++) {
 			states.Add(transform.GetChild(i).gameObject);
@@ -119,43 +111,9 @@ public class BackEndManager : MonoBehaviour {
 		AudioManager.instance.setVolumes(currentSFX, currentVolume);
 		AudioManager.instance.mute(mutedMusic);
 		states[currentState].SetActive(true);
-		setupAds();
+
 	}
 
-	void setupAds() {
-		inter = new InterstitialAd(beginning);
-		inter.OnAdClosed += HandleOnAdClosed;
-		inter.OnAdFailedToLoad += adFailed;
-		firstRun = BackEndManager.instance.firstRun;
-		req = new AdRequest.Builder().Build();
-		inter.LoadAd(req);
-	}
-
-	public bool doneLoading() {
-		return inter.IsLoaded();
-	}
-
-	public void loadAd() {
-		inter.Show();
-	}
-
-	public void HandleOnAdClosed(object sender, EventArgs args)	{
-		if(firstRun) {
-			BackEndManager.instance.ChangeState(STATES.TUTORIAL);
-		} else {
-			BackEndManager.instance.ChangeState(STATES.MAINMENU);
-		}
-		inter.Destroy();
-	}
-
-	public void adFailed(object sender, EventArgs args)	{
-		if(firstRun) {
-			BackEndManager.instance.ChangeState(STATES.TUTORIAL);
-		} else {
-			BackEndManager.instance.ChangeState(STATES.MAINMENU);
-		}
-		inter.Destroy();
-	}
 
 	public void ChangeState(STATES state) {
 		if(!changingState) {
