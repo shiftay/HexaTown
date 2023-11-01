@@ -94,7 +94,7 @@ public class GameManager : MonoBehaviour {
 	public List<int> turnCardPlayed;
 	public List<CardData> cardData = new List<CardData>();
 	public List<TileInfo> currentTiles = new List<TileInfo>();
-	string path = "cards.txt";
+	public string cardInfo;
 	bool calculated = false;
 	List<TileInfo> residential = new List<TileInfo>();
 	int turnsSinceEvt = 0, amtofEvts;
@@ -654,21 +654,10 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void ReadCardData() {
-		string filePath = Path.Combine(Application.streamingAssetsPath, path);
-		string result = "";
 
 		bool flip = false;
-	
-		if (Application.platform == RuntimePlatform.Android) {
-			WWW reader = new WWW(filePath);
 
-          	while(!reader.isDone) { }
-
-			result = reader.text;
-        } else {
-            result = System.IO.File.ReadAllText(filePath);
-    	}
-		string[] split = result.Split('\n');
+		string[] split = cardInfo.Split('|');
 
 		for(int i = 0; i < split.Length; i++) {
 			string[] temp = split[i].Split('/');

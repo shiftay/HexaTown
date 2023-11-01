@@ -521,7 +521,7 @@ public class CollectionManager : MonoBehaviour {
 		}
 	}
 
-
+	public string cardInfo;
 
 	void ReadCards() {
 
@@ -530,16 +530,16 @@ public class CollectionManager : MonoBehaviour {
 
 		bool flip = false;
 	
-		if (Application.platform == RuntimePlatform.Android) {
-			WWW reader = new WWW(filePath);
+		// if (Application.platform == RuntimePlatform.Android) {
+		// 	WWW reader = new WWW(filePath);
 
-          	while(!reader.isDone) { }
+        //   	while(!reader.isDone) { }
 
-			result = reader.text;
-        } else {
-            result = System.IO.File.ReadAllText(filePath);
-    	}
-		string[] split = result.Split('\n');
+		// 	result = reader.text;
+        // } else {
+        //     result = System.IO.File.ReadAllText(filePath);
+    	// }
+		string[] split = cardInfo.Split('|');
 
 		for(int i = 0; i < split.Length; i++) {
 			string[] temp = split[i].Split('/');
